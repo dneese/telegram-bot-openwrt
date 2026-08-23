@@ -314,10 +314,12 @@ register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
   CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
-    --data-urlencode "commands=$CMDS" | grep -q '"ok":true' || {
+    -H "Content-Type: application/json" \
+    -d "$CMDS" | grep -q '"ok":true' || {
     sleep 5
     curl -s --max-time 15 "$API/setMyCommands" \
-      --data-urlencode "commands=$CMDS" | grep -q '"ok":true' \
+      -H "Content-Type: application/json" \
+      -d "$CMDS" | grep -q '"ok":true' \
       || echo "setMyCommands fail" > "$DIR/lasterr"
   }
 }
