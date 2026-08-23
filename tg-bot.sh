@@ -808,7 +808,7 @@ ai_run() {
   else
     OUT=$(sh -c "$1" 2>&1); RC=$?
   fi
-  OUT=$(printf '%s' "$OUT" | head -c 900)
+  OUT=$(printf '%s' "$OUT" | head -c 1600)
   [ -z "$OUT" ] && OUT="(нет вывода, код выхода $RC — вероятно команда не существует или не сработала)"
 }
 
@@ -851,6 +851,7 @@ $OUT"
       ai_call "$SYSN" "$CUR"
     fi
     [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
+    ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/>[[:space:]]*$//')
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then
@@ -861,10 +862,10 @@ $OUT"
     PSTRIP=$(printf '%s' "$PCMD" | tr -d ' \t\r\n')
     alog STEP "step$STEP CMD=[${PCMD:-—}] SAYLEN=${#FSAY} raw:$(printf '%s' "$ANS" | tr '\n\t' '  ' | head -c 240)"
     case "$PSTRIP" in
-      ""|"-"|"--"|*"–"*|*"—"*)
-        break
-        ;;
+      ""|"-"|"--"|"->"|"→"|"—") break ;;
+      *"–"*|*"—"*) break ;;
     esac
+    PCMD=$(printf '%s' "$PCMD" | sed 's/^->//; s/^→//')
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
       printf '%s' "$PCMD" > "$DIR/aipend"
