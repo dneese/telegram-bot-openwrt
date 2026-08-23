@@ -42,12 +42,12 @@ T_net_no_ru='❌ нет'; T_net_no_en='❌ down'; T_net_no_uk='❌ немає'
 T_u_min_ru='%s мин'; T_u_min_en='%s min'; T_u_min_uk='%s хв'
 T_u_day_ru='%s дн %s ч %s мин'; T_u_day_en='%sd %sh %sm'; T_u_day_uk='%s дн %s год %s хв'
 T_u_hm_ru='%s ч %s мин'; T_u_hm_en='%sh %sm'; T_u_hm_uk='%s год %s хв'
-T_s_up_ru='⏱ Аптайм: <code>%s</code>'; T_s_up_en='⏱ Uptime: <code>%s</code>'; T_s_up_uk='⏱ Аптайм: <code>%s</code>'
-T_s_load_ru='📈 Load: <code>%s</code>'; T_s_load_en='📈 Load: <code>%s</code>'; T_s_load_uk='📈 Load: <code>%s</code>'
-T_s_ram_ru='🧠 RAM: <code>%s</code>'; T_s_ram_en='🧠 RAM: <code>%s</code>'; T_s_ram_uk='🧠 RAM: <code>%s</code>'
-T_s_wan_ru='🌐 WAN: <code>%s</code>'; T_s_wan_en='🌐 WAN: <code>%s</code>'; T_s_wan_uk='🌐 WAN: <code>%s</code>'
-T_s_pub_ru='🌍 Публичный IP: <code>%s</code>'; T_s_pub_en='🌍 Public IP: <code>%s</code>'; T_s_pub_uk='🌍 Публічний IP: <code>%s</code>'
-T_s_net_ru='🔗 Интернет: %s'; T_s_net_en='🔗 Internet: %s'; T_s_net_uk='🔗 Інтернет: %s'
+T_s_up_ru='⏱ Аптайм'; T_s_up_en='⏱ Uptime'; T_s_up_uk='⏱ Аптайм'
+T_s_load_ru='📈 Load'; T_s_load_en='📈 Load'; T_s_load_uk='📈 Load'
+T_s_ram_ru='🧠 RAM'; T_s_ram_en='🧠 RAM'; T_s_ram_uk='🧠 RAM'
+T_s_wan_ru='🌐 WAN'; T_s_wan_en='🌐 WAN'; T_s_wan_uk='🌐 WAN'
+T_s_pub_ru='🌍 Публичный IP'; T_s_pub_en='🌍 Public IP'; T_s_pub_uk='🌍 Публічний IP'
+T_s_net_ru='🔗 Интернет'; T_s_net_en='🔗 Internet'; T_s_net_uk='🔗 Інтернет'
 T_s_hdr_ru='<b>📊 Статус роутера</b>'; T_s_hdr_en='<b>📊 Router status</b>'; T_s_hdr_uk='<b>📊 Статус роутера</b>'
 T_m_title_ru='🤖 <b>Роутер</b> · ⏱ %s · 🔗 %s\nВыбирайте кнопки 👇'; T_m_title_en='🤖 <b>Router</b> · ⏱ %s · 🔗 %s\nPick a button 👇'; T_m_title_uk='🤖 <b>Роутер</b> · ⏱ %s · 🔗 %s\nОбирайте кнопки 👇'
 T_d_none_ru='📭 DHCP-аренды не найдены'; T_d_none_en='📭 No DHCP leases found'; T_d_none_uk='📭 DHCP-аренд не знайдено'
@@ -122,9 +122,9 @@ T_rb_going_ru='🔄 Перезагружаюсь! Вернусь через ~1-2
 T_rb_need_ru='⚠️ Сначала /reboot, затем /reboot yes'; T_rb_need_en='⚠️ First /reboot, then /reboot yes'; T_rb_need_uk='⚠️ Спочатку /reboot, потім /reboot yes'
 T_rb_exp_ru='⚠️ Время подтверждения истекло. Нажмите ⚡️ Ребут заново.'; T_rb_exp_en='⚠️ Confirmation expired. Press ⚡️ Reboot again.'; T_rb_exp_uk='⚠️ Час підтвердження минув. Натисніть ⚡️ Ребут знову.'
 T_wan_run_ru='🔄 Перезапускаю WAN...'; T_wan_run_en='🔄 Restarting WAN...'; T_wan_run_uk='🔄 Перезапускаю WAN...'
-T_pulse_ru='<b>✅ Роутер работает</b>\n\n⏱ Аптайм: %s\n🔗 Интернет: %s\n\n🕐 Обновлено: %s\n<i>Пульс приходит каждый час.\nЕсли время выше перестало обновляться — роутер был выключен.</i>'
-T_pulse_en='<b>✅ Router is up</b>\n\n⏱ Uptime: %s\n🔗 Internet: %s\n\n🕐 Updated: %s\n<i>This heartbeat updates hourly.\nIf the time above stops updating - the router went down.</i>'
-T_pulse_uk='<b>✅ Роутер працює</b>\n\n⏱ Аптайм: %s\n🔗 Інтернет: %s\n\n🕐 Оновлено: %s\n<i>Пульс приходить щогодини.\nЯкщо час вище перестав оновлюватися — роутер було вимкнено.</i>'
+T_pulse_ru='<h3>✅ Роутер работает</h3><table bordered striped><tr><td>⏱ Аптайм</td><td><code>%s</code></td></tr><tr><td>🔗 Интернет</td><td>%s</td></tr></table><footer>🕐 %s · пульс каждый час; время замерло — роутер был выключен</footer>'
+T_pulse_en='<h3>✅ Router is up</h3><table bordered striped><tr><td>⏱ Uptime</td><td><code>%s</code></td></tr><tr><td>🔗 Internet</td><td>%s</td></tr></table><footer>🕐 %s · hourly heartbeat; stale time = router was down</footer>'
+T_pulse_uk='<h3>✅ Роутер працює</h3><table bordered striped><tr><td>⏱ Аптайм</td><td><code>%s</code></td></tr><tr><td>🔗 Інтернет</td><td>%s</td></tr></table><footer>🕐 %s · пульс щогодини; час зупинився — роутер був вимкнений</footer>'
 T_c_status_ru='📊 Статус роутера'; T_c_status_en='📊 Router status'; T_c_status_uk='📊 Статус роутера'
 T_c_dev_ru='📱 Устройства в сети'; T_c_dev_en='📱 Network devices'; T_c_dev_uk='📱 Пристрої в мережі'
 T_c_wan_ru='🌐 Перезапустить интернет'; T_c_wan_en='🌐 Reconnect internet'; T_c_wan_uk='🌐 Перепідключити інтернет'
@@ -146,15 +146,7 @@ T_th_ssid_ru='SSID'; T_th_ssid_en='SSID'; T_th_ssid_uk='SSID'
 T_d_hdr2_ru='<h3>📶 Устройства · 🟢 %s из %s</h3>'; T_d_hdr2_en='<h3>📶 Devices · 🟢 %s of %s</h3>'; T_d_hdr2_uk='<h3>📶 Пристрої · 🟢 %s із %s</h3>'
 T_d_offttl_ru='<p>📍 Не в сети (%s)</p>'; T_d_offttl_en='<p>📍 Offline (%s)</p>'; T_d_offttl_uk='<p>📍 Не в мережі (%s)</p>'
 
-# Відправка Rich Message (справжні таблиці, h1-h6, списки, details)
-send_rich() {
-  R=$(curl -s --max-time 15 "$API/sendRichMessage" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"rich_message\":{\"html\":\"$(jesc "$1")\"}}")
-  echo "$R" | grep -q '"ok":true' && return 0
-  echo "$R" | head -c 200 > "$DIR/lasterr"
-  return 1
-}
+# send_rich визначено нижче (файловий payload)
 
 mk_markups() {
 MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
@@ -238,6 +230,20 @@ balance_tags() {
   }'
 }
 
+_req() {
+  # $1=метод $2=файл с JSON-телом -> ответ на stdout
+  curl -s --max-time 15 "$API/$1" -H "Content-Type: application/json" --data-binary "@$2"
+}
+
+send_rich() {
+  # $1 = Rich HTML через sendRichMessage (таблиці, h1-h6, списки, details)
+  printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$1")" > "$DIR/.rq"
+  R=$(_req sendRichMessage "$DIR/.rq")
+  echo "$R" | grep -q '"ok":true' && return 0
+  echo "$R" | head -c 200 > "$DIR/lasterr"
+  return 1
+}
+
 send_long() {
   # $1=готовый HTML $2=markup(опц.); шлёт частями <=3800 байт по границам строк (лимит TG 4096)
   RC=0; TXT="$1"; MK="${2:-}"
@@ -250,25 +256,27 @@ send_long() {
       CUR=$(printf '%s' "$TXT" | head -c "$OFF")
       TXT=$(printf '%s' "$TXT" | tail -c +"$((OFF+1))")
     fi
-    R=$(curl -s --max-time 15 "$API/sendMessage" \
-      -H "Content-Type: application/json" \
-      -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$CUR")\"${MK:+,\"reply_markup\":$MK}}")
+    printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s"%s}' \
+      "$CHAT" "$(jesc "$CUR")" "${MK:+,\"reply_markup\":$MK}" > "$DIR/.rq"
+    R=$(_req sendMessage "$DIR/.rq")
     echo "$R" | grep -q '"ok":true' || RC=1
   done
   return $RC
 }
 
 reply_rich() {
-  # $1 = текст модели с rich-тегами -> безопасная отправка с автозакрытием тегов
+  # $1 = текст модели с rich-тегами -> спершу Rich, потім sendMessage, потім plain
   E=$(balance_tags "$(html_prep "$1")")
   [ -z "$(printf '%s' "$E" | tr -d '[:space:]')" ] && return 0
+  send_rich "$E" && return 0
   send_long "$E" && return 0
   P=$(printf '%s' "$1" | sed 's/<[^>]*>//g')
   send_long "$(esc "$P")" || printf '%s' "$1" > "$DIR/lasterr"
 }
 
 reply() {
-  send_long "$(esc "$1")" || printf '%s' "$1" > "$DIR/lasterr"
+  # $1 = готовий HTML — БЕЗ повторного екранування (теги навмисні)
+  send_long "$1" || printf '%s' "$1" > "$DIR/lasterr"
 }
 
 reply_doc() {
@@ -281,10 +289,9 @@ reply_doc() {
 }
 
 reply_photo_url() {
-  curl -s --max-time 30 "$API/sendPhoto" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"photo\":\"$1\",\"parse_mode\":\"HTML\",\"caption\":\"$(jesc "$2")\"}" \
-    | grep -q '"ok":true' || echo "sendPhoto fail: $1" > "$DIR/lasterr"
+  printf '{"chat_id":"%s","photo":"%s","parse_mode":"HTML","caption":"%s"}' \
+    "$CHAT" "$1" "$(jesc "$2")" > "$DIR/.rq"
+  _req sendPhoto "$DIR/.rq" | grep -q '"ok":true' || echo "sendPhoto fail: $1" > "$DIR/lasterr"
 }
 
 reply_photo_file() {
@@ -295,23 +302,30 @@ reply_photo_file() {
 }
 
 send_menu() {
-  curl -s --max-time 15 "$API/sendMessage" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "${1:-🤖}")\",\"reply_markup\":$MENU_MARKUP}" >/dev/null
+  printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s","reply_markup":%s}' \
+    "$CHAT" "$(jesc "${1:-🤖}")" "$MENU_MARKUP" > "$DIR/.rq"
+  _req sendMessage "$DIR/.rq" >/dev/null
 }
 
 send_mk() {
   # $1=текст $2=reply_markup JSON
-  curl -s --max-time 15 "$API/sendMessage" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\"${2:+,\"reply_markup\":$2}}" >/dev/null
+  printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s"%s}' \
+    "$CHAT" "$(jesc "$1")" "${2:+,\"reply_markup\":$2}" > "$DIR/.rq"
+  _req sendMessage "$DIR/.rq" >/dev/null
 }
 
 edit_msg() {
   ET=$(printf '%s' "$2" | head -c 4000)
-  curl -s --max-time 15 "$API/editMessageText" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"message_id\":$1,\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$ET")\"${3:+,\"reply_markup\":$3}}" >/dev/null
+  printf '{"chat_id":"%s","message_id":%s,"parse_mode":"HTML","text":"%s"%s}' \
+    "$CHAT" "$1" "$(jesc "$ET")" "${3:+,\"reply_markup\":$3}" > "$DIR/.rq"
+  _req editMessageText "$DIR/.rq" >/dev/null
+}
+
+edit_msg_rich() {
+  # $1=message_id $2=Rich HTML — редагування rich-повідомлення
+  printf '{"chat_id":"%s","message_id":%s,"rich_message":{"html":"%s"}}' \
+    "$CHAT" "$1" "$(jesc "$2")" > "$DIR/.rq"
+  _req editMessageText "$DIR/.rq" >/dev/null
 }
 
 answer_cb() {
@@ -340,20 +354,16 @@ register_commands() {
 }
 
 pulse_send() {
-  curl -s --max-time 15 "$API/sendMessage" \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\",\"reply_markup\":$MENU_MARKUP}" \
-    | grep -o '"message_id":[0-9]*' | grep -o '[0-9]*' > "$DIR/msgid"
+  printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$1")" > "$DIR/.rq"
+  _req sendRichMessage "$DIR/.rq" | grep -o '"message_id":[0-9]*' | grep -o '[0-9]*' > "$DIR/msgid"
 }
 
 pulse_edit_or_send() {
   MSGID=""
   [ -f "$DIR/msgid" ] && MSGID=$(cat "$DIR/msgid")
   if [ -n "$MSGID" ]; then
-    R=$(curl -s --max-time 15 "$API/editMessageText" \
-      -H "Content-Type: application/json" \
-      -d "{\"chat_id\":\"$CHAT\",\"message_id\":$MSGID,\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\",\"reply_markup\":$MENU_MARKUP}")
-    echo "$R" | grep -q '"ok":true' && return
+    edit_msg_rich "$MSGID" "$1"
+    return
   fi
   pulse_send "$1"
 }
@@ -432,15 +442,15 @@ status_text() {
   WANIP=$(ip addr show wan 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1)
   PUBIP=$(curl -s --max-time 5 https://api.ipify.org)
   NET=$(internet_ok)
-  printf "%s\n$(t s_up)\n$(t s_load)\n$(t s_ram)\n$(t s_wan)\n$(t s_pub)\n$(t s_net)\n🕐 <i>%s</i>\n" \
-    "$(t s_hdr)" \
-    "$(uptime_short)" \
-    "$(cut -d' ' -f1-3 /proc/loadavg)" \
-    "$MEM" \
-    "${WANIP:-?}" \
-    "${PUBIP:-?}" \
-    "$NET" \
-    "$(date '+%d.%m.%Y %H:%M:%S')"
+  R="<h3>$(t s_hdr)</h3><table bordered striped>"
+  R="$R<tr><td>$(t s_up)</td><td><code>$(uptime_short)</code></td></tr>"
+  R="$R<tr><td>$(t s_load)</td><td><code>$(cut -d' ' -f1-3 /proc/loadavg)</code></td></tr>"
+  R="$R<tr><td>$(t s_ram)</td><td><code>$MEM</code></td></tr>"
+  [ -n "$WANIP" ] && R="$R<tr><td>$(t s_wan)</td><td><code>$WANIP</code></td></tr>"
+  [ -n "$PUBIP" ] && R="$R<tr><td>$(t s_pub)</td><td><code>$PUBIP</code></td></tr>"
+  R="$R<tr><td>$(t s_net)</td><td>$NET</td></tr>"
+  R="$R</table><footer>🕐 $(date '+%d.%m.%Y %H:%M:%S')</footer>"
+  printf '%s' "$R"
 }
 
 alias_of() {
@@ -548,12 +558,12 @@ cmd_watch() {
     if [ "$N" = "0" ] || [ -z "$N" ]; then
       reply "$(t wl_empty)"
     else
-      MSG="$(t wl_hdr)"
+      ROWS=""
       while IFS='|' read -r MC NM; do
-        MSG="$MSG
-🟢 <code>$MC</code> · $(esc "$NM")"
+        ROWS="$ROWS<tr><td><code>$MC</code></td><td>$(esc "$NM")</td></tr>"
       done < "$CF"
-      reply "$MSG"
+      MSG="<h3>$(t wl_hdr)</h3><table bordered striped><tr><th>MAC</th><th>$(t th_name)</th></tr>$ROWS</table>"
+      send_rich "$MSG" || reply "$MSG"
     fi
     return
   fi
@@ -583,13 +593,13 @@ cmd_mon() {
     if [ "$N" = "0" ] || [ -z "$N" ]; then
       reply "$(t mon_empty)"
     else
-      MSG="$(t mon_hdr)"
+      ROWS=""
       while IFS='|' read -r H LB ST; do
         [ "$ST" = "1" ] && S="🟢" || S="⚫️"
-        MSG="$MSG
-$S <code>$H</code> · $(esc "$LB")"
+        ROWS="$ROWS<tr><td><code>$H</code></td><td align=\"center\">$S</td><td>$(esc "$LB")</td></tr>"
       done < "$CF"
-      reply "$MSG"
+      MSG="<h3>$(t mon_hdr)</h3><table bordered striped><tr><th>Host</th><th>$(t th_state)</th><th>$(t th_name)</th></tr>$ROWS</table>"
+      send_rich "$MSG" || reply "$MSG"
     fi
     return
   fi
@@ -818,7 +828,7 @@ cmd_scan() {
     if [ "$N" -lt "$MIN" ]; then MIN=$N; BEST=$CAND; fi
   done
 
-  TOPROWS=$(head -10 "$T" | awk -F'|' '{printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, substr($3,1,24)}')
+  TOPROWS=$(head -10 "$T" | awk -F'|' '{e=substr($3,1,24); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}')
   NALL=$(wc -l < "$T")
   MSG="<h3>$(t sc_hdr)</h3>
 
@@ -917,7 +927,8 @@ process_updates() {
             send_menu "$(help_text)"
             ;;
           "/status")
-            reply "$(status_text)"
+            OUTS="$(status_text)"
+            send_rich "$OUTS" || reply "$OUTS"
             ;;
           "/devices")
             OUTD="$(devices_text)"
@@ -993,7 +1004,8 @@ process_updates() {
         answer_cb "$CBID"
         case "$CB" in
           st)
-            reply "$(status_text)"
+            OUTS="$(status_text)"
+            send_rich "$OUTS" || reply "$OUTS"
             ;;
           dv)
             OUTD="$(devices_text)"
