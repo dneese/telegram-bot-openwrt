@@ -23,6 +23,14 @@ return view.extend({
 		o.rmempty = false;
 		o.datatype = 'uinteger';
 
+		o = s.option(form.ListValue, 'lang', _('Мова / Language / Язык'),
+			_('Мова повідомлень бота / Bot message language / Язык сообщений бота'));
+		o.value('ru', 'Русский');
+		o.value('uk', 'Українська');
+		o.value('en', 'English');
+		o.default = 'ru';
+		o.optional = true;
+
 		o = s.option(form.Value, 'ai_key', _('OpenRouter API Key'),
 			_('Ключ для AI-чата (/ai). Получить бесплатно на openrouter.ai/keys. Оставьте пустым, чтобы отключить AI.'));
 		o.password = true;
