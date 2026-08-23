@@ -137,6 +137,7 @@ T_c_watch_ru='👀 Слежка за людьми'; T_c_watch_en='👀 Watch peo
 T_c_mon_ru='👁 Мониторинг хостов'; T_c_mon_en='👁 Host monitoring'; T_c_mon_uk='👁 Моніторинг хостів'
 T_c_rb_ru='⚡️ Перезагрузка: /reboot yes'; T_c_rb_en='⚡️ Reboot: /reboot yes'; T_c_rb_uk='⚡️ Перезавантаження: /reboot yes'
 T_c_help_ru='❓ Помощь'; T_c_help_en='❓ Help'; T_c_help_uk='❓ Довідка'
+T_c_ailog_ru='🧾 Лог AI-диалогов'; T_c_ailog_en='🧾 AI dialog log'; T_c_ailog_uk='🧾 Лог AI-діалогів'
 T_th_state_ru='Стан'; T_th_state_en='State'; T_th_state_uk='Стан'
 T_th_name_ru='Назва'; T_th_name_en='Name'; T_th_name_uk='Назва'
 T_d_offttl_ru='📍 Не в сети'; T_d_offttl_en='📍 Offline'; T_d_offttl_uk='📍 Не в мережі'
@@ -164,8 +165,11 @@ esc() {
   printf '%s' "$1" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'
 }
 
-esc() {
-  printf '%s' "$1" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'
+alog() {
+  # $1=тег (Q/STEP/RUN/OUT/PEND/CONF/ERR/FINAL) $2=текст; ротація при >128КБ
+  printf '%s [%s] %s\n' "$(date '+%d.%m %H:%M:%S')" "$1" "$(printf '%s' "$2" | tr '\n\t\r' '   ')" >> "$DIR/ailog" 2>/dev/null
+  ASZ=$(wc -c < "$DIR/ailog" 2>/dev/null)
+  [ "${ASZ:-0}" -gt 131072 ] && { tail -n 800 "$DIR/ailog" > "$DIR/.al" && mv "$DIR/.al" "$DIR/ailog"; }
 }
 
 html_prep() {
@@ -378,7 +382,7 @@ typing() {
 
 register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
-  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
+  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
     -H "Content-Type: application/json" \
     -d "$CMDS" | grep -q '"ok":true' || {
@@ -796,6 +800,7 @@ ai_agent() {
     return
   }
   Q=$(printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+  alog Q "user: $Q"
   if [ "$Q" = "off" ]; then
     rm -f "$DIR/aimode"
     reply "$(t ai_exit)"
@@ -821,7 +826,7 @@ $(tail -n 12 "$DIR/aihist")"
     [ $STEP -gt 1 ] && CUR="РЕЗУЛЬТАТ КОМАНДЫ '$PCMD':
 $OUT"
     ai_call "$SYS" "$CUR"
-    [ -z "$ANS" ] && break
+    [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then
@@ -830,6 +835,7 @@ $OUT"
       FSAY=$(printf '%s' "$ANS" | grep -v '^CMD:' | tr '\n' ' ' | head -c 600)
     fi
     PSTRIP=$(printf '%s' "$PCMD" | tr -d ' \t\r\n')
+    alog STEP "step$STEP CMD=[${PCMD:-—}] SAYLEN=${#FSAY} raw:$(printf '%s' "$ANS" | tr '\n\t' '  ' | head -c 240)"
     case "$PSTRIP" in
       ""|"-"|"--"|*"–"*|*"—"*)
         break
@@ -838,12 +844,14 @@ $OUT"
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
       printf '%s' "$PCMD" > "$DIR/aipend"
+      alog PEND "очікує підтвердження: $PCMD"
       reply "$(printf "$(t ai_confirm)" "$(esc "$PCMD")")"
       send_mk "$(t ai_conflbl)" "$AI_CONF_MARKUP"
       return
     fi
     reply "$(printf "$(t cmd_run)" "$(esc "$PCMD")")"
     ai_run "$PCMD"
+    alog OUT "→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
   done
   kill "$TPID" 2>/dev/null
   [ -z "$FSAY" ] && FSAY="$(t ai_noans)"
@@ -1018,6 +1026,13 @@ process_updates() {
           "/ai"*|"/ai")
             touch "$DIR/aimode"
             ai_agent "${TXT#/ai}"
+            ;;
+          "/ailog")
+            if [ -s "$DIR/ailog" ]; then
+              reply_doc "$DIR/ailog" "🧾 AI-лог (останні події)"
+            else
+              reply "🧾 Лог порожній"
+            fi
             ;;
           "/alias "*)
             cmd_alias "$TXT"
