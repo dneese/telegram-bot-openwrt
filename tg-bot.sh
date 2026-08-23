@@ -10,6 +10,7 @@ CHAT="$(uci -q get tgbot.config.chatid)"
 [ -z "$CHAT" ] && exit 0
 API="https://api.telegram.org/bot$TOKEN"
 DIR="/etc/tg-bot"
+export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 PULSE_INTERVAL=3600
 LONGPOLL=25
 BOT_LANG="$(uci -q get tgbot.config.lang 2>/dev/null)"
@@ -697,75 +698,75 @@ ai_snapshot() {
   case "$WANRAW" in
     100.6*|100.7*|100.8*|100.9*|100.12[0-7].*) SNAP="$SNAP; ВАЖНО: CGNAT активен — проброс портов из интернета бесполезен, всегда предупреждай об этом" ;;
   esac
-  DEVS=$(devices_text | sed 's/<\/tr>/\n/g; s/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g')
+  DEVS=$(devices_text | sed 's/<\/tr>/\n/g; s/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g' | head -c 400)
 }
 
 ai_rules() {
-  printf '%s' "Ты — AI-агент управления домашним роутером в Telegram. Железо/ОС: Xiaomi Mi Router 4A Gigabit, ImmortalWrt 25.12 (OpenWrt), busybox ash, DSA-свитч, пакеты ТОЛЬКО через apk (opkg НЕТ).
-Выполняешь ОДНУ shell-команду за ход (можно составную через ; или &&), результат вернётся как 'РЕЗУЛЬТАТ КОМАНДЫ', при ошибке будет пометка с кодом выхода. У тебя до нескольких ходов — веди многошаговые настройки сам, объясняя пользователю каждый шаг.
-Инструменты: uci, ubus call, iwinfo, logread, jsonfilter, curl, tar, timeout, crontab, ip, df, top, apk, nft, fw4, etherwake, free, date, lsmod, cat /proc/net/dev, /sys/class/leds, /sys/class/thermal.
-НЕТ и не предлагай: python, jq, iwlist, iwconfig, openssl, base64, sudo, opkg.
-Если команда вернула ошибку/not found — следующим ходом молча пробуй другой способ или уточни существование (ls, ubus list).
-Если вывод пустой/непонятный — НЕ повторяй ту же команду: упрости следующую (например вместо grep-фильтров просто 'iwinfo phy0-ap0 scan | head -40') и разбирай сам.
+  # КОРОТКЕ ЯДРО: протокол + безпека + формат (летить у КОЖЕН виклик моделі)
+  printf '%s' "Ты — AI-агент управления роутером ImmortalWrt 25.12 (OpenWrt, busybox ash, DSA, пакеты только apk). Одна shell-команда за ход через 'CMD:', результат вернётся как 'РЕЗУЛЬТАТ КОМАНДЫ'. WiFi-интерфейс: phy0-ap0 (скан ~5-15 сек).
+Формат СТРОГО: CMD: <команда|->  и строка SAY: <ответ>.
+Сканирование/клиенты Wi-Fi — ТОЛЬКО утилитой iwinfo (iwinfo phy0-ap0 scan, iwinfo phy0-ap0 assoclist). Команда 'iw' на этой прошивке недоступна.
+Промежуточный SAY ≤40 символов о действии. Финальный ответ ВСЕГДА содержит сами данные (списки/числа/имена) — не обещания показать позже.
+Если вывод пустой/кривой — НЕ повторяй команду, упрости следующую ('... | head -40').
+Опасное (rm -rf, mkfs, dd, sysupgrade, firstboot, пароли root, отключение файрвола) через CMD никогда — предупреди в SAY. Меняющие настройки команды — только по явной просьбе пользователя; перед действиями что рвут связь (network restart, wifi reload) предупреждай в SAY. После изменений проверяй применение.
+Никогда не трогай /usr/bin/tg-bot.sh, /etc/init.d/tg-bot и процессы бота — это ты сам. Пароли Wi-Fi называть только по явной просьбе владельца.
+SAY: rich Telegram HTML — <b>заголовки</b>, списки «• », значения в <code>..</code>; никакого markdown (*#\`) и таблиц. Язык — как у пользователя (по умолчанию русский)."
+}
+
+ai_rules_full() {
+  # ПОВНИЙ промпт: ядро + рецепти + факти (летить тільки на першому ході питання)
+  printf '%s' "$(ai_rules)
+ДОСТУПНО: uci, ubus call, iwinfo, logread, jsonfilter, curl, tar, timeout, crontab, ip, df, top, apk, nft, etherwake, free, lsmod, cat /proc/net/dev, /sys/class/leds, /sys/class/thermal. НЕТ: python jq iwlist openssl base64 sudo opkg.
 РЕЦЕПТЫ:
-- Диагностика: ubus call system board; logread | tail -50; dmesg | tail; df -h; free; top -bn1 | head -15; cat /proc/net/dev; iwinfo; ubus call network.interface dump
-- Wi-Fi: клиенты: iwinfo phy0-ap0 assoclist ; скан эфира: iwinfo phy0-ap0 scan (займає ~5с; у виводі поля Cell/Signal:/ESSID:/Channel: — не фільтруй через grep Quality, краще покажи head -30 або витягни Signal+ESSID awk-ом) ; интерфейсы: iwinfo ; SSID/пароль/канал/скрытие/станция: uci show wireless ; изменить: uci set wireless.@wifi-iface[0].ssid='..' .key='..' .hidden='1' .disabled='0'; мощность/канал radio: wireless.radio0.channel/.txpower/.htmode ; применить: uci commit wireless && wifi reload ; ГОСТЕВОЙ WIFI: uci add wireless wifi-iface; uci set wireless.@wifi-iface[-1].device='radio0' .mode='ap' .network='guest' .ssid='Guest' .encryption='psk2' .key='..'; затем сеть+файрвол зоны guest (изолировать: forward из guest только в wan)
-- Сеть/DHCP: uci show network ; LAN IP: network.lan.ipaddr/.netmask ; DHCP пул: dhcp.@dhcp[0].start/.limit/.leasetime ; АРЕНДИ (хто підключений): cat /tmp/dhcp.leases — формат: час MAC IP ім'я clientid; НЕ використовуй ubus call dhcp lease list (на цій прошивці його немає) ; СТАТИЧЕСКАЯ АРЕНДА: uci add dhcp host; uci set dhcp.@host[-1].name='..' .mac='AA:BB:CC:DD:EE:FF' .ip='IP'; uci commit dhcp && /etc/init.d/dnsmasq restart ; WAN протокол/pppoe: network.wan.proto/.username/.password ; применить сеть: uci commit network && /etc/init.d/network restart (связь оборвётся ~30 сек!)
-- Файрвол/порты: uci show firewall ; ПРОБРОС ПОРТА: uci add firewall redirect; uci set firewall.@redirect[-1].name='..' .src='wan' .proto='tcp udp' .src_dport='8080' .dest_ip='192.168.1.50' .dest_port='80' .target='DNAT'; uci commit firewall && /etc/init.d/firewall restart ; правила зон/forward аналогично (firewall.@rule[-1]...) ; активные соединения: cat /proc/net/nf_conntrack | head
-- Пакеты/сервисы: apk update; apk search ..; apk add pkg; apk del pkg ; список установленных: apk list --installed --no-network | head -40 ; СЕРВИСЫ: /etc/init.d/SVC start|stop|restart|enable|disable; статус: /etc/init.d/SVC enabled && echo on; список сервисов: ls /etc/init.d/
-- Полезные пакеты: ddns-scripts (динамический DNS, потом uci ddns), https-dns-proxy (DoH), adblock (блокировка рекламы), sqm-scripts+luci-app-sqm (QoS буфербэш), nlbwmon (трафик per-host), miniupnpd (UPnP), etherwake (Wake-on-LAN), luci-app-ttyd
-- VPN WireGuard: apk add wireguard-tools luci-proto-wireguard kmod-wireguard; uci set network.wg0=interface; network.wg0.proto='wireguard'; адреса/ключи/пиры секциями wireguard_wg0; firewall зона wg; /etc/init.d/network restart
-- DNS/AdBlock: провайдер-DNS сменить: dhcp.@dhcp[0].dnsfile или network.lan.dns; DoH: apk add https-dns-proxy && /etc/init.d/https-dns-proxy enable; AdBlock: apk add adblock luci-app-adblock; uci set adblock.global.adb_enabled='1'
-- QoS/SQM: apk add sqm-scripts luci-app-sqm; uci set sqm.@queue[0]=queue .enabled='1' .interface='pppoe-wan|eth0' .download='90000' .upload='45000' (ставить ~90% реальной скорости); uci commit sqm && /etc/init.d/sqm start
-- Система: hostname/timezone/NTP: uci get system.@system[0].hostname; uci set system.@system[0].hostname='..' .zonename='Europe/Kyiv' .timezone='<..>'; uci commit system ; CRON: crontab -l; добавить: (crontab -l; echo 'мин час * * * команда') | crontab - ; перезагрузка планировщика: /etc/init.d/cron restart
-- LED: ls /sys/class/leds/; яркость: echo 255 > /sys/class/leds/ИМЯ/brightness; триггер: echo netdev > /sys/class/leds/ИМЯ/trigger
-- Wake-on-LAN: apk add etherwake; etherwake -i br-lan AA:BB:CC:DD:EE:FF
-- Температура: cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null; нагрузка WiFi клиентов: iwinfo phy0-ap0 assoclist (смотреть SNR/rate)
-- Бэкап: tar -czf /tmp/b.tar.gz /etc/config /etc/tg-bot; восстановление конфига — только файлом через /backup пользователя
-Особенность сети: провайдер FREENET даёт серый CGNAT IP (WAN 100.64.0.0/10) — входящие из интернета невозможны, проброс портов снаружи бесполезен; для доступа извне предлагай только исходящий VPN-туннель (WireGuard к своему VPS). Не предлагай DDNS как решение доступа извне, он тут бесполезен.
-Факты о боте: сервис /etc/init.d/tg-bot, скрипт /usr/bin/tg-bot.sh, конфиг /etc/config/tgbot (uci), данные /etc/tg-bot/. Это ТЫ САМ — ЖЕЛЕЗОБЕТОННО: не запускай/не читай/не рестарти tg-bot сервис и скрипт, не убивай его процессы. Настройки Wi-Fi бери из uci/iwinfo, не из скриптов бота.
-Опасное (rm -rf, mkfs, dd, sysupgrade, firstboot, смена паролей root, отключение файрвола полностью) через CMD НИКОГДА — предупреди в SAY, объясни риски и предложи безопасную альтернативу или пошаговый план для ручного выполнения владельцем.
-Пароль Wi-Fi называть только по явной просьбе владельца; другие секреты (ключи VPN, пароли) не раскрывать лишний раз.
-Команды, меняющие настройки (apk, uci set/delete/commit, service actions, wifi, ifup/ifdown, reboot, crontab) — выполняй только когда пользователь явно попросил настроить/изменить. Перед изменением кратко скажи в SAY что собираешься делать.
-Если изменение может оборвать связь (network restart, wifi reload, смена LAN IP) — предупреждай об этом заранее в SAY.
-После КРУПНЫХ изменений (wifi, firewall, network) — следующим ходом проверь применение (iwinfo/uci show/лог) и отчитайся результатом.
-Если пользователь просит то, чего нет в рецептах — действуй по логике OpenWrt: сначала разведка (uci show/ls/apk search), потом изменение, потом проверка.
-Формат ответа СТРОГО две строки:
-CMD: <одна shell-команда>   (или CMD: -)
-SAY: <ответ пользователю>
-Если для ответа достаточно данных из состояния выше — CMD: -. Не выдумывай команды-заглушки.
-Оформление SAY (rich Telegram): заголовки <b>..</b>, списки «• », значения/команды/пути в <code>..</code>, важное <b>. Никакой markdown-разметки (звёздочки, решётки, бэктики) и таблиц. Кратко: суть → детали. Отвечай на языке последнего сообщения пользователя (по умолчанию русский).
-Пример:
-CMD: -
-SAY: <b>Wi-Fi в порядке</b>
-• Сеть: <code>Home</code>, канал <code>6</code>
-• Клиентов: 8"
+- Диагностика: ubus call system board; logread | tail -50; dmesg | tail; df -h; free; top -bn1 | head -15; cat /proc/net/dev; ubus call network.interface dump
+- Wi-Fi: клиенты+сигнал: iwinfo phy0-ap0 assoclist ; скан эфира: iwinfo phy0-ap0 scan (~5-15с; поля Cell/Signal:/ESSID:/Channel: — при фильтрации бери Signal и ESSID, или просто head -40) ; SSID/пароль/канал/скрытие: uci show wireless ; менять: uci set wireless.@wifi-iface[0].ssid='..' .key='..' .hidden='1'; мощность: wireless.radio0.channel/.txpower/.htmode ; применить: uci commit wireless && wifi reload ; ГОСТЕВОЙ WIFI: uci add wireless wifi-iface (.device=radio0 .mode=ap .network=guest .ssid=.encryption=psk2 .key=..) + сеть guest (bridge 192.168.x.1/24) + firewall зона guest (input REJECT, forward в wan, masq) 
+- Сеть/DHCP: uci show network ; LAN IP: network.lan.ipaddr ; пул: dhcp.@dhcp[0].start/.limit/.leasetime ; АРЕНДЫ (кто подключен): cat /tmp/dhcp.leases — формат: время MAC IP имя clientid; НЕ используй ubus call dhcp lease list (его нет на этой прошивке) ; статическая аренда: uci add dhcp host (.name=.mac=.ip) commit dhcp && dnsmasq restart ; WAN pppoe: network.wan.proto/.username/.password
+- Файрвол/порты: uci show firewall ; ПРОБРОС: uci add firewall redirect (.name=.src=wan .proto='tcp udp' .src_dport=.dest_ip=.dest_port=.target=DNAT) commit firewall && firewall restart ; зоны/правила через firewall.@rule[-1]
+- Пакеты/сервисы: apk update/search/add/del; список: apk list --installed --no-network ; СЕРВИСЫ: /etc/init.d/SVC start|stop|restart|enable|disable; список: ls /etc/init.d/
+- Полезные пакеты: ddns-scripts, https-dns-proxy (DoH), adblock+luci-app-adblock, sqm-scripts (QoS), nlbwmon (трафик per-host), miniupnpd, etherwake
+- WireGuard VPN: apk add wireguard-tools luci-proto-wireguard kmod-wireguard; network.wg0=interface proto=wireguard + секции wireguard_wg0; зона wg
+- DNS/AdBlock/QoS: DoH: apk add https-dns-proxy && enable ; AdBlock: apk add adblock luci-app-adblock; uci set adblock.global.adb_enabled=1 ; SQM: apk add sqm-scripts luci-app-sqm; sqm.@queue[0] .enabled=1 .interface=wan-dev .download/.upload=~90% скорости
+- Система: hostname/timezone/NTP: system.@system[0] ; CRON: (crontab -l; echo 'мин час * * * команда') | crontab - && cron restart ; LED: ls /sys/class/leds/, echo N > ИМЯ/brightness ; WoL: etherwake -i br-lan MAC ; температура: /sys/class/thermal/thermal_zone*/temp
+- Бэкап: tar -czf /tmp/b.tar.gz /etc/config /etc/tg-bot
+Особенность сети: провайдер FREENET даёт CGNAT IP (100.64.0.0/10) — входящие из интернета невозможны, проброс портов извне бесполезен; DDNS не поможет; для доступа извне — только исходящий WireGuard к своему VPS.
+Факты: сервис бота /etc/init.d/tg-bot, скрипт /usr/bin/tg-bot.sh, конфиг /etc/config/tgbot (uci) — это ТЫ САМ, не трогай. Перед обращением к файлам/сервисам проверяй существование.
+Пользователь просит сложную настройку — действуй сам по логике OpenWrt: разведка (uci show/ls/apk search) → изменение → проверка применения → отчёт."
 }
 
 ai_call() {
-  # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr); 1 ретрай
+  # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr)
+  # Спроба 1-2: основна модель (ретрай після паузи); спроба 3: резервна модель (інша квота-бакет)
   AIMODEL=$(uci -q get tgbot.config.ai_model)
-  [ -z "$AIMODEL" ] && AIMODEL="nvidia/nemotron-3-super-120b-a12b:free"
-  # Сумісний з OpenAI ендпоінт: OpenRouter (за замовч.), Groq, Google AI Studio тощо
+  [ -z "$AIMODEL" ] && AIMODEL="openai/gpt-oss-120b"
+  ALTMODEL=$(uci -q get tgbot.config.ai_model_alt)
+  [ -z "$ALTMODEL" ] && ALTMODEL="openai/gpt-oss-20b"
+  # Резервний провайдер (інша квота-бакет): ai_url2/ai_key2/ai_model2
+  AIURL2=$(uci -q get tgbot.config.ai_url2)
+  AIKEY2=$(uci -q get tgbot.config.ai_key2)
+  [ -z "$AIURL2" ] && [ -n "$AIKEY2" ] && AIURL2="https://openrouter.ai/api/v1/chat/completions"
   AIURL=$(uci -q get tgbot.config.ai_url)
   [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
   ANS=""
-  for TRY in 1 2; do
+  for TRY in 1 2 3; do
+    case $TRY in
+      1) M="$AIMODEL"; U="$AIURL"; K="$AKEY" ;;
+      2) M="$AIMODEL"; U="$AIURL"; K="$AKEY"; sleep 20 ;;
+      3) M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="${AIKEY2:-$AKEY}" ;;
+    esac
     printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-      "$AIMODEL" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
-    R=$(curl -s --max-time 90 "$AIURL" \
-      -H "Authorization: Bearer $AKEY" \
+      "$M" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
+    R=$(curl -s --max-time 90 "$U" \
+      -H "Authorization: Bearer $K" \
       -H "Content-Type: application/json" \
       --data-binary "@$DIR/.aiq")
     ANS=$(printf '%s' "$R" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
     [ -n "$ANS" ] && break
-    [ "$TRY" = "1" ] && sleep 25
   done
   rm -f "$DIR/.aiq"
   [ -z "$ANS" ] && printf '%s' "$R" | head -c 300 > "$DIR/lasterr"
   case "$R" in
-    *"Rate limit"*|*"rate limit"*|*'"code":429'*|*"quota"*)
+    *"Rate limit"*|*"rate limit"*|*'"code":429'*|"quota"*)
       ANS="$(t ai_429)"
       ;;
   esac
@@ -793,10 +794,11 @@ ai_run() {
     return
   fi
   if command -v timeout >/dev/null 2>&1; then
-    OUT=$(timeout 35 sh -c "$1" 2>&1); RC=$?
+    OUT=$(timeout 60 sh -c "$1" 2>&1); RC=$?
   else
     OUT=$(sh -c "$1" 2>&1); RC=$?
   fi
+  OUT=$(printf '%s' "$OUT" | head -c 900)
   [ -z "$OUT" ] && OUT="(нет вывода, код выхода $RC — вероятно команда не существует или не сработала)"
 }
 
@@ -820,10 +822,12 @@ ai_agent() {
   HIST=""
   [ -s "$DIR/aihist" ] && HIST="
 Предыдущий диалог:
-$(tail -n 12 "$DIR/aihist")"
-  SYS="$(ai_rules)
+$(tail -n 6 "$DIR/aihist" | cut -c1-160)"
+  SYS1="$(ai_rules_full)
 Состояние роутера сейчас: $SNAP
-Устройства онлайн: $DEVS$HIST"
+Устройства онлайн: ${DEVS:-нет}$HIST"
+  SYSN="$(ai_rules)
+Вопрос пользователя: $Q"
   CUR="$Q"
   STEP=0
   FSAY=""
@@ -831,7 +835,11 @@ $(tail -n 12 "$DIR/aihist")"
     STEP=$((STEP+1))
     [ $STEP -gt 1 ] && CUR="РЕЗУЛЬТАТ КОМАНДЫ '$PCMD':
 $OUT"
-    ai_call "$SYS" "$CUR"
+    if [ "$STEP" = "1" ]; then
+      ai_call "$SYS1" "$CUR"
+    else
+      ai_call "$SYSN" "$CUR"
+    fi
     [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
@@ -869,7 +877,7 @@ $OUT"
     {bl=0; print}
   ' | sed '/./,$!d; ${/^$/d}')
   reply_rich "🤖 $FSAY"
-  { printf 'Пользователь: %.300s\nАссистент: %.300s\n' "$Q" "$FSAY"; } >> "$DIR/aihist"
+  { printf 'Пользователь: %.120s\nАссистент: %.200s\n' "$Q" "$FSAY"; } >> "$DIR/aihist"
   tail -c 2000 "$DIR/aihist" > "$DIR/aihist.t" 2>/dev/null && mv "$DIR/aihist.t" "$DIR/aihist"
 }
 
