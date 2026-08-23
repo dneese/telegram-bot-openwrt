@@ -167,7 +167,8 @@ esc() {
 
 alog() {
   # $1=тег (Q/STEP/RUN/OUT/PEND/CONF/ERR/FINAL) $2=текст; ротація при >128КБ
-  printf '%s [%s] %s\n' "$(date '+%d.%m %H:%M:%S')" "$1" "$(printf '%s' "$2" | tr '\n\t\r' '   ')" >> "$DIR/ailog" 2>/dev/null
+  CLEAN=$(printf '%s' "$2" | LC_ALL=C tr '\000-\010\013\014\016-\037\177' '************************' | tr '\n\t\r' '   ')
+  printf '%s [%s] %s\n' "$(date '+%d.%m %H:%M:%S')" "$1" "$CLEAN" >> "$DIR/ailog" 2>/dev/null
   ASZ=$(wc -c < "$DIR/ailog" 2>/dev/null)
   [ "${ASZ:-0}" -gt 131072 ] && { tail -n 800 "$DIR/ailog" > "$DIR/.al" && mv "$DIR/.al" "$DIR/ailog"; }
 }
@@ -709,7 +710,7 @@ ai_rules() {
 РЕЦЕПТЫ:
 - Диагностика: ubus call system board; logread | tail -50; dmesg | tail; df -h; free; top -bn1 | head -15; cat /proc/net/dev; iwinfo; ubus call network.interface dump
 - Wi-Fi: клиенты: iwinfo phy0-ap0 assoclist ; скан эфира: iwinfo phy0-ap0 scan (займає ~5с; у виводі поля Cell/Signal:/ESSID:/Channel: — не фільтруй через grep Quality, краще покажи head -30 або витягни Signal+ESSID awk-ом) ; интерфейсы: iwinfo ; SSID/пароль/канал/скрытие/станция: uci show wireless ; изменить: uci set wireless.@wifi-iface[0].ssid='..' .key='..' .hidden='1' .disabled='0'; мощность/канал radio: wireless.radio0.channel/.txpower/.htmode ; применить: uci commit wireless && wifi reload ; ГОСТЕВОЙ WIFI: uci add wireless wifi-iface; uci set wireless.@wifi-iface[-1].device='radio0' .mode='ap' .network='guest' .ssid='Guest' .encryption='psk2' .key='..'; затем сеть+файрвол зоны guest (изолировать: forward из guest только в wan)
-- Сеть/DHCP: uci show network ; LAN IP: network.lan.ipaddr/.netmask ; DHCP пул: dhcp.@dhcp[0].start/.limit/.leasetime ; СТАТИЧЕСКАЯ АРЕНДА: uci add dhcp host; uci set dhcp.@host[-1].name='..' .mac='AA:BB:CC:DD:EE:FF' .ip='IP'; uci commit dhcp && /etc/init.d/dnsmasq restart ; WAN протокол/pppoe: network.wan.proto/.username/.password ; применить сеть: uci commit network && /etc/init.d/network restart (связь оборвётся ~30 сек!)
+- Сеть/DHCP: uci show network ; LAN IP: network.lan.ipaddr/.netmask ; DHCP пул: dhcp.@dhcp[0].start/.limit/.leasetime ; АРЕНДИ (хто підключений): cat /tmp/dhcp.leases — формат: час MAC IP ім'я clientid; НЕ використовуй ubus call dhcp lease list (на цій прошивці його немає) ; СТАТИЧЕСКАЯ АРЕНДА: uci add dhcp host; uci set dhcp.@host[-1].name='..' .mac='AA:BB:CC:DD:EE:FF' .ip='IP'; uci commit dhcp && /etc/init.d/dnsmasq restart ; WAN протокол/pppoe: network.wan.proto/.username/.password ; применить сеть: uci commit network && /etc/init.d/network restart (связь оборвётся ~30 сек!)
 - Файрвол/порты: uci show firewall ; ПРОБРОС ПОРТА: uci add firewall redirect; uci set firewall.@redirect[-1].name='..' .src='wan' .proto='tcp udp' .src_dport='8080' .dest_ip='192.168.1.50' .dest_port='80' .target='DNAT'; uci commit firewall && /etc/init.d/firewall restart ; правила зон/forward аналогично (firewall.@rule[-1]...) ; активные соединения: cat /proc/net/nf_conntrack | head
 - Пакеты/сервисы: apk update; apk search ..; apk add pkg; apk del pkg ; список установленных: apk list --installed --no-network | head -40 ; СЕРВИСЫ: /etc/init.d/SVC start|stop|restart|enable|disable; статус: /etc/init.d/SVC enabled && echo on; список сервисов: ls /etc/init.d/
 - Полезные пакеты: ddns-scripts (динамический DNS, потом uci ddns), https-dns-proxy (DoH), adblock (блокировка рекламы), sqm-scripts+luci-app-sqm (QoS буфербэш), nlbwmon (трафик per-host), miniupnpd (UPnP), etherwake (Wake-on-LAN), luci-app-ttyd
@@ -772,6 +773,11 @@ ai_call() {
 }
 
 is_mut() {
+  # Тільки для читання — НЕ мутують, підтвердження не потрібне:
+  case "$1" in
+    "uci show"*|"uci -q show"*|"uci get"*|"uci -q get"*|"uci -q "*|"ubus call"*) return 1 ;;
+    "apk info"*|"apk list"*|"apk search"*) return 1 ;;
+  esac
   case "$1" in
     "uci "*|reboot*|service*|/etc/init.d/*|"wifi "*|ifup*|ifdown*|"opkg "*|"apk "*|\
     "rm "*|"mv "*"cp "*"ln "*"mkdir "*"touch "*|passwd*|chmod*|chown*|\
