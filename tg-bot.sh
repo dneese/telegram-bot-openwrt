@@ -723,12 +723,15 @@ ai_call() {
   # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr); 1 ретрай
   AIMODEL=$(uci -q get tgbot.config.ai_model)
   [ -z "$AIMODEL" ] && AIMODEL="nvidia/nemotron-3-super-120b-a12b:free"
+  # Сумісний з OpenAI ендпоінт: OpenRouter (за замовч.), Groq, Google AI Studio тощо
+  AIURL=$(uci -q get tgbot.config.ai_url)
+  [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
   ANS=""
   for TRY in 1 2; do
     printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
       "$AIMODEL" "$(jesc "$1")" "$(jesc "$2")" > "$DIR/.aiq"
-    R=$(curl -s --max-time 90 https://openrouter.ai/api/v1/chat/completions \
+    R=$(curl -s --max-time 90 "$AIURL" \
       -H "Authorization: Bearer $AKEY" \
       -H "Content-Type: application/json" \
       --data-binary "@$DIR/.aiq")

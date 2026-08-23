@@ -37,6 +37,11 @@ return view.extend({
 		o.optional = true;
 		o.placeholder = 'sk-or-v1-...';
 
+		o = s.option(form.Value, 'ai_url', _('AI endpoint URL'),
+			_('OpenAI-сумісний endpoint. За замовчуванням OpenRouter. Інші: https://api.groq.com/openai/v1/chat/completions або https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'));
+		o.optional = true;
+		o.placeholder = 'https://openrouter.ai/api/v1/chat/completions';
+
 		o = s.option(form.ListValue, 'ai_model', _('AI модель'),
 			_('Модель для агента. «Авто» сама выбирает живую бесплатную модель, но может попасться слабая — надёжнее зафиксировать.'));
 		o.value('nvidia/nemotron-3-super-120b-a12b:free', 'NVIDIA Nemotron Super 120B (рекомендуется)');
