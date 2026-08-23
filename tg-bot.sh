@@ -145,6 +145,9 @@ T_th_ch_ru='Канал'; T_th_ch_en='Channel'; T_th_ch_uk='Канал'
 T_th_ssid_ru='SSID'; T_th_ssid_en='SSID'; T_th_ssid_uk='SSID'
 T_d_hdr2_ru='<h3>📶 Устройства · 🟢 %s из %s</h3>'; T_d_hdr2_en='<h3>📶 Devices · 🟢 %s of %s</h3>'; T_d_hdr2_uk='<h3>📶 Пристрої · 🟢 %s із %s</h3>'
 T_d_offttl_ru='<p>📍 Не в сети (%s)</p>'; T_d_offttl_en='<p>📍 Offline (%s)</p>'; T_d_offttl_uk='<p>📍 Не в мережі (%s)</p>'
+T_ai_429_ru='⏳ Добова квота безкоштовних запитів OpenRouter вичерпана (50/день). Спробуйте після скидання ліміту або додайте кредити на openrouter.ai.'
+T_ai_429_en='⏳ OpenRouter free daily quota exhausted (50/day). Try after the reset or add credits at openrouter.ai.'
+T_ai_429_uk='⏳ Добову квоту безкоштовних запитів OpenRouter вичерпано (50/день). Спробуйте після скидання ліміту або додайте кредити на openrouter.ai.'
 
 # send_rich визначено нижче (файловий payload)
 
@@ -735,6 +738,11 @@ ai_call() {
   done
   rm -f "$DIR/.aiq"
   [ -z "$ANS" ] && printf '%s' "$R" | head -c 300 > "$DIR/lasterr"
+  case "$R" in
+    *"Rate limit exceeded"*|*'"code":429'*)
+      ANS="$(t ai_429)"
+      ;;
+  esac
   ANS=$(printf '%s' "$ANS" | sed 's/```[a-zA-Z]*//g; s/```//g')
 }
 
