@@ -737,30 +737,40 @@ ai_call() {
   # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr)
   # Спроба 1-2: основна модель (ретрай після паузи); спроба 3: резервна модель (інша квота-бакет)
   AIMODEL=$(uci -q get tgbot.config.ai_model)
-  [ -z "$AIMODEL" ] && AIMODEL="openai/gpt-oss-120b"
+  [ -z "$AIMODEL" ] && AIMODEL="qwen/qwen3.6-27b"
   ALTMODEL=$(uci -q get tgbot.config.ai_model_alt)
-  [ -z "$ALTMODEL" ] && ALTMODEL="openai/gpt-oss-20b"
+  [ -z "$ALTMODEL" ] && ALTMODEL="nvidia/nemotron-3-super-120b-a12b:free"
   # Резервний провайдер (інша квота-бакет): ai_url2/ai_key2/ai_model2
   AIURL2=$(uci -q get tgbot.config.ai_url2)
   AIKEY2=$(uci -q get tgbot.config.ai_key2)
   [ -z "$AIURL2" ] && [ -n "$AIKEY2" ] && AIURL2="https://openrouter.ai/api/v1/chat/completions"
+  # Fallback-ланцюг Groq (у кожної СВІЙ денний ліміт TPD): великі моделі — для складних випадків
+  GCHAIN=$(uci -q get tgbot.config.ai_groq_chain)
+  [ -z "$GCHAIN" ] && GCHAIN="openai/gpt-oss-20b openai/gpt-oss-120b"
   AIURL=$(uci -q get tgbot.config.ai_url)
   [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
   ANS=""
-  for TRY in 1 2 3; do
+  # Ланцюг: primary (дешева) → Groq-фолбеки (свої TPD) → OpenRouter. Без ретраїв тієї ж моделі.
+  for TRY in primary $GCHAIN or; do
     case $TRY in
-      1) M="$AIMODEL"; U="$AIURL"; K="$AKEY" ;;
-      2) M="$AIMODEL"; U="$AIURL"; K="$AKEY"; sleep 20 ;;
-      3) M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="${AIKEY2:-$AKEY}" ;;
+      primary) M="$AIMODEL"; U="$AIURL"; K="$AKEY" ;;
+      or) [ -z "$AIKEY2" ] && continue; M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="$AIKEY2" ;;
+      *)  M="$TRY"; U="$AIURL"; K="$AKEY" ;;
     esac
-    printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-      "$M" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
+    case $M in
+      *qwen*) EXTRA=',"reasoning_format":"hidden"' ;;
+      *) EXTRA="" ;;
+    esac
+    printf '{"model":"%s","max_tokens":1500%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+      "$M" "$EXTRA" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
     R=$(curl -s --max-time 90 "$U" \
       -H "Authorization: Bearer $K" \
       -H "Content-Type: application/json" \
       --data-binary "@$DIR/.aiq")
     ANS=$(printf '%s' "$R" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
+    TOK=$(printf '%s' "$R" | jsonfilter -e '$.usage.total_tokens' 2>/dev/null)
+    alog MODEL "try=$TRY model=$M ans=${#ANS} tokens=${TOK:-?}"
     [ -n "$ANS" ] && break
   done
   rm -f "$DIR/.aiq"
