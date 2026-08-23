@@ -673,10 +673,11 @@ cmd_qr() {
 }
 
 jesc() {
-  # JSON-екранування: \ -> \\ , " -> \" , перенос -> \n , контрольні символи геть
+  # JSON-екранування: \ -> \\ , " -> \" , таб->пробіл, перенос -> \n , контрольні геть
   printf '%s' "$1" \
     | LC_ALL=C sed 's/\\/\\\\/g; s/"/\\"/g' \
     | LC_ALL=C tr -d '\000-\010\013\014\016-\037\177' \
+    | LC_ALL=C tr '\011' ' ' \
     | tr '\n' '\001' \
     | sed 's/\x01/\\n/g'
 }
@@ -730,7 +731,7 @@ ai_call() {
   ANS=""
   for TRY in 1 2; do
     printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-      "$AIMODEL" "$(jesc "$1")" "$(jesc "$2")" > "$DIR/.aiq"
+      "$AIMODEL" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
     R=$(curl -s --max-time 90 "$AIURL" \
       -H "Authorization: Bearer $AKEY" \
       -H "Content-Type: application/json" \
