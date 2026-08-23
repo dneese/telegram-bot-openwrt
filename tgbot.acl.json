@@ -1,0 +1,14 @@
+{
+    "luci-app-tgbot": {
+        "description": "Grant access to Telegram bot settings",
+        "read": {
+            "uci": ["tgbot"]
+        },
+        "write": {
+            "uci": ["tgbot"],
+            "file": {
+                "/etc/init.d/tg-bot": ["exec"]
+            }
+        }
+    }
+}
