@@ -168,30 +168,40 @@ watch_menu_ui() {
   T=/tmp/tg-w.$$
   awk '{print $3"|"$4"|"$2}' /tmp/dhcp.leases 2>/dev/null | sort -t'|' -k1,1 -u > "$T"
   ROWS=""
+  ROW=""
+  CNT=0
   while IFS='|' read -r IP NM MAC; do
     A=$(alias_of "$IP")
     [ -n "$A" ] && NM="$A"
     [ "$NM" = "*" ] && NM=""
     [ -z "$NM" ] && NM="уст-во.${IP##*.}"
-    NM=$(printf '%.18s' "$NM")
     E=$(esc "$NM" | sed 's/"/\\"/g')
     INW=$(grep -ci "^${MAC}|" "$DIR/presence.cfg" 2>/dev/null)
-    INW=${INW:-0}
-    if [ "$INW" != "0" ]; then
-      ROWS="$ROWS[{\"text\":\"✅ $E\",\"callback_data\":\"wdel:$MAC\"}],"
+    if [ "${INW:-0}" != "0" ]; then
+      BTN="{\"text\":\"✅ $E\",\"callback_data\":\"wdel:$MAC\"}"
     else
-      ROWS="$ROWS[{\"text\":\"$E\",\"callback_data\":\"wadd:$MAC\"}],"
+      BTN="{\"text\":\"$E\",\"callback_data\":\"wadd:$MAC\"}"
     fi
+    if [ $((CNT % 2)) -eq 0 ]; then
+      [ -n "$ROW" ] && { ROWS="$ROWS[$ROW],"; ROW=""; }
+      ROW="$BTN"
+    else
+      ROW="$ROW,$BTN"
+    fi
+    CNT=$((CNT+1))
   done < "$T"
   rm -f "$T"
-  ROWS="$ROWS{\"text\":\"⬅️ Меню\",\"callback_data\":\"mn\"}"
-  ROWS="${ROWS%,},"
+  [ -n "$ROW" ] && ROWS="$ROWS[$ROW],"
+  ROWS="${ROWS}[{\"text\":\"⬅️ Меню\",\"callback_data\":\"mn\"}]"
   WTXT="<b>👀 Слежка за людьми</b>
 Тапните по человеку — бот сообщит о
 приходе 🏠 и уходе 👋 (по MAC телефона)
 
 ✅ — уже под наблюдением (тап = убрать)"
-  WMK="{\"inline_keyboard\":[${ROWS%,}]}"
+  [ "$CNT" = "0" ] && WTXT="<b>👀 Слежка за людьми</b>
+
+Пока никто не найден в DHCP-арендах."
+  WMK="{\"inline_keyboard\":[$ROWS]}"
 }
 
 internet_ok() {
