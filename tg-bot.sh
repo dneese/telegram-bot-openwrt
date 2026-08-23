@@ -70,10 +70,10 @@ T_q_note_ru='\n<i>QR создан через внешний сервис api.qrs
 T_sc_doing_ru='📡 Сканирую (%s)...'; T_sc_doing_en='📡 Scanning (%s)...'; T_sc_doing_uk='📡 Сканую (%s)...'
 T_sc_nosup_ru='❌ Сканирование не поддерживается'; T_sc_nosup_en='❌ Scanning not supported'; T_sc_nosup_uk='❌ Сканування не підтримується'
 T_sc_empty_ru='❌ Пустой результат скана'; T_sc_empty_en='❌ Empty scan result'; T_sc_empty_uk='❌ Порожній результат скану'
-T_sc_hdr_ru='<b>📡 Сети вокруг</b>'; T_sc_hdr_en='<b>📡 Nearby networks</b>'; T_sc_hdr_uk='<b>📡 Мережі навколо</b>'
-T_sc_busy_ru='📻 <b>Занятость каналов 2.4:</b>\n<code>%s</code>'; T_sc_busy_en='📻 <b>2.4GHz channel usage:</b>\n<code>%s</code>'; T_sc_busy_uk='📻 <b>Зайнятість каналів 2.4:</b>\n<code>%s</code>'
+T_sc_hdr_ru='📡 Сети вокруг'; T_sc_hdr_en='📡 Nearby networks'; T_sc_hdr_uk='📡 Мережі навколо'
+T_sc_busy_ru='📻 Занятость каналов 2.4:'; T_sc_busy_en='📻 2.4GHz channel usage:'; T_sc_busy_uk='📻 Зайнятість каналів 2.4:'
 T_sc_adv_ru='💡 Совет: канал <b>%s</b> свободнее всех'; T_sc_adv_en='💡 Tip: channel <b>%s</b> is least busy'; T_sc_adv_uk='💡 Порада: канал <b>%s</b> найвільніший'
-T_sc_top_ru='<b>📍 Топ по сигналу:</b>\n<code>%s</code>'; T_sc_top_en='<b>📍 Top by signal:</b>\n<code>%s</code>'; T_sc_top_uk='<b>📍 Топ за сигналом:</b>\n<code>%s</code>'
+T_sc_top_ru='📍 Топ по сигналу:'; T_sc_top_en='📍 Top by signal:'; T_sc_top_uk='📍 Топ за сигналом:'
 T_sc_total_ru='Всего сетей: <i>%s</i>'; T_sc_total_en='Total networks: <i>%s</i>'; T_sc_total_uk='Всього мереж: <i>%s</i>'
 T_al_fmt_ru='Формат: /alias 192.168.1.105 Ноутбук'; T_al_fmt_en='Format: /alias 192.168.1.105 Laptop'; T_al_fmt_uk='Формат: /alias 192.168.1.105 Ноутбук'
 T_al_delfmt_ru='Формат: /alias del IP'; T_al_delfmt_en='Format: /alias del IP'; T_al_delfmt_uk='Формат: /alias del IP'
@@ -137,6 +137,24 @@ T_c_watch_ru='👀 Слежка за людьми'; T_c_watch_en='👀 Watch peo
 T_c_mon_ru='👁 Мониторинг хостов'; T_c_mon_en='👁 Host monitoring'; T_c_mon_uk='👁 Моніторинг хостів'
 T_c_rb_ru='⚡️ Перезагрузка: /reboot yes'; T_c_rb_en='⚡️ Reboot: /reboot yes'; T_c_rb_uk='⚡️ Перезавантаження: /reboot yes'
 T_c_help_ru='❓ Помощь'; T_c_help_en='❓ Help'; T_c_help_uk='❓ Довідка'
+T_th_state_ru='Стан'; T_th_state_en='State'; T_th_state_uk='Стан'
+T_th_name_ru='Назва'; T_th_name_en='Name'; T_th_name_uk='Назва'
+T_d_offttl_ru='📍 Не в сети'; T_d_offttl_en='📍 Offline'; T_d_offttl_uk='📍 Не в мережі'
+T_th_sig_ru='Сигнал'; T_th_sig_en='Signal'; T_th_sig_uk='Сигнал'
+T_th_ch_ru='Канал'; T_th_ch_en='Channel'; T_th_ch_uk='Канал'
+T_th_ssid_ru='SSID'; T_th_ssid_en='SSID'; T_th_ssid_uk='SSID'
+T_d_hdr2_ru='<h3>📶 Устройства · 🟢 %s из %s</h3>'; T_d_hdr2_en='<h3>📶 Devices · 🟢 %s of %s</h3>'; T_d_hdr2_uk='<h3>📶 Пристрої · 🟢 %s із %s</h3>'
+T_d_offttl_ru='<p>📍 Не в сети (%s)</p>'; T_d_offttl_en='<p>📍 Offline (%s)</p>'; T_d_offttl_uk='<p>📍 Не в мережі (%s)</p>'
+
+# Відправка Rich Message (справжні таблиці, h1-h6, списки, details)
+send_rich() {
+  R=$(curl -s --max-time 15 "$API/sendRichMessage" \
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"rich_message\":{\"html\":\"$(jesc "$1")\"}}")
+  echo "$R" | grep -q '"ok":true' && return 0
+  echo "$R" | head -c 200 > "$DIR/lasterr"
+  return 1
+}
 
 mk_markups() {
 MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
@@ -233,9 +251,8 @@ send_long() {
       TXT=$(printf '%s' "$TXT" | tail -c +"$((OFF+1))")
     fi
     R=$(curl -s --max-time 15 "$API/sendMessage" \
-      -d "chat_id=$CHAT" -d "parse_mode=HTML" \
-      ${MK:+-d "reply_markup=$MK"} \
-      --data-urlencode "text=$CUR")
+      -H "Content-Type: application/json" \
+      -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$CUR")\"${MK:+,\"reply_markup\":$MK}}")
     echo "$R" | grep -q '"ok":true' || RC=1
   done
   return $RC
@@ -265,7 +282,8 @@ reply_doc() {
 
 reply_photo_url() {
   curl -s --max-time 30 "$API/sendPhoto" \
-    -F "chat_id=$CHAT" -F "photo=$1" --form-string "caption=$2" \
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"photo\":\"$1\",\"parse_mode\":\"HTML\",\"caption\":\"$(jesc "$2")\"}" \
     | grep -q '"ok":true' || echo "sendPhoto fail: $1" > "$DIR/lasterr"
 }
 
@@ -278,25 +296,22 @@ reply_photo_file() {
 
 send_menu() {
   curl -s --max-time 15 "$API/sendMessage" \
-    -d "chat_id=$CHAT" -d "parse_mode=HTML" \
-    --data-urlencode "text=${1:-🤖}" \
-    -d "reply_markup=$MENU_MARKUP" >/dev/null
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "${1:-🤖}")\",\"reply_markup\":$MENU_MARKUP}" >/dev/null
 }
 
 send_mk() {
   # $1=текст $2=reply_markup JSON
   curl -s --max-time 15 "$API/sendMessage" \
-    -d "chat_id=$CHAT" -d "parse_mode=HTML" \
-    --data-urlencode "text=$1" \
-    ${2:+-d "reply_markup=$2"} >/dev/null
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\"${2:+,\"reply_markup\":$2}}" >/dev/null
 }
 
 edit_msg() {
   ET=$(printf '%s' "$2" | head -c 4000)
   curl -s --max-time 15 "$API/editMessageText" \
-    -d "chat_id=$CHAT" -d "message_id=$1" -d "parse_mode=HTML" \
-    ${3:+-d "reply_markup=$3"} \
-    --data-urlencode "text=$ET" >/dev/null
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"message_id\":$1,\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$ET")\"${3:+,\"reply_markup\":$3}}" >/dev/null
 }
 
 answer_cb() {
@@ -326,9 +341,8 @@ register_commands() {
 
 pulse_send() {
   curl -s --max-time 15 "$API/sendMessage" \
-    -d "chat_id=$CHAT" -d "parse_mode=HTML" \
-    --data-urlencode "text=$1" \
-    -d "reply_markup=$MENU_MARKUP" \
+    -H "Content-Type: application/json" \
+    -d "{\"chat_id\":\"$CHAT\",\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\",\"reply_markup\":$MENU_MARKUP}" \
     | grep -o '"message_id":[0-9]*' | grep -o '[0-9]*' > "$DIR/msgid"
 }
 
@@ -337,8 +351,8 @@ pulse_edit_or_send() {
   [ -f "$DIR/msgid" ] && MSGID=$(cat "$DIR/msgid")
   if [ -n "$MSGID" ]; then
     R=$(curl -s --max-time 15 "$API/editMessageText" \
-      -d "chat_id=$CHAT" -d "message_id=$MSGID" -d "parse_mode=HTML" \
-      -d "reply_markup=$MENU_MARKUP" --data-urlencode "text=$1")
+      -H "Content-Type: application/json" \
+      -d "{\"chat_id\":\"$CHAT\",\"message_id\":$MSGID,\"parse_mode\":\"HTML\",\"text\":\"$(jesc "$1")\",\"reply_markup\":$MENU_MARKUP}")
     echo "$R" | grep -q '"ok":true' && return
   fi
   pulse_send "$1"
@@ -458,19 +472,20 @@ devices_text() {
     [ -n "$A" ] && NAME="$A"
     [ "$NAME" = "*" ] && NAME=""
     [ -z "$NAME" ] && NAME="$(t d_name)-${IP##*.}"
-    [ ${#NAME} -gt 40 ] && NAME=$(printf '%s' "$NAME" | head -c 40)
+    [ ${#NAME} -gt 30 ] && NAME=$(printf '%s' "$NAME" | head -c 30)
     NAME=$(esc "$NAME")
     if grep -qxF "$IP" "$AT"; then
       ONLINE=$((ONLINE+1))
-      ON="$ON🟢 <b>$NAME</b> · $IP\n"
+      ON="$ON<tr><td>$IP</td><td align=\"center\">🟢</td><td><b>$NAME</b></td></tr>"
     else
-      OFF="$OFF⚪️ $NAME · $IP\n"
+      OFF="$OFF<tr><td>$IP</td><td align=\"center\">⚪️</td><td>$NAME</td></tr>"
     fi
   done < "$T"
 
-  printf "$(t d_hdr)" "$ONLINE" "$TOTAL"
-  [ -n "$ON" ] && printf "$(t d_on)" "$(printf '%b' "$ON")"
-  [ -n "$OFF" ] && printf "$(t d_off)" "$(printf '%b' "$OFF")"
+  printf "$(t d_hdr2)" "$ONLINE" "$TOTAL"
+  TH="<tr><th>IP</th><th>$(t th_state)</th><th>$(t th_name)</th></tr>"
+  [ -n "$ON" ] && printf '<table bordered striped>%s%s</table>' "$TH" "$ON"
+  [ -n "$OFF" ] && { printf "$(t d_offttl)" "$((TOTAL-ONLINE))"; printf '<table bordered striped>%s%s</table>' "$TH" "$OFF"; }
   rm -f "$T" "$AT"
 }
 
@@ -611,12 +626,13 @@ cmd_qr() {
 }
 
 jesc() {
-  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n\r\t' '   '
+  # JSON-екранування зі збереженням переносів рядків (\n)
+  printf '%s' "$1" | awk '{o=$0; gsub(/\\/,"\\\\",o); gsub(/"/,"\\\"",o); gsub(/\r/,"",o); printf "%s%s", sep, o; sep="\\n"}'
 }
 
 ai_snapshot() {
   SNAP="аптайм: $(uptime_short); RAM: $(free | awk '/Mem:/ {printf "%d/%d MB", $3/1024, $2/1024}'); интернет: $(internet_ok); load: $(cut -d' ' -f1 /proc/loadavg); WAN IP: $(ip addr show wan 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1)"
-  DEVS=$(devices_text | sed 's/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g')
+  DEVS=$(devices_text | sed 's/<\/tr>/\n/g; s/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g')
 }
 
 ai_rules() {
@@ -802,17 +818,19 @@ cmd_scan() {
     if [ "$N" -lt "$MIN" ]; then MIN=$N; BEST=$CAND; fi
   done
 
-  TOP=$(head -10 "$T" | awk -F'|' '{printf "%s dBm  ch%-3s %s\n", $2, $1, substr($3,1,24)}')
+  TOPROWS=$(head -10 "$T" | awk -F'|' '{printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, substr($3,1,24)}')
   NALL=$(wc -l < "$T")
-  MSG="$(t sc_hdr)
+  MSG="<h3>$(t sc_hdr)</h3>
 
-$(printf "$(t sc_busy)" "$C24")
-$(printf "$(t sc_adv)" "$BEST")
+<p>$(t sc_busy)</p>
+<code>$C24</code>
+<p>$(printf "$(t sc_adv)" "$BEST")</p>
 
-$(printf "$(t sc_top)" "$TOP")
+<p>$(t sc_top)</p>
+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$TOPROWS</table>
 
-$(printf "$(t sc_total)" "$NALL")"
-  reply "$MSG"
+<p>$(printf "$(t sc_total)" "$NALL")</p>"
+  send_rich "$MSG" || reply "$MSG"
   rm -f "$T"
 }
 
@@ -902,7 +920,8 @@ process_updates() {
             reply "$(status_text)"
             ;;
           "/devices")
-            reply "$(devices_text)"
+            OUTD="$(devices_text)"
+            send_rich "$OUTD" || reply "$OUTD"
             ;;
           "/wan")
             reply "$(t wan_run)"
@@ -977,7 +996,8 @@ process_updates() {
             reply "$(status_text)"
             ;;
           dv)
-            reply "$(devices_text)"
+            OUTD="$(devices_text)"
+            send_rich "$OUTD" || reply "$OUTD"
             ;;
           wan)
             reply "$(t wan_run)"
@@ -1096,10 +1116,20 @@ check_pulse() {
 # --- регистрация команд в меню Telegram (кнопка ☰) ---
 mk_markups
 register_commands
+LASTLANG="$BOT_LANG"
 
 # --- главный цикл демона ---
 NEXTCHK=0
 while true; do
+  CL="$(uci -q get tgbot.config.lang 2>/dev/null)"
+  [ -z "$CL" ] && CL="${TGBOT_LANG:-ru}"
+  case "$CL" in en|uk|ru) ;; *) CL=ru ;; esac
+  if [ "$CL" != "$LASTLANG" ]; then
+    BOT_LANG="$CL"
+    LASTLANG="$CL"
+    mk_markups
+    register_commands
+  fi
   process_updates
   check_pulse
   NOW=$(date +%s)
