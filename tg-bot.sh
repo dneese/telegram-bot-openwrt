@@ -235,9 +235,43 @@ _req() {
   curl -s --max-time 15 "$API/$1" -H "Content-Type: application/json" --data-binary "@$2"
 }
 
+utf8fix() {
+  # Прибирає контрольні символи і НЕПОВНІ UTF-8 послідовності (після байтових зрізів).
+  # Валідний текст (у т.ч. кирилиця/емодзі) проходить без змін.
+  printf '%s' "$1" | LC_ALL=C awk 'BEGIN{
+    L=""
+    for(i=1;i<=255;i++) L=L sprintf("%c",i)
+  }
+  {
+    o=$0; out=""; n=length(o)
+    for(i=1;i<=n;i++){
+      b=substr(o,i,1)
+      v=index(L,b)
+      if(v==0){ next }                     # NUL
+      if(v<32 && v!=10){ continue }        # контрольні, крім \n
+      if(v==127){ continue }
+      if(v>=128 && v<=191){ continue }     # сирітський continuation-байт
+      if(v>=240){ need=3 }
+      else if(v>=224){ need=2 }
+      else if(v>=194){ need=1 }
+      else { out=out b; continue }         # ASCII
+      if(n-i<need){ break }                # обірваний хвіст
+      ok=1
+      for(j=1;j<=need;j++){
+        cv=index(L,substr(o,i+j,1))
+        if(cv<128||cv>191){ ok=0; break }
+      }
+      if(!ok){ i+=need; continue }         # битий лідер — пропустити
+      out=out substr(o,i,need+1)
+      i+=need
+    }
+    print out
+  }'
+}
+
 send_rich() {
   # $1 = Rich HTML через sendRichMessage (таблиці, h1-h6, списки, details)
-  printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$1")" > "$DIR/.rq"
+  printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$(utf8fix "$1")")" > "$DIR/.rq"
   R=$(_req sendRichMessage "$DIR/.rq")
   echo "$R" | grep -q '"ok":true' && return 0
   echo "$R" | head -c 200 > "$DIR/lasterr"
@@ -245,8 +279,8 @@ send_rich() {
 }
 
 send_long() {
-  # $1=готовый HTML $2=markup(опц.); шлёт частями <=3800 байт по границам строк (лимит TG 4096)
-  RC=0; TXT="$1"; MK="${2:-}"
+  # $1=готовый HTML $2=markup(опц.); шлёт частинами <=3800 байт по границам строк (лимит TG 4096)
+  RC=0; TXT="$(utf8fix "$1")"; MK="${2:-}"
   while [ -n "$TXT" ]; do
     if [ ${#TXT} -le 3800 ]; then CUR="$TXT"; TXT=""
     else
@@ -636,8 +670,12 @@ cmd_qr() {
 }
 
 jesc() {
-  # JSON-екранування зі збереженням переносів рядків (\n)
-  printf '%s' "$1" | awk '{o=$0; gsub(/\\/,"\\\\",o); gsub(/"/,"\\\"",o); gsub(/\r/,"",o); printf "%s%s", sep, o; sep="\\n"}'
+  # JSON-екранування: \ -> \\ , " -> \" , перенос -> \n , контрольні символи геть
+  printf '%s' "$1" \
+    | LC_ALL=C sed 's/\\/\\\\/g; s/"/\\"/g' \
+    | LC_ALL=C tr -d '\000-\010\013\014\016-\037\177' \
+    | tr '\n' '\001' \
+    | sed 's/\x01/\\n/g'
 }
 
 ai_snapshot() {
@@ -685,16 +723,17 @@ ai_call() {
   AKEY=$(uci -q get tgbot.config.ai_key)
   ANS=""
   for TRY in 1 2; do
-    BODY=$(printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-      "$AIMODEL" "$(jesc "$1")" "$(jesc "$2")")
+    printf '{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+      "$AIMODEL" "$(jesc "$1")" "$(jesc "$2")" > "$DIR/.aiq"
     R=$(curl -s --max-time 90 https://openrouter.ai/api/v1/chat/completions \
       -H "Authorization: Bearer $AKEY" \
       -H "Content-Type: application/json" \
-      -d "$BODY")
+      --data-binary "@$DIR/.aiq")
     ANS=$(printf '%s' "$R" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
     [ -n "$ANS" ] && break
     [ "$TRY" = "1" ] && sleep 3
   done
+  rm -f "$DIR/.aiq"
   [ -z "$ANS" ] && printf '%s' "$R" | head -c 300 > "$DIR/lasterr"
   ANS=$(printf '%s' "$ANS" | sed 's/```[a-zA-Z]*//g; s/```//g')
 }
