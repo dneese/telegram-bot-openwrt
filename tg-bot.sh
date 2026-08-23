@@ -709,6 +709,7 @@ ai_rules() {
 Промежуточный SAY ≤40 символов о действии. Финальный ответ ВСЕГДА содержит сами данные (списки/числа/имена) — не обещания показать позже.
 Если вывод пустой/кривой — НЕ повторяй команду, упрости следующую ('... | head -40').
 Опасное (rm -rf, mkfs, dd, sysupgrade, firstboot, пароли root, отключение файрвола) через CMD никогда — предупреди в SAY. Меняющие настройки команды — только по явной просьбе пользователя; перед действиями что рвут связь (network restart, wifi reload) предупреждай в SAY. После изменений проверяй применение.
+ПРАВИЛО UCI: uci set/add БЕЗ uci commit НЕ ПРИМЕНЯЕТСЯ. Любая команда изменения настроек обязана включать commit того же конфига: 'uci set ... && uci commit network'. Не сообщай об успехе, пока не проверишь фактическое значение обратной командой (uci get / iwinfo).
 Никогда не трогай /usr/bin/tg-bot.sh, /etc/init.d/tg-bot и процессы бота — это ты сам. Пароли Wi-Fi называть только по явной просьбе владельца.
 SAY: rich Telegram HTML — <b>заголовки</b>, списки «• », значения в <code>..</code>; никакого markdown (*#\`) и таблиц. Язык — как у пользователя (по умолчанию русский)."
 }
@@ -746,7 +747,7 @@ ai_call() {
   [ -z "$AIURL2" ] && [ -n "$AIKEY2" ] && AIURL2="https://openrouter.ai/api/v1/chat/completions"
   # Fallback-ланцюг Groq (у кожної СВІЙ денний ліміт TPD): великі моделі — для складних випадків
   GCHAIN=$(uci -q get tgbot.config.ai_groq_chain)
-  [ -z "$GCHAIN" ] && GCHAIN="openai/gpt-oss-20b openai/gpt-oss-120b"
+  [ -z "$GCHAIN" ] && GCHAIN="qwen/qwen3.6-27b openai/gpt-oss-120b"
   AIURL=$(uci -q get tgbot.config.ai_url)
   [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
@@ -1142,7 +1143,9 @@ process_updates() {
             C=$(cat "$DIR/aipend" 2>/dev/null)
             rm -f "$DIR/aipend"
             if [ -n "$C" ]; then
+              alog CONF "підтверджено: $C"
               ai_run "$C"
+              alog OUT "CONF→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP"
             else
               edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP"
@@ -1150,6 +1153,7 @@ process_updates() {
             ;;
           aic0)
             rm -f "$DIR/aipend"
+            alog CONF "скасовано користувачем"
             edit_msg "$MSGID_CB" "$(t ai_cancelled)" "$MENU_MARKUP"
             ;;
           qr)
