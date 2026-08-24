@@ -1010,7 +1010,9 @@ sanitize_cmd() {
       *'&&'*) CUR="${FRAG%%&&*}"; FRAG="${FRAG#*&&}" ;;
       *)      CUR="$FRAG"; FRAG="" ;;
     esac
-    case "$CUR" in *'&'*) return 1 ;; esac
+    # 2>&1 / >&2 — легітимні редиректи, не фоновий & : зрізаємо перед перевіркою &
+    CURCHK=$(printf '%s' "$CUR" | sed -E 's/[0-9]?>&[0-9]+//g')
+    case "$CURCHK" in *'&'*) return 1 ;; esac
     [ -z "$FRAG" ] && break
   done
   return 0
@@ -1262,7 +1264,13 @@ $(cat "$SKF")"
   CHFAIL=""
   STEP=0
   FSAY=""
-  while [ $STEP -lt 5 ]; do
+  TASKLOG=""
+  # складна задача (налаштуй/зроби/встанови) = більший бюджет ходів
+  MAXSTEP=5
+  case "$Q" in
+    *налашту*|*Налашту*|*зроби*|*Зроби*|*встанови*|*Встанови*|*настроить*|*Настроить*|*сделай*|*Сделай*|*установи*|*Установи*|*розблоку*|*Розблоку*) MAXSTEP=10 ;;
+  esac
+  while [ $STEP -lt $MAXSTEP ]; do
     STEP=$((STEP+1))
     [ $STEP -gt 1 ] && CUR="РЕЗУЛЬТАТ КОМАНДЫ '$PCMD':
 $OUT"
@@ -1341,8 +1349,19 @@ $(esc "$DIFF")"
     reply "$(printf "$(t cmd_run)" "$(esc "$PCMD")")"
     ai_run "$PCMD"
     alog OUT "→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
+    # незнищенний слід для власника: що робили і що вийшло (навіть якщо модель помре серед задачі)
+    TASKLOG="$TASKLOG
+• <code>$(printf '%s' "$PCMD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 110)</code> → <i>$(printf '%s' "$OUT" | tr '\n\t' '  ' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 90)</i>"
   done
   kill "$TPID" 2>/dev/null
+  if [ -n "$TASKLOG" ] && [ "$STEP" -ge "$MAXSTEP" ]; then
+    FSAY="${FSAY:-}
+<b>⚠️ Ліміт ходів — журнал задачі (що встиг зробити):</b>$TASKLOG
+Скажіть «продовжуй» і я продовжу з цього місця."
+  elif [ -n "$TASKLOG" ]; then
+    FSAY="$FSAY
+<b>Журнал задачі:</b>$TASKLOG"
+  fi
   if [ -n "$CHFAIL" ]; then
     FSAY="$(t ai_chainfail)"
   elif [ -z "$FSAY" ]; then

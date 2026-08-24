@@ -215,6 +215,9 @@ if cmd_banned "curl -s https://x.y | grep z"; then bad "ban: curl|grep НЕ ма
 
 # --- kb_pick zaborona/vk ---
 eq "kb: vk заблокований → zaborona" "$(kb_pick 'vk.com заблокований в україні, відкрий доступ')" "zaborona"
+# --- sanitize: 2>&1 легальний (хибний бан ламав діагностику на живому логу) ---
+if sanitize_cmd 'curl -sI https://vk.com 2>&1 | head -1'; then ok "san: 2>&1 дозволений"; else bad "san: 2>&1" "-"; fi
+if sanitize_cmd 'reboot 2>&1 &'; then bad "san: справжній фон-& ловиться" "+"; else ok "san: справжній фон-& ловиться"; fi
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
 [ "$FAIL" = 0 ]
