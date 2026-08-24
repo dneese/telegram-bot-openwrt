@@ -69,7 +69,8 @@ cp "$SRC/tg-bot.sh" $PREFIX/tg-bot.sh && chmod +x $PREFIX/tg-bot.sh
 [ -f "$SRC/tg-bot.init" ] && cp "$SRC/tg-bot.init" /etc/init.d/tg-bot && chmod +x /etc/init.d/tg-bot
 [ -f "$SRC/tgbot.menu.json" ] && { mkdir -p /usr/share/luci/menu.d; cp "$SRC/tgbot.menu.json" /usr/share/luci/menu.d/luci-app-tgbot.json; }
 [ -f "$SRC/tgbot.acl.json" ] && { mkdir -p /usr/share/rpcd/acl.d; cp "$SRC/tgbot.acl.json" /usr/share/rpcd/acl.d/luci-app-tgbot.json; }
-[ -f "$SRC/tgbot.settings.js" ] && { mkdir -p /www/luci-static/resources/view/tgbot; cp "$SRC/tgbot.settings.js" /www/luci-static/resources/view/tgbot/settings.js; }
+[ -f "$SRC/tgbot.settings.js" ] && { mkdir -p /www/luci-static/resources/view/tgbot; cp "$SRC/tgbot.settings.js" /www/luci-static/resources/view/tgbot/settings.js && chmod 644 /www/luci-static/resources/view/tgbot/settings.js; }
+chmod 644 /usr/share/luci/menu.d/luci-app-tgbot.json /usr/share/rpcd/acl.d/luci-app-tgbot.json 2>/dev/null
 
 # --- промпти і скіли ---
 mkdir -p $DIR/ai/skills
