@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -150,6 +150,16 @@ eq "unglue: теги code" "$(unglue_cmd 'Текст? <code>CMD: -</code>')" "$(
 eq "unglue: некритий тег" "$(unglue_cmd 'Текст?  <code>CMD: -</code')" "$(printf 'Текст?\nCMD: -')"
 eq "unglue: нормальний 2-рядковий недоторканий" "$(unglue_cmd "$(printf 'SAY: все ок\nCMD: -')")" "$(printf 'SAY: все ок\nCMD: -')"
 eq "unglue: без хвоста недоторкано" "$(unglue_cmd 'просто текст відповіді')" 'просто текст відповіді'
+
+# --- fast_intent (локальний безкоштовний класифікатор) ---
+eq "fint: пристроїв у мережі" "$(fast_intent 'скільки пристроїв у мережі?')" "devices"
+eq "fint: хто підключений" "$(fast_intent 'хто підключений до wifi')" "devices"
+eq "fint: скан ефіру" "$(fast_intent 'скануй мережу')" "wifi_scan"
+eq "fint: сигнал сусідів" "$(fast_intent 'які мережі мають найсильніший сигнал?')" "wifi_scan"
+eq "fint: температура" "$(fast_intent 'яка температура CPU?')" ""
+eq "fint: аптайм" "$(fast_intent 'покажи аптайм роутера')" "sys_info"
+if fast_intent 'зміни DNS на 1.1.1.1' >/dev/null; then bad "fint: DNS не матчиться" "+"; else ok "fint: DNS не матчиться"; fi
+if fast_intent 'що таке /mon' >/dev/null; then bad "fint: питання про команду не матчиться" "+"; else ok "fint: питання про команду не матчиться"; fi
 
 # --- skill_pick (keyword→скіл; порядок: wifi,vpn,dns,firewall,services,netdhcp,misc) ---
 eq "skill: встанови nlbwmon → services" "$(skill_pick 'встанови nlbwmon')" "$DIR/ai/skills/services.md"

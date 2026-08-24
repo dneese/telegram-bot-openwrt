@@ -870,6 +870,18 @@ model_list() {
     "nvidia/nemotron-3-super-120b-a12b:free"
 }
 
+fast_intent() {
+  # $1=Q -> ACTION | "" (нема впевненого збігу). Безкоштовний локальний класифікатор — AI не викликається.
+  # Порядок важливий: devices раніше scan (бо «пристроїв у мережі»). Кирилиця — парні патерни (tr байтовий).
+  case "$1" in
+    *пристрій*|*Пристрій*|*пристрої*|*Пристрої*|*девайс*|*Девайс*|*"хто в мереж"*|*"хто підключен"*|*аренд*) echo devices; return ;;
+    *"скан"*|*"Скан"*|*навколо*|*сусід*|*"сильніший сигнал"*|*"найкращий сигнал"*) echo wifi_scan; return ;;
+    *аптайм*|*Аптайм*|*uptime*|*"стан роутер"*|"Стан роутер"*|"як роутер"*|*навантажен*) echo sys_info; return ;;
+    *"що ти вмієш"*|*"Що ти вмієш"*|*"що вмієш"*|"команди бота"*|*допомога*) echo help; return ;;
+  esac
+  return 1
+}
+
 ai_intent() {
   # $1=Q -> ACTION (sys_info|devices|wifi_scan|help|unknown); дешевий виклик ~250 токенів
   ITP=$(ai_file intent.txt)
@@ -879,8 +891,9 @@ ai_intent() {
   IU=$(uci -q get tgbot.config.ai_url)
   [ -z "$IU" ] && IU="https://openrouter.ai/api/v1/chat/completions"
   IK=$(uci -q get tgbot.config.ai_key)
-  printf '{"model":"%s","max_tokens":120%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-    "$IM" "$(case $IM in *qwen*) echo ',"reasoning_format":"hidden"' ;; esac)" \
+  # qwen навіть з hidden палить ~400+ токенів reasoning — бюджет 300 інакше дає порожній content
+  printf '{"model":"%s","max_tokens":300%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+    "$IM" "$(case $IM in *qwen*) echo ',"reasoning_format":"hidden"' ;; *gpt-oss*) echo ',"reasoning_effort":"low"' ;; esac)" \
     "$(jesc "$ITP")" "$(jesc "$(utf8fix "$1")")" > "$DIR/.iq"
   IR=$(curl -s --max-time 30 "$IU" \
     -H "Authorization: Bearer $IK" \
@@ -1066,7 +1079,8 @@ ai_agent() {
   case "$Q" in
     "/ai"|"/ai "*|"ai"|""|"off") ;;   # командні/порожні — без класифікатора
     *)
-      ACT=$(ai_intent "$Q")
+      ACT=$(fast_intent "$Q")
+      [ -z "$ACT" ] && ACT=$(ai_intent "$Q")
       alog INTENT "action=$ACT"
       case "$ACT" in
         sys_info)
