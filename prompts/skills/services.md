@@ -27,3 +27,6 @@ uci set sqm.@queue[0]=queue; uci set sqm.@queue[0].enabled='1' .interface='$(ip 
 ## nlbwmon — хто скільки з'їв
 apk add nlbwmon luci-app-nlbwmon && /etc/init.d/nlbwmon start
 Дані: nlbwctl -c csv 2>/dev/null | head -20 (перші дні копляться)
+
+## SQM-інтерфейс
+Вішай SQM на інтерфейс де ВИНИКАЄ буферблоат: pppoe-wan якщо PPPoE, eth0/wan якщо DHCP. Перевір: ip route | grep default (пристрій у кінці рядка).

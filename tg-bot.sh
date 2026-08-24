@@ -34,6 +34,7 @@ T_btn_help_ru='❓ Помощь'; T_btn_help_en='❓ Help'; T_btn_help_uk='❓ �
 T_rbyes_ru='✅ Да, перезагрузить!'; T_rbyes_en='✅ Yes, reboot!'; T_rbyes_uk='✅ Так, перезавантажити!'
 T_rbno_ru='❌ Отмена'; T_rbno_en='❌ Cancel'; T_rbno_uk='❌ Скасувати'
 T_aic1_ru='✅ Выполнить'; T_aic1_en='✅ Execute'; T_aic1_uk='✅ Виконати'
+T_aic2_ru='🔒 Со страховкой'; T_aic2_en='🔒 Safety-net run'; T_aic2_uk='🔒 Зі страховкою'
 T_aic0_ru='❌ Отмена'; T_aic0_en='❌ Cancel'; T_aic0_uk='❌ Скасувати'
 T_aioff_ru='⛔️ Выйти из AI'; T_aioff_en='⛔️ Exit AI'; T_aioff_uk='⛔️ Вийти з AI'
 T_mnback_ru='⬅️ Меню'; T_mnback_en='⬅️ Menu'; T_mnback_uk='⬅️ Меню'
@@ -157,6 +158,7 @@ mk_markups() {
 MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
 CONFIRM_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbyes)\",\"callback_data\":\"rbyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbno\"}]]}"
 AI_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
+AI_CONF2_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic2)\",\"callback_data\":\"aic2\"}],[{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aioff)\",\"callback_data\":\"aioff\"}]]}"
 }
 
@@ -703,6 +705,38 @@ ai_snapshot() {
   DEVS=$(devices_text | sed 's/<\/tr>/\n/g; s/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g' | head -c 400)
 }
 
+devices_kb() {
+  # Кнопки швидкої дії для онлайн-хостів (статичний IP), ≤8 штук
+  AT=/tmp/kba.$$
+  awk '$3=="0x2"{print $1}' /proc/net/arp > "$AT"
+  KB=""; ROW=""; N=0
+  [ -s /tmp/dhcp.leases ] || { rm -f "$AT"; return 1; }
+  while read -r TS MAC IP NAME CID; do
+    grep -qxF "$IP" "$AT" || continue
+    N=$((N+1)); [ $N -gt 8 ] && break
+    BTN="{\"text\":\"⚙️ $IP\",\"callback_data\":\"st:$MAC|$IP\"}"
+    if [ $((N % 4)) = 1 ]; then
+      [ -n "$ROW" ] && KB="$KB[$ROW],"
+      ROW="$BTN"
+    else
+      ROW="$ROW,$BTN"
+    fi
+  done < /tmp/dhcp.leases
+  rm -f "$AT"
+  [ -n "$ROW" ] && KB="$KB[$ROW]"
+  [ -z "$KB" ] && return 1
+  printf '{"inline_keyboard":[%s]}' "$KB"
+}
+
+st_lease_add() {
+  # $1=MAC $2=IP → статична аренда + dnsmasq restart
+  uci add dhcp host >/dev/null 2>&1
+  uci set dhcp.@host[-1].mac="$1" >/dev/null
+  uci set dhcp.@host[-1].ip="$2" >/dev/null
+  uci set dhcp.@host[-1].name="static-${2##*.}" >/dev/null
+  uci commit dhcp && /etc/init.d/dnsmasq restart >/dev/null 2>&1
+}
+
 # --- зовнішні промпти та скіли: файли в $DIR/ai/ мають пріоритет над вбудованими ---
 # Правки core.txt / recipes.txt / skills/*.md застосовуються БЕЗ перезапуску бота.
 # facts.md = статичні факти; corrections.md = виправлення від власника (самонавчання).
@@ -712,6 +746,7 @@ ai_rules() {
   R=$(ai_file core.txt)
   if [ -n "$R" ]; then printf '%s' "$R"; else ai_rules_embedded; fi
   F=$(ai_file facts.md); [ -n "$F" ] && printf '\n\nФАКТИ ПРО ЦЕЙ РОУТЕР:\n%s' "$F"
+  T=$(ai_file topology.md); [ -n "$T" ] && printf '\n\nТОПОЛОГІЯ МЕРЕЖІ (памʼять про пристрої):\n%s' "$T"
   [ -s "$DIR/ai/corrections.md" ] && {
     C=$(utf8fix "$(tail -c 900 "$DIR/ai/corrections.md")")
     printf '\n\nВИВЧЕНІ КОРЕКЦІЇ ВЛАСНИКА (найвищий приоритет, враховуй обовʼязково):\n%s' "$C"
@@ -740,6 +775,25 @@ uci_autocommit() {
   O="$1"
   for C in $ADD; do O="$O && uci commit $C"; done
   printf '%s' "$O"
+}
+
+mask_secrets() {
+  # Маскує паролі/ключі у тексті відповіді моделі перед відправкою в чат
+  printf '%s' "$1" \
+    | sed -E "s/([Kk]ey['\"]?[ :=]+)[^'\" <&]{6,}/\1••••••/g" \
+    | sed -E "s/([Pp]assword['\"]?[ :=]+)[^'\" <&]{4,}/\1••••••/g" \
+    | sed -E "s/(private_key['\"]?[ :=]+)[^'\" <&]{8,}/\1••••••/g"
+}
+
+risk_backup() {
+  # Знімок конфігів перед небезпечними застосуваннями; /rollback повертає останній
+  TS=$(date +%H%M%S)
+  mkdir -p "$DIR/rb/$TS"
+  for C in network wireless dhcp firewall system sqm; do
+    [ -f "/etc/config/$C" ] && cp "/etc/config/$C" "$DIR/rb/$TS/"
+  done
+  ls -d "$DIR"/rb/* 2>/dev/null | sort | head -n -3 | while read -r OLD; do rm -rf "$OLD"; done
+  echo "$TS"
 }
 
 ai_rules_embedded() {
@@ -949,8 +1003,9 @@ $(tail -n 6 "$DIR/aihist" | cut -c1-160)"
   SYS1="$(ai_rules_full)
 Состояние роутера сейчас: $SNAP
 Устройства онлайн: ${DEVS:-нет}$HIST"
-  SYSN="$(ai_rules)
-Вопрос пользователя: $Q"
+  SYSN="$(ai_rules)$HIST
+Вопрос пользователя: $Q
+(Продовжуй діалог з урахуванням історії вище; якщо історії немає — відповідай як на нове питання.)"
   CUR="$Q"
   STEP=0
   FSAY=""
@@ -965,6 +1020,15 @@ $OUT"
     fi
     [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
     ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/<SAY>//g' -e 's/<\/SAY>//g' -e 's/<CMD>//g' -e 's/<\/CMD>//g' -e 's/>[[:space:]]*$//')
+    # Модель інколи відповідає JSON-обʼєктом замість протоколу — конвертуємо
+    case "$ANS" in
+      \{*\"CMD\"*|*\{\"action\"*|*\"CMD\":*)
+        JC=$(printf '%s' "$ANS" | jsonfilter -e '$.CMD' -e '$.cmd' 2>/dev/null | head -1)
+        JS=$(printf '%s' "$ANS" | jsonfilter -e '$.SAY' -e '$.say' 2>/dev/null | head -1)
+        [ -n "$JC$JS" ] && ANS="CMD: ${JC:--}
+SAY: $JS"
+        ;;
+    esac
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then
@@ -986,8 +1050,19 @@ $OUT"
       kill "$TPID" 2>/dev/null
       printf '%s' "$PCMD" > "$DIR/aipend"
       alog PEND "очікує підтвердження: $PCMD"
+      RISK=""
+      case "$PCMD" in
+        *commit*network*|*"network reload"*|*"network restart"*|*commit*wireless*|*"wifi reload"*|*commit*firewall*)
+          RBACKUP=$(risk_backup); RISK="
+↩️ Якщо втратите доступ: /rollback ($RBACKUP) або кнопка 🔒" ;;
+      esac
+      DIFF=$(uci changes 2>/dev/null | head -c 300)
+      [ -n "$DIFF" ] && RISK="$RISK
+📋 Незастосовані зміни зараз:
+$(esc "$DIFF")"
       reply "$(printf "$(t ai_confirm)" "$(esc "$PCMD")")"
-      send_mk "$(t ai_conflbl)" "$AI_CONF_MARKUP"
+      case "$RISK" in *"🔒"*) CONFMK="$AI_CONF2_MARKUP" ;; *) CONFMK="$AI_CONF_MARKUP" ;; esac
+      send_mk "$(t ai_conflbl)$RISK" "$CONFMK"
       return
     fi
     reply "$(printf "$(t cmd_run)" "$(esc "$PCMD")")"
@@ -996,6 +1071,14 @@ $OUT"
   done
   kill "$TPID" 2>/dev/null
   [ -z "$FSAY" ] && FSAY="$(t ai_noans)"
+  FSAY=$(printf '%s' "$FSAY" | awk '
+    /<system-reminder>/ {inf=1; next}
+    inf && /<\/system-reminder>/ {inf=0; next}
+    inf {next}
+    /^[[:space:]]*$/ {if (!bl) print ""; bl=1; next}
+    {bl=0; print}
+  ' | sed '/./,$!d; ${/^$/d}')
+  FSAY=$(mask_secrets "$FSAY")
   FSAY=$(printf '%s' "$FSAY" | awk '
     /<system-reminder>/ {inf=1; next}
     inf && /<\/system-reminder>/ {inf=0; next}
@@ -1130,7 +1213,7 @@ process_updates() {
       return
       ;;
   esac
-  [ "$TOTAL" -gt 0 ] && alog POLL "отримано $TOTAL апдейтів (offset=$OFFSET)"
+  [ "$TOTAL" -gt 0 ] && { alog POLL "отримано $TOTAL апдейтів (offset=$OFFSET)"; touch "$DIR/.dms_ack" 2>/dev/null; }
 
   i=0
   LAST=""
@@ -1157,6 +1240,7 @@ process_updates() {
           "/devices")
             OUTD="$(devices_text)"
             send_rich "$OUTD" || reply "$OUTD"
+            KB=$(devices_kb) && send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"
             ;;
           "/wan")
             reply "$(t wan_run)"
@@ -1180,6 +1264,33 @@ process_updates() {
               reply_doc "$DIR/ailog" "🧾 AI-лог (останні події)"
             else
               reply "🧾 Лог порожній"
+            fi
+            ;;
+          "/rollback")
+            L=$(ls -d "$DIR/rb/"* 2>/dev/null | tail -n 1)
+            if [ -z "$L" ]; then
+              reply "↩️ Знімків ще немає — відкатувати не з чого"
+            else
+              for CC in network wireless dhcp firewall system sqm; do
+                [ -f "$L/$CC" ] && cp "$L/$CC" "/etc/config/$CC"
+              done
+              /etc/init.d/network reload 2>/dev/null
+              /etc/init.d/dnsmasq restart 2>/dev/null
+              /etc/init.d/firewall restart 2>/dev/null
+              alog CONF "rollback -> $L"
+              reply "↩️ Конфіги відкотто до знімка $(basename "$L")"
+            fi
+            ;;
+          "/topo"*|"/topo")
+            ARGS=$(printf '%s' "${TXT#/topo}" | sed 's/^[[:space:]]*//')
+            if [ -z "$ARGS" ]; then
+              TOPOC=$(tail -c 400 "$DIR/ai/topology.md" 2>/dev/null)
+              reply "🧭 Топологія:${TOPOC:+
+$TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
+            else
+              echo "$(date '+%m.%d') $ARGS" >> "$DIR/ai/topology.md"
+              alog CONF "topology: $ARGS"
+              reply "🧭 Запамʼятав: $ARGS"
             fi
             ;;
           "/alias "*)
@@ -1241,6 +1352,13 @@ process_updates() {
           dv)
             OUTD="$(devices_text)"
             send_rich "$OUTD" || reply "$OUTD"
+            KB=$(devices_kb) && send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"
+            ;;
+          st:*)
+            D="${CB#st:}"; SMAC="${D%%|*}"; SIP="${D##*|}"
+            st_lease_add "$SMAC" "$SIP"
+            alog CONF "static lease $SIP $SMAC"
+            reply "🏷 <code>$SIP</code> тепер статична аренда ($(esc "$SMAC"))"
             ;;
           wan)
             reply "$(t wan_run)"
@@ -1269,6 +1387,37 @@ process_updates() {
               ai_run "$C"
               alog OUT "CONF→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP"
+            else
+              edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP"
+            fi
+            ;;
+          aic2)
+            C=$(cat "$DIR/aipend" 2>/dev/null)
+            rm -f "$DIR/aipend"
+            if [ -n "$C" ]; then
+              alog CONF "зі страховкою: $C"
+              : > "$DIR/.dms_ack"
+              ai_run "$C"
+              alog OUT "DMS→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
+              edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")
+⏳ Страхівка: будь-яке ваше повідомлення за 90с = все ок, інакше авто-відкат." "$MENU_MARKUP"
+              (
+                sleep 90
+                [ -f "$DIR/.dms_ack" ] && exit 0
+                L=$(ls -d "$DIR/rb/"* 2>/dev/null | tail -n 1)
+                [ -z "$L" ] && exit 0
+                for CC in network wireless dhcp firewall system sqm; do
+                  [ -f "$L/$CC" ] && cp "$L/$CC" "/etc/config/$CC"
+                done
+                /etc/init.d/network reload 2>/dev/null
+                /etc/init.d/dnsmasq restart 2>/dev/null
+                /etc/init.d/firewall restart 2>/dev/null
+                TT=$(uci -q get tgbot.config.token); CCH=$(uci -q get tgbot.config.chatid)
+                curl -s --max-time 10 -H "Content-Type: application/json" \
+                  -d "{\"chat_id\":\"$CCH\",\"text\":\"💀 DMS: 90с без вашого сигналу — конфіги відкотто з $L\"}" \
+                  "https://api.telegram.org/bot$TT/sendMessage" >/dev/null 2>&1
+                echo "$(date +%s)" > "$DIR/.sess"
+              ) &
             else
               edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP"
             fi

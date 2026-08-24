@@ -24,3 +24,6 @@ uci show network.wan ; pppoe: uci set network.wan.proto='pppoe' .username='..' .
 
 ## Правило застосування
 DNS/DHCP → dnsmasq restart; IP/протоколи → network reload|restart (тільки з попередженням).
+
+## Зміна підмережі
+При зміні ipaddr іншої підмережі (наприклад на 192.168.9.1) онови і netmask (.netmask='255.255.255.0'), та памʼятай: статичні аренди зі старої підмережі стануть невалідними — запропонуй чистку dhcp.host.
