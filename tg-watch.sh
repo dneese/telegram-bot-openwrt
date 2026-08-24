@@ -65,6 +65,16 @@ send_ev() {
 
 mkdir -p "$DIR"
 
+# Single-instance guard: пайп-діти переживають procd stop → накопичувались дублі,
+# кожен інстанс пушив ту саму подію. Живий pidfile = вихід; trap прибирає дітей при завершенні.
+WPIDF="$DIR/.watch_pid"
+if [ -s "$WPIDF" ] && kill -0 "$(cat "$WPIDF" 2>/dev/null)" 2>/dev/null; then
+  logger -t tg-watch "already running (pid $(cat "$WPIDF")) — exit"
+  exit 0
+fi
+echo $$ > "$WPIDF"
+trap 'rm -f "$WPIDF"; kill $(jobs -p) 2>/dev/null' EXIT TERM INT
+
 logread -f 2>/dev/null | while IFS= read -r LINE; do
   EV=$(watch_match "$LINE")
   [ -n "$EV" ] || continue
