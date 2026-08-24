@@ -2,6 +2,13 @@
 
 [Русский](#русский) · [Українська](#українська) · [English](#english)
 
+> [!WARNING]
+> **Експериментальний проєкт.** Це хобі-бот: AI самостійно формує і виконує команди на роутері (`uci`, сервіси, файрвол). Хоча є підтвердження змін, diff-preview, страховка DMS і `/rollback`, проєкт **не рекомендується для відповідальних/робочих роутерів** — тримайте його на домашньому залізі або тестовому девайсі.
+>
+> **Experimental project.** The bot builds and executes router commands autonomously via AI. Confirm-gates, DMS auto-rollback and `/rollback` exist, but this is hobby software — **do not install on production routers**.
+>
+> **Экспериментальный проект.** Бот самостоятельно формирует и выполняет команды на роутере через AI. Подтверждения и откат есть, но для боевых роутеров установка **не рекомендуется**.
+
 Кишеньковий системний адміністратор: пишеш боту людською мовою — він сам діагностує, налаштовує та перевіряє роутер через `uci/ubus/iwinfo/apk`.
 
 **Мови бота:** ru / uk / en · **AI:** будь-який OpenAI-сумісний провайдер (Groq, Google Gemini, OpenRouter) з автоматичним фолбеком між моделями.
@@ -26,19 +33,28 @@
 - **Самонавчання**: ваші виправлення потрапляють у `corrections.md` і завжди враховуються; факти про роутер — у `facts.md`; топологія — `/topo`
 - 🧾 `/ailog` — повний журнал діалогів файлом
 
-### Установка (автоматично)
+### Установка (одна команда)
 
 ```sh
 # 0) @BotFather → /newbot → токен; свій ID:
 curl -s "https://api.telegram.org/bot<TOKEN>/getUpdates" | grep -o '"id":[0-9]*' | head -1
 
-# 1) Скопіюйте файли проєкту на роутер і запустіть інсталятор:
-scp -r tg-router-bot root@192.168.1.2:/tmp/
-ssh root@192.168.1.2 "sh /tmp/tg-router-bot/install.sh \
-  --token '123456:ABC' --chatid 5651093353 --lang ru"
+# 1) На роутері (завантажить усі файли з GitHub і запустить інсталятор):
+wget -O - https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/tg-installer.sh | sh \
+  -s -- --token '123456:ABC' --chatid ВАШ_ID --lang uk
 ```
 
-Інсталятор сам: поставить залежності, розкладе файли, створить конфіг, підключить cron-аналізатор здоровʼя, запустить сервіс і покаже статус.
+Бутстрапер сам: стягне всі файли в /tmp, перевірить синтаксис, запустить `install.sh` (той поставить залежності, розкладе файли, створить конфіг, підключить cron-аналізатор і запустить обидва сервіси — бота й вотчер подій).
+
+<details>
+<summary>Ручна установка (без wget)</summary>
+
+```sh
+scp -r tg-router-bot root@192.168.1.2:/tmp/
+ssh root@192.168.1.2 "sh /tmp/tg-router-bot/install.sh \
+  --token '123456:ABC' --chatid ВАШ_ID --lang ru"
+```
+</details>
 
 ### Налаштування AI (рекомендовано Groq)
 
