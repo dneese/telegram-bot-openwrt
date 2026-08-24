@@ -18,6 +18,8 @@
 - **Швидкі дії без токенів**: типові питання (пристрої/скан/стан) йдуть через intent-класифікатор (~250 токенів замість ~3000)
 - **Rich-таблиці** (Bot API 10.x): пристрої, скан ефіру, статус — справжні таблиці Telegram
 - **Безпека**: підтвердження кнопкою на зміни, diff preview (`uci changes`), авто-дописування `commit`, маскування паролів у відповідях, блок rm -rf/mkfs/dd/sysupgrade
+- **Захист у глибину**: `sanitize_cmd()` відхиляє підстановки `$()`/`` ` ``/`${}`, `;`-ланцюжки, одиночний `&`, керуючі байти та zero-width/RTL-спуф у командах від моделі (ідея: [oasis security_guard](https://github.com/utakamo/oasis))
+- **⚙️ /model**: зміна основної AI-моделі прямо з чату кнопкою — застосовується одразу, без рестарту і SSH
 - **🔒 Страхівка (DMS)**: мережеві зміни можна виконати «зі страховкою» — 90 с на сигнал життя, інакше авто-відкат конфігів; або `/rollback` вручну
 - **Пульс щогодини**, 👀 слежка за людьми по MAC, 👁 моніторинг хостів
 - **Самонавчання**: ваші виправлення потрапляють у `corrections.md` і завжди враховуються; факти про роутер — у `facts.md`; топологія — `/topo`
@@ -70,3 +72,22 @@ echo '192.168.1.50 = NAS батьків' >> /etc/tg-bot/ai/topology.md
 A lightweight shell Telegram bot that turns OpenWrt into an AI-managed router: a ReAct-style agent executes `uci/ubus/iwinfo/apk` with confirm-gates, rollback safety-net and per-domain skill files. Multi-provider LLM chain (Groq → fallbacks → OpenRouter), token-economy intent classifier, hourly health analyzer.
 
 Install steps are in the Russian section above; use `--lang en`.
+
+---
+
+## Similar projects
+
+Projects we studied for ideas and inspiration:
+
+| Project | What it is | What we borrowed |
+|---------|-----------|------------------|
+| [utakamo/oasis](https://github.com/utakamo/oasis) | LuCI AI assistant for OpenWrt (6 providers, tools, sysmsg presets) | Command-string hardening: reject shell metacharacters, control bytes and invisible-unicode spoofing before execution |
+| [alexwbaule/telegramopenwrt](https://github.com/alexwbaule/telegramopenwrt) | Bash bot with rich plugin set | Live event pusher idea (`logread -f` → instant DHCP/port alerts), time-based firewall block recipe |
+| [Lifailon/openrouter-bot](https://github.com/Lifailon/openrouter-bot) | Go chat client for OpenRouter | On-the-fly model switching (`/model`) |
+| [ROUTER-MCP](https://www.glama.ai/mcp/servers/router-mcp-npm-package) | MCP server for router control over SSH | Read-only by default; charset validation of uci arguments against shell injection |
+| [mmeisner/telegram-bot](https://github.com/mmeisner/telegram-bot) | Plugin-per-script OpenWrt bot | Modular philosophy |
+| [varakh/tlgbot](https://github.com/varakh/tlgbot) | Monitoring-only bash bot | — (covered by our /status /devices) |
+| [ixiumu/openwrt-telegram-bot](https://github.com/ixiumu/openwrt-telegram-bot) | Minimal bash bot | — |
+| [Habr: DIY Telegram bot](https://habr.com/ru/articles/952868/) | ESP32 + OpenRouter DIY | Message chunking at 3800 chars |
+
+Our thanks to all authors. tg-router-bot differs by being an autonomous ReAct-style **agent** (not a command menu), with confirm-gates, DMS rollback insurance, self-learning corrections and token-economy intent routing.

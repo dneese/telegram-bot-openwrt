@@ -21,3 +21,12 @@ uci set firewall.@rule[-1]=rule ... .src='wan' .dest_port='443' .proto='tcp' .ta
 ## Зони
 uci show firewall | grep -E "zone|forwarding"
 Стандарт: lan→wan ACCEPT, wan input REJECT — не вимикай input на wan НІКОЛИ.
+
+## Блокування за розкладом (наприклад: ніч без інтернету для дитячого ПК)
+Синтаксис fw4 (OpenWrt/ImmortalWrt 23+). Ідея: alexwbaule/telegramopenwrt.
+uci add firewall rule
+uci set firewall.@rule[-1].name='kids-night' .src='lan' .src_ip='192.168.1.100' .dest='wan' .proto='tcp udp' .target='REJECT' .start='23:00' .stop='08:00' .weekdays='Mon Tue Wed Thu Fri'
+uci commit firewall && /etc/init.d/firewall restart
+Перевірка: nft list ruleset 2>/dev/null | grep kids
+Прибрати: uci delete firewall.@rule[-1] && uci commit firewall && /etc/init.d/firewall restart
+Примітка: інтервал через північ (start>stop) у fw4 коректний; .weekdays можна опустити = щодня.
