@@ -19,14 +19,14 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {)
   ' "$SRC"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
 rm -f "$DIR/.xf"
 [ -z "$MISS" ] || { echo "EXTRACT FAIL:$MISS"; exit 2; }
 . "$DIR/fns"; rm -f "$DIR/fns"
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -117,6 +117,18 @@ if [ -n "$KB" ]; then
 else
   echo "skip devices_kb: немає онлайн-хостів зараз"
 fi
+
+# --- skill_pick (keyword→скіл; порядок: wifi,vpn,dns,firewall,services,netdhcp,misc) ---
+eq "skill: встанови nlbwmon → services" "$(skill_pick 'встанови nlbwmon')" "$DIR/ai/skills/services.md"
+eq "skill: настрой wireguard → vpn" "$(skill_pick 'настрой wireguard')" "$DIR/ai/skills/vpn.md"
+eq "skill: Встанови WireGuard → vpn (порядок над services)" "$(skill_pick 'Встанови WireGuard сервер')" "$DIR/ai/skills/vpn.md"
+eq "skill: зміни DNS → dns" "$(skill_pick 'зміни DNS на 1.1.1.1')" "$DIR/ai/skills/dns.md"
+eq "skill: проброс порту → firewall" "$(skill_pick 'зроби проброс порту 8080')" "$DIR/ai/skills/firewall.md"
+eq "skill: гостьова мережа → wifi" "$(skill_pick 'створити гостьову мережу wifi')" "$DIR/ai/skills/wifi.md"
+eq "skill: статическая аренда → netdhcp" "$(skill_pick 'сделай статическую аренду для ПК')" "$DIR/ai/skills/network-dhcp.md"
+eq "skill: температура CPU → misc" "$(skill_pick 'какая температура CPU?')" "$DIR/ai/skills/system-misc.md"
+if skill_pick 'какая погода в Киеве' >/dev/null 2>&1; then bad "skill: погода не матчиться" "matched"; else ok "skill: погода не матчиться"; fi
+if skill_pick 'покажи устройства' >/dev/null 2>&1; then bad "skill: девайси не матчаться" "matched"; else ok "skill: девайси не матчаться"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null

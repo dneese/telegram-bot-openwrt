@@ -116,6 +116,8 @@ T_ai_done_ru='✅ Выполнено: <code>%s</code>\n\nРезультат:\n<c
 T_ai_pendnone_ru='Нет отложенной команды.'; T_ai_pendnone_en='No pending command.'; T_ai_pendnone_uk='Немає відкладеної команди.'
 T_ai_cancelled_ru='❌ Отменено.'; T_ai_cancelled_en='❌ Cancelled.'; T_ai_cancelled_uk='❌ Скасовано.'
 T_ai_noans_ru='Не получил ответ модели. Детали: /etc/tg-bot/lasterr'; T_ai_noans_en='No answer from the model. Details: /etc/tg-bot/lasterr'; T_ai_noans_uk='Не отримав відповіді моделі. Деталі: /etc/tg-bot/lasterr'
+T_pend_hint_ru='⏳ Команда ещё ждёт подтверждения:\n<code>%s</code>\nНажмите ✅ или отправьте /ok — тогда выполню.'; T_pend_hint_en='⏳ Command is awaiting confirmation:\n<code>%s</code>\nTap ✅ or send /ok to run it.'; T_pend_hint_uk='⏳ Команда ще чекає підтвердження:\n<code>%s</code>\nНатисніть ✅ або надішліть /ok — тоді виконаю.'
+T_ai_chainfail_ru='⚠️ Все AI-модели сейчас недоступны (лимиты/сеть). Попробуйте через ~10 минут — цепочка сама переключится на резерв.'; T_ai_chainfail_en='⚠️ All AI models are unavailable right now (limits/network). Try again in ~10 minutes — the chain will fail over automatically.'; T_ai_chainfail_uk='⚠️ Усі AI-моделі зараз недоступні (ліміти/мережа). Спробуйте через ~10 хвилин — ланцюг сам переключиться на резерв.'
 T_cmd_run_ru='⚙️ Выполняю: <code>%s</code>'; T_cmd_run_en='⚙️ Running: <code>%s</code>'; T_cmd_run_uk='⚙️ Виконую: <code>%s</code>'
 T_rb_arm_ru='⚠️ Подтвердите: /reboot yes (или кнопкой ниже 👇)'; T_rb_arm_en='⚠️ Confirm: /reboot yes (or the button below 👇)'; T_rb_arm_uk='⚠️ Підтвердіть: /reboot yes (або кнопкою нижче 👇)'
 T_rb_menu_ru='🤖 Меню:'; T_rb_menu_en='🤖 Menu:'; T_rb_menu_uk='🤖 Меню:'
@@ -735,6 +737,29 @@ st_lease_add() {
   uci commit dhcp && /etc/init.d/dnsmasq restart >/dev/null 2>&1
 }
 
+skill_pick() {
+  # $1=Q -> шлях до скіла за ключовими словами; порожньо/rc=1 — тема не розпізнана.
+  # ASCII знижуємо tr-ом, кирилиця — парними патернами (busybox tr байтовий, UTF-8 не мапить).
+  QL=$(printf '%s' "$1" | tr 'A-Z' 'a-z')
+  case "$QL" in
+    *wifi*|*wi-fi*|*вайфай*|*ssid*|*гостьов*|*Гостьов*|*канал*|*Канал*|*потужност*|*Потужност*|*мощность*|*скрыт*|*приховат*|*Приховат*)
+      printf '%s' "$DIR/ai/skills/wifi.md"; return 0 ;;
+    *wireguard*|*" wg "*|*vpn*|*VPN*|*тунел*|*Тунел*)
+      printf '%s' "$DIR/ai/skills/vpn.md"; return 0 ;;
+    *dns*|*dns*|*doh*|*adblock*|*реклам*|*Реклам*|*blocky*)
+      printf '%s' "$DIR/ai/skills/dns.md"; return 0 ;;
+    *firewall*|*фаєрвол*|*Фаєрвол*|*файрвол*|*порт*|*Порт*|*проброс*|*Проброс*|*переадрес*|*dmz*|*upnp*|*зоной*|*зона*|*зони*)
+      printf '%s' "$DIR/ai/skills/firewall.md"; return 0 ;;
+    *nlbw*|*sqm*|*ddns*|*apk*|*пакет*|*Пакет*|*станов*|*"init.d"*|*сервис*|*Сервис*|*сервіс*|*Сервіс*|*служб*|*package*)
+      printf '%s' "$DIR/ai/skills/services.md"; return 0 ;;
+    *dhcp*|*аренд*|*Аренд*|*статичн*|*Статичн*|*static*ip*|*lan*ip*|*ip*lan*|*pppoe*|*пул*|*lease*)
+      printf '%s' "$DIR/ai/skills/network-dhcp.md"; return 0 ;;
+    *hostname*|*ntp*|*cron*|*"led"*|*светодиод*|*світлодіод*|*Світлодіод*|*"wol"*|"wake"*|*температур*|*Температур*|*backup*|*бекап*|*Бекап*|*парол*|*Парол*)
+      printf '%s' "$DIR/ai/skills/system-misc.md"; return 0 ;;
+  esac
+  return 1
+}
+
 # --- зовнішні промпти та скіли: файли в $DIR/ai/ мають пріоритет над вбудованими ---
 # Правки core.txt / recipes.txt / skills/*.md застосовуються БЕЗ перезапуску бота.
 # facts.md = статичні факти; corrections.md = виправлення від власника (самонавчання).
@@ -828,7 +853,7 @@ ai_rules_full_embedded() {
 - Система: hostname/timezone/NTP: system.@system[0] ; CRON: (crontab -l; echo 'мин час * * * команда') | crontab - && cron restart ; LED: ls /sys/class/leds/, echo N > ИМЯ/brightness ; WoL: etherwake -i br-lan MAC ; температура: /sys/class/thermal/thermal_zone*/temp
 - Бэкап: tar -czf /tmp/b.tar.gz /etc/config /etc/tg-bot
 Особенность сети: провайдер FREENET даёт CGNAT IP (100.64.0.0/10) — входящие из интернета невозможны, проброс портов извне бесполезен; DDNS не поможет; для доступа извне — только исходящий WireGuard к своему VPS.
-Факты: сервис бота /etc/init.d/tg-bot, скрипт /usr/bin/tg-bot.sh, конфиг /etc/config/tgbot (uci) — это ТЫ САМ, не трогай. Перед обращением к файлам/сервисам проверяй существование.
+Факты: сервис бота /etc/init.d/tg-bot, скрипт /usr/bin/tg-bot.sh, конфиг /etc/config/tgbot (uci) — это ТЫ САМ, не трогай. Перед обращением к файлам/сервисам проверяй существование. Если выше есть блок \"ЗНАННЯ ПО ТЕМІ ВЖЕ НАДАНО\" — файл скілла уже в контексте, cat НЕ нужен, действуй сразу.
 Пользователь просит сложную настройку — действуй сам по логике OpenWrt: разведка (uci show/ls/apk search) → изменение → проверка применения → отчёт."
 }
 
@@ -997,6 +1022,20 @@ ai_agent() {
     return
   fi
   [ -z "$Q" ] && { reply "$(t ai_hint)"; return; }
+  # Fast-path: питання про долю свіжої (<5 хв) PEND-команди — відповідаємо без AI
+  if [ -s "$DIR/aipend" ]; then
+    _PT=$(cat "$DIR/.apts" 2>/dev/null)
+    [ -z "$_PT" ] && _PT=0
+    if [ $(( $(date +%s) - _PT )) -le 300 ]; then
+      _PC=$(utf8fix "$(cat "$DIR/aipend")")
+      case "$(printf '%s' "$Q" | tr 'A-Z' 'a-z')" in
+        *олучилось*|*ийшло*|*отово*|*иконано*|*аботает*|*рацю*|*спрацюва*|*"did it"*|*done?*|*ок?*)
+          alog INTENT "pend_hint"
+          reply "$(printf "$(t pend_hint)" "$(esc "$_PC")")"
+          return ;;
+      esac
+    fi
+  fi
   reply "$(t ai_think)"
   ( N=0; while [ $N -lt 40 ]; do typing; sleep 4; N=$((N+1)); done ) &
   TPID=$!
@@ -1011,13 +1050,22 @@ ai_agent() {
 Предыдущий диалог:
 $(tail -n 6 "$DIR/aihist" | cut -c1-160)"
   fi
-  SYS1="$(ai_rules_full)
+  # C1: скіл за темою питання інʼєктується одразу — модель не витрачає хід на `cat skills/*`
+  SKF=$(skill_pick "$Q"); SKILL_TXT=""
+  if [ -n "$SKF" ] && [ -s "$SKF" ]; then
+    SKILL_TXT="
+ЗНАННЯ ПО ТЕМІ ВЖЕ НАДАНО (джерело: $SKF) — НЕ витрачай хід на CMD: cat цього файлу, знання повні:
+$(cat "$SKF")"
+    alog INTENT "skill=$(basename "$SKF")"
+  fi
+  SYS1="$(ai_rules_full)$SKILL_TXT
 Состояние роутера сейчас: $SNAP
 Устройства онлайн: ${DEVS:-нет}$HIST"
   SYSN="$(ai_rules)$HIST
 Вопрос пользователя: $Q
 (Продовжуй діалог з урахуванням історії вище; якщо історії немає — відповідай як на нове питання.)"
   CUR="$Q"
+  CHFAIL=""
   STEP=0
   FSAY=""
   while [ $STEP -lt 5 ]; do
@@ -1029,7 +1077,7 @@ $OUT"
     else
       ai_call "$SYSN" "$CUR"
     fi
-    [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
+    [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; CHFAIL=1; break; }
     ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/<SAY>//g' -e 's/<\/SAY>//g' -e 's/<CMD>//g' -e 's/<\/CMD>//g' -e 's/>[[:space:]]*$//')
     # Модель інколи відповідає JSON-обʼєктом замість протоколу — конвертуємо
     case "$ANS" in
@@ -1070,6 +1118,7 @@ SAY: $JS"
         esac
       fi
       printf '%s' "$PCMD" > "$DIR/aipend"
+      date +%s > "$DIR/.apts"
       alog PEND "очікує підтвердження: $PCMD"
       RISK=""
       case "$PCMD" in
@@ -1091,7 +1140,11 @@ $(esc "$DIFF")"
     alog OUT "→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
   done
   kill "$TPID" 2>/dev/null
-  [ -z "$FSAY" ] && FSAY="$(t ai_noans)"
+  if [ -n "$CHFAIL" ]; then
+    FSAY="$(t ai_chainfail)"
+  elif [ -z "$FSAY" ]; then
+    FSAY="$(t ai_noans)"
+  fi
   FSAY=$(printf '%s' "$FSAY" | awk '
     /<system-reminder>/ {inf=1; next}
     inf && /<\/system-reminder>/ {inf=0; next}
@@ -1108,8 +1161,10 @@ $(esc "$DIFF")"
     {bl=0; print}
   ' | sed '/./,$!d; ${/^$/d}')
   reply_rich "🤖 $FSAY"
-  { printf 'Пользователь: %.120s\nАссистент: %.200s\n' "$Q" "$FSAY"; } >> "$DIR/aihist"
-  tail -c 2000 "$DIR/aihist" > "$DIR/aihist.t" 2>/dev/null && mv "$DIR/aihist.t" "$DIR/aihist"
+  if [ -z "$CHFAIL" ]; then
+    { printf 'Пользователь: %.120s\nАссистент: %.200s\n' "$Q" "$FSAY"; } >> "$DIR/aihist"
+    tail -c 2000 "$DIR/aihist" > "$DIR/aihist.t" 2>/dev/null && mv "$DIR/aihist.t" "$DIR/aihist"
+  fi
 }
 
 cmd_scan() {
@@ -1377,9 +1432,21 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             ;;
           st:*)
             D="${CB#st:}"; SMAC="${D%%|*}"; SIP="${D##*|}"
-            st_lease_add "$SMAC" "$SIP"
-            alog CONF "static lease $SIP $SMAC"
-            reply "🏷 <code>$SIP</code> тепер статична аренда ($(esc "$SMAC"))"
+            # Дедуп подвійного тапу: той самий MAC|IP протягом 60с — тільки повідомлення
+            CBH=$(printf '%s%s' "$SMAC" "$SIP" | md5sum | cut -c1-8)
+            CBSF="$DIR/.cb_$CBH"
+            CTN=$(date +%s)
+            CBO=$(cat "$CBSF" 2>/dev/null)
+            if [ -n "$CBO" ] && [ $(( CTN - CBO )) -le 60 ]; then
+              alog CONF "dedup st:$SIP (<60с)"
+              reply "✅ Цю аренду вже застосовано секунди тому: <code>$SIP</code>"
+            else
+              echo "$CTN" > "$CBSF"
+              find "$DIR" -name '.cb_*' ! -name "$(basename "$CBSF")" -mmin +60 -exec rm -f {} \; 2>/dev/null
+              st_lease_add "$SMAC" "$SIP"
+              alog CONF "static lease $SIP $SMAC"
+              reply "🏷 <code>$SIP</code> тепер статична аренда ($(esc "$SMAC"))"
+            fi
             ;;
           wan)
             reply "$(t wan_run)"
