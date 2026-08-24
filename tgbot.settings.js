@@ -62,6 +62,18 @@ return view.extend({
 		o.value('nvidia/nemotron-3-super-120b-a12b:free', 'NVIDIA Nemotron 120B (free)');
 		o.optional = true;
 
+		o = s.option(form.Value, 'ai_key3', _('Gemini API Key'),
+			_('Третя ланка фолбеку (своя безкоштовна квота). Ключ: aistudio.google.com/apikey'));
+		o.password = true;
+		o.optional = true;
+		o.placeholder = 'AQ....';
+
+		o = s.option(form.Value, 'ai_model3', _('Gemini модель'));
+		o.placeholder = 'gemini-3.6-flash';
+		o.value('gemini-3.6-flash', 'Gemini 3.6 Flash');
+		o.value('gemini-2.5-flash', 'Gemini 2.5 Flash');
+		o.optional = true;
+
 		o = s.option(form.Value, 'ai_groq_chain', _('Фолбек-ланцюг моделей'),
 			_('Список моделей через пробіл: якщо основна впала/в ліміті — пробуються вони (у кожної свій денний ліміт)'));
 		o.placeholder = 'qwen/qwen3.6-27b openai/gpt-oss-120b';

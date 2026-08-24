@@ -921,6 +921,11 @@ ai_call() {
   AIURL2=$(uci -q get tgbot.config.ai_url2)
   AIKEY2=$(uci -q get tgbot.config.ai_key2)
   [ -z "$AIURL2" ] && [ -n "$AIKEY2" ] && AIURL2="https://openrouter.ai/api/v1/chat/completions"
+  # Третій провайдер — Gemini (своя безкоштовна квота; OpenRouter лишаємо на крайній випадок)
+  AIKEY3=$(uci -q get tgbot.config.ai_key3)
+  AIMODEL3=$(uci -q get tgbot.config.ai_model3)
+  [ -z "$AIMODEL3" ] && AIMODEL3="gemini-3.6-flash"
+  AIURL3="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
   # Fallback-ланцюг Groq (у кожної СВІЙ денний ліміт TPD): великі моделі — для складних випадків
   GCHAIN=$(uci -q get tgbot.config.ai_groq_chain)
   [ -z "$GCHAIN" ] && GCHAIN="qwen/qwen3.6-27b openai/gpt-oss-120b"
@@ -928,10 +933,11 @@ ai_call() {
   [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
   ANS=""
-  # Ланцюг: primary (дешева) → Groq-фолбеки (свої TPD) → OpenRouter. Без ретраїв тієї ж моделі.
-  for TRY in primary $GCHAIN or; do
+  # Ланцюг: primary (дешева) → Groq-фолбеки (свої TPD) → Gemini → OpenRouter. Без ретраїв тієї ж моделі.
+  for TRY in primary $GCHAIN gem or; do
     case $TRY in
       primary) M="$AIMODEL"; U="$AIURL"; K="$AKEY" ;;
+      gem) [ -z "$AIKEY3" ] && continue; M="$AIMODEL3"; U="$AIURL3"; K="$AIKEY3" ;;
       or) [ -z "$AIKEY2" ] && continue; M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="$AIKEY2" ;;
       *)  M="$TRY"; U="$AIURL"; K="$AKEY" ;;
     esac
@@ -940,6 +946,7 @@ ai_call() {
     case $M in
       *qwen*) EXTRA=',"reasoning_format":"hidden"' ;;
       *gpt-oss*) EXTRA=',"reasoning_effort":"low"' ;;
+      *gemini*) EXTRA=',"reasoning_effort":"low"' ;;
       *) EXTRA="" ;;
     esac
     printf '{"model":"%s","max_tokens":2000%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
