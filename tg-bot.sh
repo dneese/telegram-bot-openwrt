@@ -947,7 +947,7 @@ $OUT"
       ai_call "$SYSN" "$CUR"
     fi
     [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; break; }
-    ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/>[[:space:]]*$//')
+    ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/<SAY>//g' -e 's/<\/SAY>//g' -e 's/<CMD>//g' -e 's/<\/CMD>//g' -e 's/>[[:space:]]*$//')
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then
