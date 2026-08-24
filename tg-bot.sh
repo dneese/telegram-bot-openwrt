@@ -117,7 +117,11 @@ T_ai_pendnone_ru='Нет отложенной команды.'; T_ai_pendnone_en
 T_ai_cancelled_ru='❌ Отменено.'; T_ai_cancelled_en='❌ Cancelled.'; T_ai_cancelled_uk='❌ Скасовано.'
 T_ai_noans_ru='Не получил ответ модели. Детали: /etc/tg-bot/lasterr'; T_ai_noans_en='No answer from the model. Details: /etc/tg-bot/lasterr'; T_ai_noans_uk='Не отримав відповіді моделі. Деталі: /etc/tg-bot/lasterr'
 T_pend_hint_ru='⏳ Команда ещё ждёт подтверждения:\n<code>%s</code>\nНажмите ✅ или отправьте /ok — тогда выполню.'; T_pend_hint_en='⏳ Command is awaiting confirmation:\n<code>%s</code>\nTap ✅ or send /ok to run it.'; T_pend_hint_uk='⏳ Команда ще чекає підтвердження:\n<code>%s</code>\nНатисніть ✅ або надішліть /ok — тоді виконаю.'
-T_ai_chainfail_ru='⚠️ Все AI-модели сейчас недоступны (лимиты/сеть). Попробуйте через ~10 минут — цепочка сама переключится на резерв.'; T_ai_chainfail_en='⚠️ All AI models are unavailable right now (limits/network). Try again in ~10 minutes — the chain will fail over automatically.'; T_ai_chainfail_uk='⚠️ Усі AI-моделі зараз недоступні (ліміти/мережа). Спробуйте через ~10 хвилин — ланцюг сам переключиться на резерв.'
+  T_ai_chainfail_ru='⚠️ Все AI-модели сейчас недоступны (лимиты/сеть). Попробуйте через ~10 минут — цепочка сама переключится на резерв.'; T_ai_chainfail_en='⚠️ All AI models are unavailable right now (limits/network). Try again in ~10 minutes — the chain will fail over automatically.'; T_ai_chainfail_uk='⚠️ Усі AI-моделі зараз недоступні (ліміти/мережа). Спробуйте через ~10 хвилин — ланцюг сам переключиться на резерв.'
+  T_san_rej_ru='🚫 Отклонено: в команде запрещённые конструкции ($(), `, ;, одиночный &, невидимые символы). Переформулируйте без них.'; T_san_rej_en='🚫 Rejected: command contains forbidden constructs ($(), backticks, ;, lone &, invisible chars). Please rephrase.'; T_san_rej_uk='🚫 Відхилено: у команді заборонені конструкції ($(), `, ;, поодинокий &, невидимі символи). Переформулюйте без них.'
+  T_mdl_title_ru='⚙️ <b>AI-модель</b>\n\nОсновная: <code>%s</code>\nРезерв: <code>%s</code>\nЦепочка Groq: <code>%s</code>\n\nВыберите основную модель — применяется сразу, без рестарта:'; T_mdl_title_en='⚙️ <b>AI model</b>\n\nPrimary: <code>%s</code>\nAlt: <code>%s</code>\nGroq chain: <code>%s</code>\n\nPick the primary model — applies instantly, no restart:'; T_mdl_title_uk='⚙️ <b>AI-модель</b>\n\nОсновна: <code>%s</code>\nРезерв: <code>%s</code>\nЛанцюг Groq: <code>%s</code>\n\nВиберіть основну модель — застосовується одразу, без рестарту:'
+  T_mdl_set_ru='✅ Основная модель: %s'; T_mdl_set_en='✅ Primary model: %s'; T_mdl_set_uk='✅ Основна модель: %s'
+  T_c_mdl_ru='сменить AI-модель'; T_c_mdl_en='switch AI model'; T_c_mdl_uk='змінити AI-модель'
 T_cmd_run_ru='⚙️ Выполняю: <code>%s</code>'; T_cmd_run_en='⚙️ Running: <code>%s</code>'; T_cmd_run_uk='⚙️ Виконую: <code>%s</code>'
 T_rb_arm_ru='⚠️ Подтвердите: /reboot yes (или кнопкой ниже 👇)'; T_rb_arm_en='⚠️ Confirm: /reboot yes (or the button below 👇)'; T_rb_arm_uk='⚠️ Підтвердіть: /reboot yes (або кнопкою нижче 👇)'
 T_rb_menu_ru='🤖 Меню:'; T_rb_menu_en='🤖 Menu:'; T_rb_menu_uk='🤖 Меню:'
@@ -958,6 +962,30 @@ is_mut() {
   esac
 }
 
+sanitize_cmd() {
+  # $1=CMD -> rc0 дозволено / rc1 відхилено. Захист у глибину для команд від моделі:
+  # підстановки та ; закривають обхід regex-банів ai_run, невидимий Unicode — спуфінг.
+  # Пайпи НЕ баняться (скіли самі використовують "| head"). Ідея: utakamo/oasis security_guard.
+  case "$1" in
+    *'`'*|*'$('*|*'${'*|*';'*) return 1 ;;
+  esac
+  # керуючі байти — легітимних команд з ними нема
+  if printf '%s' "$1" | LC_ALL=C grep -q "$(printf '[\001-\010\013\014\016-\037]')"; then return 1; fi
+  # zero-width/RTL-спуф: усі U+2000-U+206F несуть байти E2 80 — в командах не бувають
+  if printf '%s' "$1" | LC_ALL=C grep -qF "$(printf '\342\200')"; then return 1; fi
+  # дозволяємо && між командами, але не поодинокий & (фоновий запуск)
+  FRAG="$1"
+  while :; do
+    case "$FRAG" in
+      *'&&'*) CUR="${FRAG%%&&*}"; FRAG="${FRAG#*&&}" ;;
+      *)      CUR="$FRAG"; FRAG="" ;;
+    esac
+    case "$CUR" in *'&'*) return 1 ;; esac
+    [ -z "$FRAG" ] && break
+  done
+  return 0
+}
+
 ai_run() {
   if printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|wget +[^|]*[|]|curl +[^|]*[|])'; then
     OUT="ОТКАЗ: запрещённая команда"
@@ -1105,6 +1133,13 @@ SAY: $JS"
     # Модель інколи загортає команду в HTML — зрізаємо теги і розкодуємо entities
     PCMD=$(printf '%s' "$PCMD" | sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g' | sed 's/^[[:space:]`]*//; s/[[:space:]`]*$//')
     PCMD=$(uci_autocommit "$PCMD")
+    # C5: захист у глибину — підстановки/; /&/спуф-юнікод у CMD недопустимі
+    if ! sanitize_cmd "$PCMD"; then
+      kill "$TPID" 2>/dev/null
+      alog ERR "sanitize REJECT: $(printf '%s' "$PCMD" | tr '\n\t' '  ' | head -c 160)"
+      reply "$(t san_rej)"
+      return
+    fi
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
       # Дедуп: ту саму команду щойно підтверджено й виконано?

@@ -19,14 +19,14 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {)
   ' "$SRC"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
 rm -f "$DIR/.xf"
 [ -z "$MISS" ] || { echo "EXTRACT FAIL:$MISS"; exit 2; }
 . "$DIR/fns"; rm -f "$DIR/fns"
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -117,6 +117,19 @@ if [ -n "$KB" ]; then
 else
   echo "skip devices_kb: немає онлайн-хостів зараз"
 fi
+
+# --- sanitize_cmd (C5: захист у глибину; пайпи дозволені — скіли їх використовують) ---
+if sanitize_cmd "uci set network.lan.ipaddr='192.168.1.2' && uci commit network"; then ok "san: легальний uci set&&commit проходить"; else bad "san: легальний uci set&&commit" "-"; fi
+if sanitize_cmd "uci show firewall | head -60"; then ok "san: пайп на head дозволений"; else bad "san: пайп на head" "-"; fi
+if sanitize_cmd 'echo `id`'; then bad "san: бектік відхилено" "+"; else ok "san: бектік відхилено"; fi
+if sanitize_cmd 'echo $(id)'; then bad "san: \$() відхилено" "+"; else ok "san: \$() відхилено"; fi
+if sanitize_cmd 'echo ${PATH}'; then bad "san: \${} відхилено" "+"; else ok "san: \${} відхилено"; fi
+if sanitize_cmd 'cat /etc/shadow;reboot'; then bad "san: ; ланцюжок відхилено" "+"; else ok "san: ; ланцюжок відхилено"; fi
+if sanitize_cmd 'reboot &'; then bad "san: одиночний & відхилено" "+"; else ok "san: одиночний & відхилено"; fi
+ZW=$(printf 'uci set a.b=\342\200\215x')
+if sanitize_cmd "$ZW"; then bad "san: zero-width спуф відхилено" "+"; else ok "san: zero-width спуф відхилено"; fi
+CTL=$(printf 'a\001b')
+if sanitize_cmd "$CTL"; then bad "san: керуючий байт відхилено" "+"; else ok "san: керуючий байт відхилено"; fi
 
 # --- skill_pick (keyword→скіл; порядок: wifi,vpn,dns,firewall,services,netdhcp,misc) ---
 eq "skill: встанови nlbwmon → services" "$(skill_pick 'встанови nlbwmon')" "$DIR/ai/skills/services.md"
