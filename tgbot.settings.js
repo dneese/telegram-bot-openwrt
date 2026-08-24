@@ -84,6 +84,12 @@ return view.extend({
 		o.default = o.disabled;
 		o.optional = true;
 
+		o = s.option(form.Value, 'gh_token', _('GitHub Token (самонавчання)'),
+			_('Необовʼязково: PAT з правами repo — бот сам комітитиме свої уроки/помилки у prompts/learned/. Створити: github.com/settings/tokens (classic, scope repo)'));
+		o.password = true;
+		o.optional = true;
+		o.placeholder = 'ghp_...';
+
 		o = s.option(form.Button, '_restart');
 		o.title = _('Перезапуск');
 		o.inputtitle = _('🔄 Перезапустить бота');

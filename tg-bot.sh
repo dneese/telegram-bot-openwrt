@@ -1047,6 +1047,45 @@ unglue_cmd() {
     }'
 }
 
+learn_note() {
+  # $1=тип(FAIL|OK|FIX) $2=текст -> журнал уроків $DIR/ai/mistakes.md (хвостом, ліміт ~140 рядків)
+  MF="$DIR/ai/mistakes.md"
+  mkdir -p "$DIR/ai" 2>/dev/null
+  printf '%s | %s | %s\n' "$(date '+%d.%m %H:%M')" "$1" "$2" >> "$MF" 2>/dev/null || return 0
+  [ "$(wc -l < "$MF" 2>/dev/null)" -gt 140 ] && { tail -n 100 "$MF" > "$MF.new" && mv "$MF.new" "$MF"; }
+}
+
+lessons_fetch() {
+  # кешований (24год) хвіст спільних уроків з GitHub prompts/learned/lessons.md; офлайн/404 = тихо ""
+  LF="$DIR/kbcache/_lessons.md"
+  if [ -s "$LF" ] && [ "$(find "$DIR/kbcache" -name '_lessons.md' -mmin -1440 2>/dev/null | wc -l)" -ge 1 ]; then
+    tail -c 2600 "$LF"; return 0
+  fi
+  mkdir -p "$DIR/kbcache" 2>/dev/null || return 0
+  curl -fsSL --max-time 8 "https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/prompts/learned/lessons.md" 2>/dev/null | tail -c 2600 > "$LF.tmp" || { rm -f "$LF.tmp"; return 0; }
+  [ -s "$LF.tmp" ] && mv "$LF.tmp" "$LF"
+  tail -c 2600 "$LF" 2>/dev/null
+}
+
+gh_sync_lessons() {
+  # Пуш уроків у GitHub Contents API (потрібен uci tgbot.config.gh_token). Не частіше ніж раз на годину.
+  GT=$(uci -q get tgbot.config.gh_token)
+  [ -z "$GT" ] && return 0
+  TSF="$DIR/.gh_les_ts"
+  [ -f "$TSF" ] && [ $(( $(date +%s) - $(cat "$TSF") )) -lt 3600 ] && return 0
+  SRC="$DIR/ai/mistakes.md"; [ -s "$SRC" ] || return 0
+  B64=$(tail -n 80 "$SRC" | base64 2>/dev/null | tr -d '\n') ; [ -z "$B64" ] && return 0
+  date +%s > "$TSF"
+  REPO="dneese/telegram-bot-openwrt"; API="https://api.github.com/repos/$REPO/contents/prompts/learned/lessons.md"
+  SHA=$(curl -fsSL --max-time 15 -H "Authorization: Bearer $GT" "$API" 2>/dev/null | jsonfilter -e '$.sha' 2>/dev/null)
+  JS="{\"message\":\"bot lessons auto-sync $(date '+%d.%m %H:%M')\",\"content\":\"$B64\"${SHA:+,\"sha\":\"$SHA\"}}"
+  printf '%s' "$JS" > "$DIR/.gh_les.json"
+  curl -s --max-time 20 -X PUT -H "Authorization: Bearer $GT" \
+    -H "Content-Type: application/json" --data-binary "@$DIR/.gh_les.json" "$API" >/dev/null 2>&1
+  rm -f "$DIR/.gh_les.json"
+  alog LEARN "synced lessons to github (rc=$?)"
+}
+
 ai_run() {
   if printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|wget +[^|]*[|]|curl +[^|]*[|])'; then
     OUT="ОТКАЗ: запрещённая команда"
@@ -1065,6 +1104,8 @@ ai_run() {
       OUT="(помилка, код виходу $RC)"
     fi
   fi
+  # самонавчання: невдала команда = урок (щоб модель бачила свої провали пізніше)
+  [ "$RC" != "0" ] && learn_note FAIL "$(printf '%s' "$1" | head -c 160) => rc=$RC $(printf '%s' "$OUT" | head -c 80)"
 }
 
 kb_pick() {
@@ -1107,10 +1148,18 @@ ai_agent() {
   alog Q "user: $Q"
   # --- САМОНАВЧАННЯ: виправлення власника → corrections.md (підсилається завжди) ---
   case "$Q" in
-    *не\ вірно*|*не\ правильно*|*Невірно*|*неправильн*|*Неправильн*|*ти\ казав*|*Ти\ казав*|*ти\ сказав*|*Ти\ сказав*|*помилк*|*Помилк*|*ти\ ж\ сам*)
+    *не\ вірно*|*не\ правильно*|*Невірно*|*неправильн*|*Неправильн*|*ти\ казав*|*Ти\ казав*|*ти\ сказав*|*Ти\ сказав*|*помилк*|*Помилк*|*ти\ ж\ сам*|*верни\ назад*|*Верни\ назад*|*знову\ не\ працює*|*Знову\ не\ працює*|*не\ те\ зробив*)
       [ -s "$DIR/aihist" ] && {
         { echo "=== $(date '+%d.%m %H:%M') виправлення:"; tail -n 4 "$DIR/aihist"; } >> "$DIR/ai/corrections.md" 2>/dev/null
+        L=$(tail -n 4 "$DIR/aihist" | head -c 200); learn_note FIX "корекція власника: $L"
+        gh_sync_lessons &
         alog LEARN "записано корекцію з діалогу"
+      }
+      ;;
+    *"все працює"*|*"працює, дякую"*|*"дякую, працює"*|*"тепер працює"*|"Тепер працює"*|*"працює!"*)
+      [ -s "$DIR/.lastconf" ] && {
+        LC=$(sed -n '1p' "$DIR/.lastconf" | head -c 160)
+        [ -n "$LC" ] && { learn_note OK "спрацювало: $LC"; gh_sync_lessons & alog LEARN "позитивний рецепт зафіксовано"; }
       }
       ;;
   esac
@@ -1180,13 +1229,23 @@ $(tail -n 6 "$DIR/aihist" | cut -c1-160)"
 ПОГЛИБЛЕНІ ЗНАННЯ ПО ТЕМІ (GitHub, джерело надійне) — застосовуй напряму:
 $(printf '%s' "$KBD" | sed 's/[[:space:]]*$//')"
   fi
+  # уроки з минулого: локальні провали + спільний журнал GitHub (кеш 24год)
+  LESSONS=""
+  [ -s "$DIR/ai/mistakes.md" ] && LESSONS="$(tail -n 12 "$DIR/ai/mistakes.md")"
+  LGH=$(lessons_fetch); [ -n "$LGH" ] && LESSONS="${LESSONS}
+--- Спільні уроки (GitHub): ---
+$LGH"
+  LES_TXT=""
+  [ -n "$LESSONS" ] && LES_TXT="
+УРОКИ З МИНУЛОГО (твої реальні провали і вдалі рецепти) — НЕ повторюй помилкові команди, перевіряй підхід:
+$LESSONS"
   if [ -n "$SKF" ] && [ -s "$SKF" ]; then
     SKILL_TXT="
 ЗНАННЯ ПО ТЕМІ ВЖЕ НАДАНО (джерело: $SKF) — НЕ витрачай хід на CMD: cat цього файлу, знання повні:
 $(cat "$SKF")"
     alog INTENT "skill=$(basename "$SKF")"
   fi
-  SYS1="$(ai_rules_full)$SKILL_TXT$KB_TXT
+  SYS1="$(ai_rules_full)$SKILL_TXT$KB_TXT$LES_TXT
 Состояние роутера сейчас: $SNAP
 Устройства онлайн: ${DEVS:-нет}$HIST"
   SYSN="$(ai_rules)$HIST
