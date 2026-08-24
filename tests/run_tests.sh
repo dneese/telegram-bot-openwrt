@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -206,6 +206,12 @@ has "learn: FAIL записано" "$(cat "$DIR/ai/mistakes.md")" "FAIL | uci se
 for i in 1 2 3; do learn_note OK "спрацювало: рецепт $i"; done
 eq "learn: рядків=4" "$(wc -l < "$DIR/ai/mistakes.md" | tr -d ' ')" "4"
 rm -f "$DIR/ai/mistakes.md"
+
+# --- cmd_banned (жорсткі бани ai_run; wget|head тепер ДОЗВОЛЕНИЙ — шаблон KB-феча) ---
+if cmd_banned "rm -rf /tmp/x"; then ok "ban: rm -rf ловиться"; else bad "ban: rm -rf" "-"; fi
+if cmd_banned "uci show x | sh"; then ok "ban: пайп на sh ловиться"; else bad "ban: |sh" "-"; fi
+if cmd_banned "wget -qO- https://raw.githubusercontent.com/x/kb/warp.md | head -c 3400"; then bad "ban: wget|head НЕ має банитись (KB-феч)" "+"; else ok "ban: wget|head дозволений"; fi
+if cmd_banned "curl -s https://x.y | grep z"; then bad "ban: curl|grep НЕ має банитись" "+"; else ok "ban: curl|grep дозволений"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null

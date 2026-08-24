@@ -1086,8 +1086,14 @@ gh_sync_lessons() {
   alog LEARN "synced lessons to github (rc=$?)"
 }
 
+cmd_banned() {
+  # $1=CMD -> 0=заборонена. Жорсткі бани поверх sanitize_cmd (деструктив/ескалація).
+  # wget/curl З пайпом НЕ баняться (шаблон KB-феча сам так працює); досі заборонено |sh.
+  printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)'
+}
+
 ai_run() {
-  if printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|wget +[^|]*[|]|curl +[^|]*[|])'; then
+  if cmd_banned "$1"; then
     OUT="ОТКАЗ: запрещённая команда"
     return
   fi

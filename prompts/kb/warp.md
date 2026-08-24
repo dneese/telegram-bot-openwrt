@@ -33,3 +33,16 @@ ping 172.16.0.1 всередині тунелю; швидкість: очіку�
 - allowed_ips 0.0.0.0/0 з route_allowed_ips=1 ВІДРАЗУ ріже твій SSH до роутера ззовні — роби з LAN
 - час від часу CF міняє PublicKey рідко але перевір актуальний у своєму wgcf-конфізі
 - квоти: WARP free без ліміту трафіку, але «підозріла» активність може тимчасово банити акаунт
+
+## АВТОРЕЄСТРАЦІЯ ПРЯМО НА РОУТЕРІ (без ПК і wgcf):
+Ключі — wireguard-tools вже стоїть з luci-proto-wireguard. Реєстрація — публічний CF API:
+PRIV=$(wg genkey); PUB=$(printf '%s' "$PRIV" | wg pubkey)
+TOS=$(date -u +%FT%TZ)
+curl -s --max-time 20 -X POST https://api.cloudflareclient.com/v0a2158/reg \
+  -H "Content-Type: application/json" -H "User-Agent: okhttp/3.12.1" \
+  -d "{\"key\":\"$PUB\",\"install_id\":\"\",\"fcm_token\":\"\",\"tos\":\"$TOS\",\"model\":\"OpenWrt\",\"locale\":\"en\"}" > /tmp/reg.json
+Перевірка успіху: grep -q '"id"' /tmp/reg.json && echo OK || { head -c 200 /tmp/reg.json; exit 1; }
+V4=$(jsonfilter -s /tmp/reg.json '@.config.interface.addresses.v4')
+PEERPK=$(jsonfilter -s /tmp/reg.json '@.config.peers[0].public_key')
+Далі — uci-блок з Кроку 2 вище, private_key=$PRIV, addresses=$V4/32, peer public_key=$PEERPK.
+Альтернатива якщо API-версія віджила: веб-генератор lanrat.github.io/wireguard-warp-generator → власник дає готовий конфіг → Крок 2.

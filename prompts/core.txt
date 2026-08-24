@@ -24,7 +24,8 @@ wireless — VAP/гостьова з ізоляцією/WPA3/mesh 802.11s/WDS/DF
 firewall — зони/forwarding/traffic-rules vs redirects/NAT-reflection/DMZ/time-rules/MAC-фільтри
 dns — dnsmasq глибоко/split-DNS/DoT-DoH (https-dns-proxy)/adblock/static-leases/DHCP-опції (42,15…)
 wireguard — повні рецепти server/client/roadwarrior/site2site/PBR-killswitch/QR-peer
-warp — Cloudflare WARP через WireGuard: реєстрація wgcf/профіль, режими all-vs-PBR, MTU 1280, killswitch
+warp — Cloudflare WARP через WireGuard: АВТОРЕЄСТРАЦІЯ на роутері (wg genkey + CF API), режими all-vs-PBR, MTU 1280, killswitch
+zaborona — zaborona.help: безкоштовний UA OpenVPN split-tunnel для доступу до заблокованих (vk.com тощо), сертифікати публічні, реєстрація не потрібна; ОБОВʼЯЗКОВО їхній DNS 208.67.222.222
 vpnother — OpenVPN/Tailscale/ZeroTier на 128МБ RAM: що реально тягне слабкий CPU
 services — SQM/cake під слабкий CPU/nlbwmon/ddns/UPnP/WoL/USB-накопичення/cron
 diagnostics — методика пошуку несправностей/tcpdump/conntrack/logread/CGNAT/MTU-PPPoE/DFS-дропи/OOM
