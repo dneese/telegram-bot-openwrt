@@ -1119,6 +1119,7 @@ kb_pick() {
   case "$1" in
     *wifi*|*Wifi*|*WiFi*|*"5ГГц"*|*"2.4"*|*радіо*) echo wireless ;;
     *wireguard*|*WireGuard*|*WARP*|*warp*) echo wireguard ;;
+    *vk.com*|*вконтакт*|*ВКонтакт*|*"вк "*|*заблокован*|*Заблокован*|*розблокув*|*обійти\ блокуванн*|*zaborona*|*Zaborona*) echo zaborona ;;
     *openvpn*|*OpenVPN*|*tailscale*|*Tailscale*|*zerotier*|*ZeroTier*) echo vpnother ;;
     *dns*|*DNS*|*adblock*|*DoH*|*dnsmasq*) echo dns ;;
     *firewall*|*фаєрвол*|*Фаєрвол*|*проброс*|*port\ forward*|*DMZ*) echo firewall ;;

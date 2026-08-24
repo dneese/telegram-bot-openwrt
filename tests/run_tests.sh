@@ -213,6 +213,8 @@ if cmd_banned "uci show x | sh"; then ok "ban: пайп на sh ловиться
 if cmd_banned "wget -qO- https://raw.githubusercontent.com/x/kb/warp.md | head -c 3400"; then bad "ban: wget|head НЕ має банитись (KB-феч)" "+"; else ok "ban: wget|head дозволений"; fi
 if cmd_banned "curl -s https://x.y | grep z"; then bad "ban: curl|grep НЕ має банитись" "+"; else ok "ban: curl|grep дозволений"; fi
 
+# --- kb_pick zaborona/vk ---
+eq "kb: vk заблокований → zaborona" "$(kb_pick 'vk.com заблокований в україні, відкрий доступ')" "zaborona"
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
 [ "$FAIL" = 0 ]
