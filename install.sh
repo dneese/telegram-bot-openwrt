@@ -34,8 +34,10 @@ if [ "$UNINST" = "1" ]; then
   echo "== Видалення tg-router-bot =="
   /etc/init.d/tg-bot stop 2>/dev/null
   /etc/init.d/tg-bot disable 2>/dev/null
-  rm -f $PREFIX/tg-bot.sh $PREFIX/tg-analyze.sh
-  rm -f /etc/init.d/tg-bot
+  /etc/init.d/tg-watch stop 2>/dev/null
+  /etc/init.d/tg-watch disable 2>/dev/null
+  rm -f $PREFIX/tg-bot.sh $PREFIX/tg-analyze.sh $PREFIX/tg-watch.sh
+  rm -f /etc/init.d/tg-bot /etc/init.d/tg-watch
   rm -f /www/luci-static/resources/view/tgbot/settings.js
   rm -f /usr/share/luci/menu.d/luci-app-tgbot.json
   rm -f /usr/share/rpcd/acl.d/luci-app-tgbot.json
@@ -54,13 +56,15 @@ command -v jsonfilter >/dev/null || MISS="$MISS jsonfilter"
 
 # --- бекап попередніх версій ---
 TS=$(date +%Y%m%d-%H%M%S)
-for F in $PREFIX/tg-bot.sh /etc/init.d/tg-bot; do
+for F in $PREFIX/tg-bot.sh $PREFIX/tg-watch.sh /etc/init.d/tg-bot /etc/init.d/tg-watch; do
   [ -f "$F" ] && cp "$F" "$F.bak.$TS" && echo "backup: $F -> $F.bak.$TS"
 done
 
 # --- файли бота ---
 cp "$SRC/tg-bot.sh" $PREFIX/tg-bot.sh && chmod +x $PREFIX/tg-bot.sh
 [ -f "$SRC/tg-analyze.sh" ] && cp "$SRC/tg-analyze.sh" $PREFIX/tg-analyze.sh && chmod +x $PREFIX/tg-analyze.sh
+[ -f "$SRC/tg-watch.sh" ] && cp "$SRC/tg-watch.sh" $PREFIX/tg-watch.sh && chmod +x $PREFIX/tg-watch.sh
+[ -f "$SRC/tg-watch.init" ] && cp "$SRC/tg-watch.init" /etc/init.d/tg-watch && chmod +x /etc/init.d/tg-watch
 [ -f "$SRC/tg-bot.init" ] && cp "$SRC/tg-bot.init" /etc/init.d/tg-bot && chmod +x /etc/init.d/tg-bot
 [ -f "$SRC/tgbot.menu.json" ] && { mkdir -p /usr/share/luci/menu.d; cp "$SRC/tgbot.menu.json" /usr/share/luci/menu.d/luci-app-tgbot.json; }
 [ -f "$SRC/tgbot.acl.json" ] && { mkdir -p /usr/share/rpcd/acl.d; cp "$SRC/tgbot.acl.json" /usr/share/rpcd/acl.d/luci-app-tgbot.json; }
@@ -110,11 +114,16 @@ fi
 # --- запуск ---
 /etc/init.d/tg-bot enable 2>/dev/null
 /etc/init.d/tg-bot restart 2>/dev/null || /etc/init.d/tg-bot start
+if [ -f /etc/init.d/tg-watch ]; then
+  /etc/init.d/tg-watch enable 2>/dev/null
+  /etc/init.d/tg-watch restart 2>/dev/null || /etc/init.d/tg-watch start
+fi
 sleep 4
 
 echo ""
 echo "== Статус =="
 pgrep -f "$PREFIX/tg-bot.sh" >/dev/null && echo "✅ процес працює" || echo "❌ ПРОЦЕС НЕ ЗАПУСТИВСЯ (див. logread | grep tg-bot)"
+pgrep -f "$PREFIX/tg-watch.sh" >/dev/null && echo "✅ вотчер подій працює (тихий режим: uci set tgbot.config.watch_quiet=1)" || echo "⚠️ вотчер не запустився (не критично)"
 TT=$(uci -q get tgbot.config.token)
 [ -n "$TT" ] && curl -s --max-time 10 "https://api.telegram.org/bot$TT/getMe" | grep -q '"ok":true' \
   && echo "✅ Telegram API доступний" || echo "⚠️ Telegram API недоступний (перевірте токен/інтернет)"

@@ -1,8 +1,9 @@
 #!/bin/sh
 # tests/run_tests.sh — офлайн-тести функцій tg-bot.sh (без API, без мутацій).
-# Запуск на роутері:  sh tests/run_tests.sh [/usr/bin/tg-bot.sh]
-# Запуск у Termux:    sh tests/run_tests.sh ~/Documents/tg-router-bot/tg-bot.sh
+# Запуск на роутері:  sh tests/run_tests.sh [/usr/bin/tg-bot.sh] [/usr/bin/tg-watch.sh]
+# Запуск у Termux:    sh tests/run_tests.sh ~/Documents/tg-router-bot/tg-bot.sh [~/Documents/tg-router-bot/tg-watch.sh]
 SRC="$1"
+SRCW="$2"
 [ -f "$SRC" ] || { echo "usage: run_tests.sh <path/to/tg-bot.sh>"; exit 2; }
 TD=${TMPDIR:-/tmp}; [ -d "$TD" ] || TD=$HOME
 DIR=$(mktemp -d "$TD/tgt.XXXXXX" 2>/dev/null) || { DIR="$TD/tgt.$$"; mkdir -p "$DIR"; }
@@ -11,12 +12,12 @@ BOT_LANG=uk
 T_d_name_ru='Устр'; T_d_name_uk='Пристр'; T_d_name_en='Dev'
 PASS=0; FAIL=0
 
-xf() { # витяг функцію з SRC (стилі: name(){ та name() {)
+xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $2 = альтернативне джерело
   awk -v fn="$1" '
     !p && index($0, fn"(")==1 && substr($0, length(fn)+3) ~ /^[[:space:]]*\{/ { p=1 }
     p { print }
     p && $0=="}" { exit }
-  ' "$SRC"
+  ' "${2:-$SRC}"
 }
 MISS=""
 for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
@@ -26,6 +27,12 @@ done
 rm -f "$DIR/.xf"
 [ -z "$MISS" ] || { echo "EXTRACT FAIL:$MISS"; exit 2; }
 . "$DIR/fns"; rm -f "$DIR/fns"
+
+# --- tg-watch.sh: watch_match (другий аргумент) ---
+if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
+  xf watch_match "$SRCW" > "$DIR/.xw" || true
+  [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
+fi
 for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
@@ -148,6 +155,21 @@ eq "skill: статическая аренда → netdhcp" "$(skill_pick 'сд�
 eq "skill: температура CPU → misc" "$(skill_pick 'какая температура CPU?')" "$DIR/ai/skills/system-misc.md"
 if skill_pick 'какая погода в Киеве' >/dev/null 2>&1; then bad "skill: погода не матчиться" "matched"; else ok "skill: погода не матчиться"; fi
 if skill_pick 'покажи устройства' >/dev/null 2>&1; then bad "skill: девайси не матчаться" "matched"; else ok "skill: девайси не матчаться"; fi
+
+# --- watch_match (tg-watch.sh; тільки якщо джерело передано) ---
+if type watch_match >/dev/null 2>&1; then
+  LM='Thu Aug 24 08:03:01 2026 daemon.info dnsmasq-dhcp[3012]: DHCPACK on 192.168.1.50 to AA:BB:CC:DD:EE:FF wifi-pc'
+  eq "wmatch: dhcp (on-form)" "$(watch_match "$LM")" "dhcp 192.168.1.50 AA:BB:CC:DD:EE:FF"
+  LM2='daemon.info dnsmasq-dhcp[3012]: DHCPACK(br-lan) 192.168.1.51 11:22:33:44:55:66 phone'
+  eq "wmatch: dhcp (paren-form)" "$(watch_match "$LM2")" "dhcp 192.168.1.51 11:22:33:44:55:66"
+  eq "wmatch: link down" "$(watch_match 'kernel: [1234.567890] eth0: link down')" "link eth0 down"
+  eq "wmatch: link up" "$(watch_match 'kernel: [1235.000000] eth0: link up (1000Mbps/Full duplex)')" "link eth0 up"
+  eq "wmatch: wlan ready→up" "$(watch_match 'wlan0: link becomes ready')" "link wlan0 up"
+  eq "wmatch: lo ігнорується" "$(watch_match 'lo: link down')" ""
+  eq "wmatch: шум не матчиться" "$(watch_match 'daemon.notice procd: Instance tg-bot::inst s in a crash loop 7 300')" ""
+else
+  echo "skip watch_match: tg-watch.sh не передано"
+fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
