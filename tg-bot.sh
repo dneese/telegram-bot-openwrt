@@ -772,6 +772,28 @@ ai_rules_full_embedded() {
 Пользователь просит сложную настройку — действуй сам по логике OpenWrt: разведка (uci show/ls/apk search) → изменение → проверка применения → отчёт."
 }
 
+ai_intent() {
+  # $1=Q -> ACTION (sys_info|devices|wifi_scan|help|unknown); дешевий виклик ~250 токенів
+  ITP=$(ai_file intent.txt)
+  [ -z "$ITP" ] && { echo unknown; return; }
+  IM=$(uci -q get tgbot.config.ai_model)
+  [ -z "$IM" ] && IM="qwen/qwen3.6-27b"
+  IU=$(uci -q get tgbot.config.ai_url)
+  [ -z "$IU" ] && IU="https://openrouter.ai/api/v1/chat/completions"
+  IK=$(uci -q get tgbot.config.ai_key)
+  printf '{"model":"%s","max_tokens":120%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+    "$IM" "$(case $IM in *qwen*) echo ',"reasoning_format":"hidden"' ;; esac)" \
+    "$(jesc "$ITP")" "$(jesc "$(utf8fix "$1")")" > "$DIR/.iq"
+  IR=$(curl -s --max-time 30 "$IU" \
+    -H "Authorization: Bearer $IK" \
+    -H "Content-Type: application/json" \
+    --data-binary "@$DIR/.iq")
+  rm -f "$DIR/.iq"
+  IA=$(printf '%s' "$IR" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
+  ACT=$(printf '%s' "$IA" | tr -d '`' | grep -o '"action"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*:[[:space:]]*"//; s/"$//')
+  echo "${ACT:-unknown}"
+}
+
 ai_call() {
   # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr)
   # Спроба 1-2: основна модель (ретрай після паузи); спроба 3: резервна модель (інша квота-бакет)
@@ -865,6 +887,28 @@ ai_agent() {
   }
   Q=$(printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
   alog Q "user: $Q"
+  # --- ШВИДКИЙ ШЛЯХ: класифікація наміру (~250 токенів замість ~3000) ---
+  case "$Q" in
+    "/ai"|"/ai "*|"ai"|""|"off") ;;   # командні/порожні — без класифікатора
+    *)
+      ACT=$(ai_intent "$Q")
+      alog INTENT "action=$ACT"
+      case "$ACT" in
+        sys_info)
+          alog FINAL "fast sys_info"
+          OUTS="$(status_text)"; send_rich "$OUTS" || reply_rich "$OUTS"
+          return ;;
+        devices)
+          alog FINAL "fast devices"
+          OUTD="$(devices_text)"; send_rich "$OUTD" || reply_rich "$OUTD"
+          return ;;
+        wifi_scan)
+          alog FINAL "fast scan"; cmd_scan; return ;;
+        help)
+          alog FINAL "fast help"; send_menu "$(help_text)"; return ;;
+      esac
+      ;;
+  esac
   if [ "$Q" = "off" ]; then
     rm -f "$DIR/aimode"
     reply "$(t ai_exit)"
@@ -875,10 +919,16 @@ ai_agent() {
   ( N=0; while [ $N -lt 40 ]; do typing; sleep 4; N=$((N+1)); done ) &
   TPID=$!
   ai_snapshot
+  # --- СЕСІЙНІСТЬ: історія тільки якщо попередній AI-обмін < 10 хв тому ---
+  SESS_NOW=$(date +%s); SESS_PREV=0
+  [ -f "$DIR/.sess" ] && SESS_PREV=$(cat "$DIR/.sess" 2>/dev/null)
+  echo "$SESS_NOW" > "$DIR/.sess"
   HIST=""
-  [ -s "$DIR/aihist" ] && HIST="
+  if [ -s "$DIR/aihist" ] && [ $((SESS_NOW-SESS_PREV)) -le 600 ]; then
+    HIST="
 Предыдущий диалог:
 $(tail -n 6 "$DIR/aihist" | cut -c1-160)"
+  fi
   SYS1="$(ai_rules_full)
 Состояние роутера сейчас: $SNAP
 Устройства онлайн: ${DEVS:-нет}$HIST"
