@@ -706,24 +706,22 @@ ai_snapshot() {
 }
 
 devices_kb() {
-  # Кнопки швидкої дії для онлайн-хостів (статичний IP), ≤8 штук
+  # Кнопки швидкої дії для онлайн-хостів: ПО ОДНІЙ на рядок (щоб не обрізались),
+  # підпис = ім'я з DHCP + останній октет IP; cb = st:MAC|IP
   AT=/tmp/kba.$$
   awk '$3=="0x2"{print $1}' /proc/net/arp > "$AT"
-  KB=""; ROW=""; N=0
+  KB=""; N=0
   [ -s /tmp/dhcp.leases ] || { rm -f "$AT"; return 1; }
   while read -r TS MAC IP NAME CID; do
     grep -qxF "$IP" "$AT" || continue
     N=$((N+1)); [ $N -gt 8 ] && break
-    BTN="{\"text\":\"⚙️ $IP\",\"callback_data\":\"st:$MAC|$IP\"}"
-    if [ $((N % 4)) = 1 ]; then
-      [ -n "$ROW" ] && KB="$KB[$ROW],"
-      ROW="$BTN"
-    else
-      ROW="$ROW,$BTN"
-    fi
+    NM="$NAME"
+    case "$NM" in "*"|"") NM="$(t d_name)-${IP##*.}" ;; esac
+    NM=$(printf '%s' "$NM" | sed 's/"/\\"/g' | head -c 24)
+    KB="$KB[{\"text\":\"⚙️ $NM · .${IP##*.}\",\"callback_data\":\"st:$MAC|$IP\"}],"
   done < /tmp/dhcp.leases
   rm -f "$AT"
-  [ -n "$ROW" ] && KB="$KB[$ROW]"
+  KB=${KB%,}
   [ -z "$KB" ] && return 1
   printf '{"inline_keyboard":[%s]}' "$KB"
 }
