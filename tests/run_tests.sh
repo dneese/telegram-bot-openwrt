@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -187,6 +187,17 @@ if type watch_match >/dev/null 2>&1; then
 else
   echo "skip watch_match: tg-watch.sh не передано"
 fi
+
+# --- kb_pick / kb_fetch (GitHub-база знань) ---
+eq "kb: 5ГГц питання → wireless" "$(kb_pick 'чому клієнти 5ГГц відвалюються?')" "wireless"
+eq "kb: warp → wireguard" "$(kb_pick 'налаштуй WARP від cloudflare')" "wireguard"
+eq "kb: проброс порту → firewall" "$(kb_pick 'зроби проброс порту 8080')" "firewall"
+eq "kb: встанови пакет → packages" "$(kb_pick 'встанови nlbwmon для статистики')" "packages"
+eq "kb: не працює інтернет → diagnostics" "$(kb_pick 'інтернет пропадає кілька разів на день')" "diagnostics"
+if kb_pick 'що таке погода' >/dev/null; then bad "kb: погода не матчиться" "+"; else ok "kb: погода не матчиться"; fi
+mkdir -p "$DIR/kbcache"; printf '# тестовий док' > "$DIR/kbcache/wireless.md"
+eq "kb_fetch: кеш-хіт" "$(kb_fetch wireless)" '# тестовий док'
+eq "kb_fetch: невідома тема = тихо пусто" "$(kb_fetch nosuchtopic123)" ''
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null

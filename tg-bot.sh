@@ -1067,6 +1067,37 @@ ai_run() {
   fi
 }
 
+kb_pick() {
+  # $1=Q -> тема БАЗИ ЗНАНЬ GitHub (kb/*.md) або "" — синхронно зі skill_pick-темами
+  case "$1" in
+    *wifi*|*Wifi*|*WiFi*|*"5ГГц"*|*"2.4"*|*радіо*) echo wireless ;;
+    *wireguard*|*WireGuard*|*WARP*|*warp*) echo wireguard ;;
+    *openvpn*|*OpenVPN*|*tailscale*|*Tailscale*|*zerotier*|*ZeroTier*) echo vpnother ;;
+    *dns*|*DNS*|*adblock*|*DoH*|*dnsmasq*) echo dns ;;
+    *firewall*|*фаєрвол*|*Фаєрвол*|*проброс*|*port\ forward*|*DMZ*) echo firewall ;;
+    *SQM*|*sqm*|*QoS*|*ddns*|*DDNS*|*UPnP*|*WoL*|*USB*) echo services ;;
+    *apk*|*пакет*|*Пакет*|*встанови*|*Встанови*|*nlbwmon*) echo packages ;;
+    *не\ працює*|*відвалюється*|*пропада*|*обрив*|*лагає*|*тормозить*|*повільн*|*діагностик*) echo diagnostics ;;
+    *безпек*|*харденінг*|*sysupgrade*|*оновленн*) echo security ;;
+    *повільн*|*швидкодія*|*offload*|*оптимізац*) echo performance ;;
+    *vlan*|*VLAN*|*DSA*|*маршрут*|*multi-wan*|*mwan*) echo network ;;
+  esac
+  return 1
+}
+
+kb_fetch() {
+  # $1=тема -> stdout вміст (≤3400Б) з кешу $DIR/kbcache (TTL 7днів) або GitHub; фейл = тихо ""
+  [ -z "$1" ] && return 0
+  KC="$DIR/kbcache"; KF="$KC/$1.md"
+  if [ -s "$KF" ] && [ "$(find "$KC" -name "$1.md" -mmin -10080 2>/dev/null | wc -l)" -ge 1 ]; then
+    cat "$KF"; return 0
+  fi
+  mkdir -p "$KC" 2>/dev/null || return 0
+  curl -fsSL --max-time 8 "https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/prompts/kb/$1.md" 2>/dev/null | head -c 3400 > "$KF.tmp" || { rm -f "$KF.tmp"; return 0; }
+  [ -s "$KF.tmp" ] && mv "$KF.tmp" "$KF"
+  cat "$KF" 2>/dev/null
+}
+
 ai_agent() {
   [ -z "$(uci -q get tgbot.config.ai_key)" ] && {
     reply "$(t ai_nokey)"
@@ -1142,13 +1173,20 @@ $(tail -n 6 "$DIR/aihist" | cut -c1-160)"
   fi
   # C1: скіл за темою питання інʼєктується одразу — модель не витрачає хід на `cat skills/*`
   SKF=$(skill_pick "$Q"); SKILL_TXT=""
+  # глибокий док з GitHub-бази: механічно за темою питання, кеш 7 днів
+  KBD=$(kb_fetch "$(kb_pick "$Q")"); KB_TXT=""
+  if [ -n "$KBD" ]; then
+    KB_TXT="
+ПОГЛИБЛЕНІ ЗНАННЯ ПО ТЕМІ (GitHub, джерело надійне) — застосовуй напряму:
+$(printf '%s' "$KBD" | sed 's/[[:space:]]*$//')"
+  fi
   if [ -n "$SKF" ] && [ -s "$SKF" ]; then
     SKILL_TXT="
 ЗНАННЯ ПО ТЕМІ ВЖЕ НАДАНО (джерело: $SKF) — НЕ витрачай хід на CMD: cat цього файлу, знання повні:
 $(cat "$SKF")"
     alog INTENT "skill=$(basename "$SKF")"
   fi
-  SYS1="$(ai_rules_full)$SKILL_TXT
+  SYS1="$(ai_rules_full)$SKILL_TXT$KB_TXT
 Состояние роутера сейчас: $SNAP
 Устройства онлайн: ${DEVS:-нет}$HIST"
   SYSN="$(ai_rules)$HIST
