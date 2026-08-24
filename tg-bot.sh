@@ -695,6 +695,8 @@ ai_snapshot() {
   SSIDC=$(uci -q get wireless.@wifi-iface[0].ssid 2>/dev/null); CHC=$(uci -q get wireless.radio0.channel 2>/dev/null)
   [ -n "$SSIDC" ] && SNAP="$SNAP; наш SSID: $SSIDC канал: ${CHC:-auto}"
   WANRAW=$(ip addr show wan 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1)
+  LIP=$(uci -q get network.lan.ipaddr 2>/dev/null)
+  [ -n "$LIP" ] && SNAP="$SNAP; LAN IP роутера: $LIP (адмінка LuCI: http://$LIP/cgi-bin/luci/)"
   case "$WANRAW" in
     100.6*|100.7*|100.8*|100.9*|100.12[0-7].*) SNAP="$SNAP; ВАЖНО: CGNAT активен — проброс портов из интернета бесполезен, всегда предупреждай об этом" ;;
   esac
@@ -703,11 +705,17 @@ ai_snapshot() {
 
 # --- зовнішні промпти та скіли: файли в $DIR/ai/ мають пріоритет над вбудованими ---
 # Правки core.txt / recipes.txt / skills/*.md застосовуються БЕЗ перезапуску бота.
+# facts.md = статичні факти; corrections.md = виправлення від власника (самонавчання).
 EMERGENCY_CORE='Ты AI-агент OpenWrt-роутера. Формат ответа: строка CMD: <команда или -> и строка SAY: <ответ пользователю>. Никогда не выполняй деструктивные команды (rm -rf, mkfs, sysupgrade) и не трогай сервис tg-bot.'
 ai_file() { [ -s "$DIR/ai/$1" ] && cat "$DIR/ai/$1" 2>/dev/null; }
 ai_rules() {
   R=$(ai_file core.txt)
   if [ -n "$R" ]; then printf '%s' "$R"; else ai_rules_embedded; fi
+  F=$(ai_file facts.md); [ -n "$F" ] && printf '\n\nФАКТИ ПРО ЦЕЙ РОУТЕР:\n%s' "$F"
+  [ -s "$DIR/ai/corrections.md" ] && {
+    C=$(utf8fix "$(tail -c 900 "$DIR/ai/corrections.md")")
+    printf '\n\nВИВЧЕНІ КОРЕКЦІЇ ВЛАСНИКА (найвищий приоритет, враховуй обовʼязково):\n%s' "$C"
+  }
 }
 ai_rules_full() {
   C=$(ai_rules); R=$(ai_file recipes.txt)
@@ -887,6 +895,15 @@ ai_agent() {
   }
   Q=$(printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
   alog Q "user: $Q"
+  # --- САМОНАВЧАННЯ: виправлення власника → corrections.md (підсилається завжди) ---
+  case "$Q" in
+    *не\ вірно*|*не\ правильно*|*Невірно*|*неправильн*|*Неправильн*|*ти\ казав*|*Ти\ казав*|*ти\ сказав*|*Ти\ сказав*|*помилк*|*Помилк*|*ти\ ж\ сам*)
+      [ -s "$DIR/aihist" ] && {
+        { echo "=== $(date '+%d.%m %H:%M') виправлення:"; tail -n 4 "$DIR/aihist"; } >> "$DIR/ai/corrections.md" 2>/dev/null
+        alog LEARN "записано корекцію з діалогу"
+      }
+      ;;
+  esac
   # --- ШВИДКИЙ ШЛЯХ: класифікація наміру (~250 токенів замість ~3000) ---
   case "$Q" in
     "/ai"|"/ai "*|"ai"|""|"off") ;;   # командні/порожні — без класифікатора
@@ -962,6 +979,8 @@ $OUT"
       *"–"*|*"—"*) break ;;
     esac
     PCMD=$(printf '%s' "$PCMD" | sed 's/^->//; s/^→//')
+    # Модель інколи загортає команду в HTML — зрізаємо теги і розкодуємо entities
+    PCMD=$(printf '%s' "$PCMD" | sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g' | sed 's/^[[:space:]`]*//; s/[[:space:]`]*$//')
     PCMD=$(uci_autocommit "$PCMD")
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
