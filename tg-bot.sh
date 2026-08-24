@@ -701,7 +701,40 @@ ai_snapshot() {
   DEVS=$(devices_text | sed 's/<\/tr>/\n/g; s/<[^>]*>//g' | grep '🟢' | tr '\n' ';' | sed 's/;[[:space:]]*;/; /g' | head -c 400)
 }
 
+# --- зовнішні промпти та скіли: файли в $DIR/ai/ мають пріоритет над вбудованими ---
+# Правки core.txt / recipes.txt / skills/*.md застосовуються БЕЗ перезапуску бота.
+EMERGENCY_CORE='Ты AI-агент OpenWrt-роутера. Формат ответа: строка CMD: <команда или -> и строка SAY: <ответ пользователю>. Никогда не выполняй деструктивные команды (rm -rf, mkfs, sysupgrade) и не трогай сервис tg-bot.'
+ai_file() { [ -s "$DIR/ai/$1" ] && cat "$DIR/ai/$1" 2>/dev/null; }
 ai_rules() {
+  R=$(ai_file core.txt)
+  if [ -n "$R" ]; then printf '%s' "$R"; else ai_rules_embedded; fi
+}
+ai_rules_full() {
+  C=$(ai_rules); R=$(ai_file recipes.txt)
+  if [ -n "$R" ]; then printf '%s\n%s' "$C" "$R"; else ai_rules_full_embedded; fi
+}
+
+uci_autocommit() {
+  # Механічний гарант: будь-яка uci set/add/delete отримує commit конфігів автоматично
+  case "$1" in
+    *"uci commit"*|*"uci import"*) printf '%s' "$1"; return ;;
+    *"uci set "*|*"uci add_list "*|*"uci add "*|*"uci delete "*|*"uci rename "*|*"uci reorder "*|"uci -q "*) ;;
+    *) printf '%s' "$1"; return ;;
+  esac
+  CLEAN=$(printf '%s' "$1" | tr '.@[]{}();&|=' '            ')
+  ADD=""
+  for C in network wireless dhcp firewall system sqm ddns adblock upnpd nlbwmon https-dns-proxy; do
+    case " $CLEAN " in
+      *" $C "*) case " $ADD " in *" $C "*) ;; *) ADD="$ADD $C" ;; esac ;;
+    esac
+  done
+  [ -z "$ADD" ] && { printf '%s' "$1"; return; }
+  O="$1"
+  for C in $ADD; do O="$O && uci commit $C"; done
+  printf '%s' "$O"
+}
+
+ai_rules_embedded() {
   # КОРОТКЕ ЯДРО: протокол + безпека + формат (летить у КОЖЕН виклик моделі)
   printf '%s' "Ты — AI-агент управления роутером ImmortalWrt 25.12 (OpenWrt, busybox ash, DSA, пакеты только apk). Одна shell-команда за ход через 'CMD:', результат вернётся как 'РЕЗУЛЬТАТ КОМАНДЫ'. WiFi-интерфейс: phy0-ap0 (скан ~5-15 сек).
 Формат СТРОГО: CMD: <команда|->  и строка SAY: <ответ>.
@@ -717,7 +750,7 @@ ai_rules() {
 SAY: rich Telegram HTML — <b>заголовки</b>, списки «• », значения в <code>..</code>; никакого markdown (*#\`) и таблиц. Язык — как у пользователя (по умолчанию русский)."
 }
 
-ai_rules_full() {
+ai_rules_full_embedded() {
   # ПОВНИЙ промпт: ядро + рецепти + факти (летить тільки на першому ході питання)
   printf '%s' "$(ai_rules)
 ДОСТУПНО: uci, ubus call, iwinfo, logread, jsonfilter, curl, tar, timeout, crontab, ip, df, top, apk, nft, etherwake, free, lsmod, cat /proc/net/dev, /sys/class/leds, /sys/class/thermal. НЕТ: python jq iwlist openssl base64 sudo opkg.
@@ -879,6 +912,7 @@ $OUT"
       *"–"*|*"—"*) break ;;
     esac
     PCMD=$(printf '%s' "$PCMD" | sed 's/^->//; s/^→//')
+    PCMD=$(uci_autocommit "$PCMD")
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
       printf '%s' "$PCMD" > "$DIR/aipend"
@@ -1021,6 +1055,13 @@ process_updates() {
   [ -z "$UPDATES" ] && sleep 5 && return
 
   TOTAL=$(jsonfilter -s "$UPDATES" -e '$.result[*].update_id' 2>/dev/null | wc -l)
+  case "$TOTAL" in
+    ''|*[!0-9]*)
+      alog ERR "process_updates: jsonfilter зламався на бачі апдейтів ($(printf '%s' "$UPDATES" | head -c 100))"
+      return
+      ;;
+  esac
+  [ "$TOTAL" -gt 0 ] && alog POLL "отримано $TOTAL апдейтів (offset=$OFFSET)"
 
   i=0
   LAST=""
