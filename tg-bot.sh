@@ -1057,7 +1057,7 @@ ai_run() {
   else
     OUT=$(sh -c "$1" 2>&1); RC=$?
   fi
-  OUT=$(printf '%s' "$OUT" | head -c 1600)
+  OUT=$(printf '%s' "$OUT" | head -c 3500)
   if [ -z "$OUT" ]; then
     if [ "$RC" = "0" ]; then
       OUT="(виконано успішно, виводу немає)"
