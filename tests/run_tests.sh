@@ -218,6 +218,11 @@ eq "kb: vk заблокований → zaborona" "$(kb_pick 'vk.com забло�
 # --- sanitize: 2>&1 легальний (хибний бан ламав діагностику на живому логу) ---
 if sanitize_cmd 'curl -sI https://vk.com 2>&1 | head -1'; then ok "san: 2>&1 дозволений"; else bad "san: 2>&1" "-"; fi
 if sanitize_cmd 'reboot 2>&1 &'; then bad "san: справжній фон-& ловиться" "+"; else ok "san: справжній фон-& ловиться"; fi
+# --- cmd_banned: інцидент 24.08 — flush таблиць файрвола ЗАВЖДИ заборонений ---
+if cmd_banned "nft flush table inet fw4"; then ok "ban: nft flush table ловиться"; else bad "ban: nft flush" "-"; fi
+if cmd_banned "iptables -F && reboot"; then ok "ban: iptables -F ловиться"; else bad "ban: iptables -F" "-"; fi
+if cmd_banned "nft list ruleset | head -20"; then bad "ban: nft list НЕ має банитись" "+"; else ok "ban: nft list дозволений"; fi
+if cmd_banned "conntrack -F"; then bad "ban: conntrack -F (безпечний метод) НЕ має банитись" "+"; else ok "ban: conntrack -F дозволений"; fi
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
 [ "$FAIL" = 0 ]

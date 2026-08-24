@@ -1091,7 +1091,8 @@ gh_sync_lessons() {
 cmd_banned() {
   # $1=CMD -> 0=заборонена. Жорсткі бани поверх sanitize_cmd (деструктив/ескалація).
   # wget/curl З пайпом НЕ баняться (шаблон KB-феча сам так працює); досі заборонено |sh.
-  printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)'
+  # ІНЦИДЕНТ 24.08: nft flush table витер fw4 при буті -> інтернет зник. Такі команди — ЗАВЖДИ бан.
+  printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|nft +flush|iptables +[-]F([[:space:]]|$)'
 }
 
 ai_run() {

@@ -36,8 +36,9 @@ if [ "$UNINST" = "1" ]; then
   /etc/init.d/tg-bot disable 2>/dev/null
   /etc/init.d/tg-watch stop 2>/dev/null
   /etc/init.d/tg-watch disable 2>/dev/null
-  rm -f $PREFIX/tg-bot.sh $PREFIX/tg-analyze.sh $PREFIX/tg-watch.sh
+  rm -f $PREFIX/tg-bot.sh $PREFIX/tg-analyze.sh $PREFIX/tg-watch.sh $PREFIX/tg-doctor.sh
   rm -f /etc/init.d/tg-bot /etc/init.d/tg-watch
+  rm -f /etc/hotplug.d/iface/99-tg-doctor
   rm -f /www/luci-static/resources/view/tgbot/settings.js
   rm -f /usr/share/luci/menu.d/luci-app-tgbot.json
   rm -f /usr/share/rpcd/acl.d/luci-app-tgbot.json
@@ -65,6 +66,8 @@ done
 cp "$SRC/tg-bot.sh" $PREFIX/tg-bot.sh && chmod +x $PREFIX/tg-bot.sh
 [ -f "$SRC/tg-analyze.sh" ] && cp "$SRC/tg-analyze.sh" $PREFIX/tg-analyze.sh && chmod +x $PREFIX/tg-analyze.sh
 [ -f "$SRC/tg-watch.sh" ] && cp "$SRC/tg-watch.sh" $PREFIX/tg-watch.sh && chmod +x $PREFIX/tg-watch.sh
+[ -f "$SRC/tg-doctor.sh" ] && cp "$SRC/tg-doctor.sh" $PREFIX/tg-doctor.sh && chmod +x $PREFIX/tg-doctor.sh
+[ -f "$SRC/tg-doctor.hotplug" ] && { mkdir -p /etc/hotplug.d/iface; cp "$SRC/tg-doctor.hotplug" /etc/hotplug.d/iface/99-tg-doctor; chmod 644 /etc/hotplug.d/iface/99-tg-doctor; }
 [ -f "$SRC/tg-watch.init" ] && cp "$SRC/tg-watch.init" /etc/init.d/tg-watch && chmod +x /etc/init.d/tg-watch
 [ -f "$SRC/tg-bot.init" ] && cp "$SRC/tg-bot.init" /etc/init.d/tg-bot && chmod +x /etc/init.d/tg-bot
 [ -f "$SRC/tgbot.menu.json" ] && { mkdir -p /usr/share/luci/menu.d; cp "$SRC/tgbot.menu.json" /usr/share/luci/menu.d/luci-app-tgbot.json; }

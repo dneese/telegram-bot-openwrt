@@ -1,0 +1,1 @@
+[ "$ACTION" = "ifup" ] && [ "$INTERFACE" = "wan" ] && /usr/bin/tg-doctor.sh &
