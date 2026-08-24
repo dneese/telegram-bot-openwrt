@@ -944,7 +944,7 @@ ai_call() {
     # Circuit breaker: модель що щойно зламалась/лімітувалась пропускається (крім останнього рубежу)
     if [ "$TRY" != "or" ] && ! brk_ok "$M"; then alog MODEL "skip $M (breaker)"; continue; fi
     case $M in
-      *qwen*) EXTRA=',"reasoning_format":"hidden"' ;;
+      *qwen*) EXTRA=',"reasoning_effort":"none"' ;;
       *gpt-oss*) EXTRA=',"reasoning_effort":"low"' ;;
       *gemini*) EXTRA=',"reasoning_effort":"low"' ;;
       *) EXTRA="" ;;
