@@ -7,7 +7,8 @@
         "write": {
             "uci": ["tgbot"],
             "file": {
-                "/etc/init.d/tg-bot": ["exec"]
+                "/etc/init.d/tg-bot": ["exec"],
+                "/etc/init.d/tg-watch": ["exec"]
             }
         }
     }

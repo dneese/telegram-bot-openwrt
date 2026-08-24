@@ -995,6 +995,37 @@ sanitize_cmd() {
   return 0
 }
 
+unglue_cmd() {
+  # $1=ANS -> stdout. Модель інколи клеїть хвіст «... CMD: [-]» (інколи в тегах) в кінець SAY.
+  # Розрізаємо: текст лишається, а «CMD: -» стає окремим рядком — парсер дає чистий break без сміття в SAY.
+  printf '%s' "$1" | awk '
+    { L[NR]=$0 }
+    END {
+      n=NR; g=0;
+      if (n>=1) {
+        l=L[n];
+        if (match(l, /(^|[ >])CMD/)) {
+          cs=RSTART; ce=RSTART+RLENGTH-1;
+          if (cs>2) {
+            d=substr(l,ce+1); dd=d;
+            gsub(/<[^>]*>|<\/?[a-z]+$|[[:space:]]|[-—–:]/,"",dd);
+            if (dd=="") {
+              g=1;
+              h=substr(l,1,cs);
+              sub(/[[:space:]]+$/,"",h);
+              sub(/[[:space:]]*(<[^>]*>[[:space:]]*)+/,"",h);
+              sub(/<[^>]*>?[[:space:]]*$/,"",h);
+              for(i=1;i<n;i++) print L[i];
+              print h;
+              print "CMD: -";
+            }
+          }
+        }
+      }
+      if (!g) for(i=1;i<=n;i++) print L[i];
+    }'
+}
+
 ai_run() {
   if printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|wget +[^|]*[|]|curl +[^|]*[|])'; then
     OUT="ОТКАЗ: запрещённая команда"
@@ -1125,6 +1156,8 @@ $OUT"
 SAY: $JS"
         ;;
     esac
+    # хвіст «... CMD: -» вклеєний в SAY — розрізаємо до парсингу
+    ANS=$(unglue_cmd "$ANS")
     PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then

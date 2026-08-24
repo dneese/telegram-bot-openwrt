@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -143,6 +143,13 @@ ML=$(model_list)
 eq "model_list: 4 кандидати" "$(printf '%s\n' "$ML" | wc -l | tr -d ' ')" "4"
 eq "model_list: перша qwen27b" "$(printf '%s' "$ML" | sed -n 1p)" "qwen/qwen3.6-27b"
 has "model_list: є gpt-oss-120b" "$ML" "openai/gpt-oss-120b"
+
+# --- unglue_cmd (хвіст «CMD: -» вклеєний в SAY) ---
+eq "unglue: простий хвіст" "$(unglue_cmd 'Що пропінґувати? CMD: -')" "$(printf 'Що пропінґувати?\nCMD: -')"
+eq "unglue: теги code" "$(unglue_cmd 'Текст? <code>CMD: -</code>')" "$(printf 'Текст?\nCMD: -')"
+eq "unglue: некритий тег" "$(unglue_cmd 'Текст?  <code>CMD: -</code')" "$(printf 'Текст?\nCMD: -')"
+eq "unglue: нормальний 2-рядковий недоторканий" "$(unglue_cmd "$(printf 'SAY: все ок\nCMD: -')")" "$(printf 'SAY: все ок\nCMD: -')"
+eq "unglue: без хвоста недоторкано" "$(unglue_cmd 'просто текст відповіді')" 'просто текст відповіді'
 
 # --- skill_pick (keyword→скіл; порядок: wifi,vpn,dns,firewall,services,netdhcp,misc) ---
 eq "skill: встанови nlbwmon → services" "$(skill_pick 'встанови nlbwmon')" "$DIR/ai/skills/services.md"
