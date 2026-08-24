@@ -891,9 +891,10 @@ ai_intent() {
   IU=$(uci -q get tgbot.config.ai_url)
   [ -z "$IU" ] && IU="https://openrouter.ai/api/v1/chat/completions"
   IK=$(uci -q get tgbot.config.ai_key)
-  # qwen навіть з hidden палить ~400+ токенів reasoning — бюджет 300 інакше дає порожній content
-  printf '{"model":"%s","max_tokens":300%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-    "$IM" "$(case $IM in *qwen*) echo ',"reasoning_format":"hidden"' ;; *gpt-oss*) echo ',"reasoning_effort":"low"' ;; esac)" \
+  # qwen: reasoning_effort=none (hidden ненадійний — іноді порожній content навіть на finish:stop);
+  # gpt-oss: low. Класифікації міркування не потребують.
+  printf '{"model":"%s","max_tokens":250%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+    "$IM" "$(case $IM in *qwen*) echo ',"reasoning_effort":"none"' ;; *gpt-oss*) echo ',"reasoning_effort":"low"' ;; esac)" \
     "$(jesc "$ITP")" "$(jesc "$(utf8fix "$1")")" > "$DIR/.iq"
   IR=$(curl -s --max-time 30 "$IU" \
     -H "Authorization: Bearer $IK" \
@@ -966,7 +967,7 @@ ai_call() {
       ANS="$(t ai_429)"
       ;;
   esac
-  ANS=$(printf '%s' "$ANS" | sed 's/```[a-zA-Z]*//g; s/```//g')
+  ANS=$(printf '%s' "$ANS" | sed 's/```[a-zA-Z]*//g; s/```//g; /<think>/,/<\/think>/d; s/<think>.*$//')
 }
 
 is_mut() {
