@@ -57,9 +57,9 @@ T_d_hdr_ru='<b>📶 Устройства</b> · 🟢 онлайн: %s из %s'; 
 T_d_on_ru='\n<b>📍 В сети</b>\n%s'; T_d_on_en='\n<b>📍 Online</b>\n%s'; T_d_on_uk='\n<b>📍 В мережі</b>\n%s'
 T_d_off_ru='\n\n<b>📍 Не в сети</b>\n%s'; T_d_off_en='\n\n<b>📍 Offline</b>\n%s'; T_d_off_uk='\n\n<b>📍 Не в мережі</b>\n%s'
 T_d_name_ru='устройство'; T_d_name_en='device'; T_d_name_uk='пристрій'
-T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/ai вопрос</code> · спросить AI (видит статус сети)\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/alias del IP</code> · убрать имя\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/watch list|del MAC</code>\n<code>/mon add host Метка</code> · следить за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс ежечасный: время устарело — роутер лежит.</i>'
-T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/ai question</code> · ask AI (sees network state)\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/alias del IP</code> · remove name\n<code>/watch add MAC Name</code> · watch a person\n<code>/watch list|del MAC</code>\n<code>/mon add host Label</code> · monitor a host\n<code>/mon list|del host</code>\n\n✅ <i>Hourly heartbeat: time stale = router down.</i>'
-T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/ai питання</code> · спитати AI (бачить стан мережі)\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/alias del IP</code> · прибрати назву\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/watch list|del MAC</code>\n<code>/mon add host Мітка</code> · слідкувати за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс щогодинний: час застарів — роутер лежить.</i>'
+T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/ai вопрос</code> · спросить AI (видит статус сети)\n<code>/model</code> · сменить AI-модель\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/alias del IP</code> · убрать имя\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/watch list|del MAC</code>\n<code>/mon add host Метка</code> · следить за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс ежечасный: время устарело — роутер лежит.</i>'
+T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/ai question</code> · ask AI (sees network state)\n<code>/model</code> · switch AI model\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/alias del IP</code> · remove name\n<code>/watch add MAC Name</code> · watch a person\n<code>/watch list|del MAC</code>\n<code>/mon add host Label</code> · monitor a host\n<code>/mon list|del host</code>\n\n✅ <i>Hourly heartbeat: time stale = router down.</i>'
+T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/ai питання</code> · спитати AI (бачить стан мережі)\n<code>/model</code> · змінити AI-модель\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/alias del IP</code> · прибрати назву\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/watch list|del MAC</code>\n<code>/mon add host Мітка</code> · слідкувати за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс щогодинний: час застарів — роутер лежить.</i>'
 T_al_help_ru='🏷 <b>Свои имена устройств</b>\n\nЗадать имя:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nУбрать имя:\n<code>/alias del 192.168.1.105</code>\n\nИмена видны в 📱 Устройствах и в 👀 Слежке.'
 T_al_help_en='🏷 <b>Custom device names</b>\n\nSet a name:\n<code>/alias 192.168.1.105 Laptop</code>\n\nRemove a name:\n<code>/alias del 192.168.1.105</code>\n\nNames appear in 📱 Devices and 👀 Watch.'
 T_al_help_uk='🏷 <b>Свої назви пристроїв</b>\n\nЗадати назву:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nПрибрати назву:\n<code>/alias del 192.168.1.105</code>\n\nНазви видно в 📱 Пристроях та 👀 Слідкуванні.'
@@ -392,7 +392,7 @@ typing() {
 
 register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
-  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
+  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
     -H "Content-Type: application/json" \
     -d "$CMDS" | grep -q '"ok":true' || {
@@ -859,6 +859,15 @@ ai_rules_full_embedded() {
 Особенность сети: провайдер FREENET даёт CGNAT IP (100.64.0.0/10) — входящие из интернета невозможны, проброс портов извне бесполезен; DDNS не поможет; для доступа извне — только исходящий WireGuard к своему VPS.
 Факты: сервис бота /etc/init.d/tg-bot, скрипт /usr/bin/tg-bot.sh, конфиг /etc/config/tgbot (uci) — это ТЫ САМ, не трогай. Перед обращением к файлам/сервисам проверяй существование. Если выше есть блок \"ЗНАННЯ ПО ТЕМІ ВЖЕ НАДАНО\" — файл скілла уже в контексте, cat НЕ нужен, действуй сразу.
 Пользователь просит сложную настройку — действуй сам по логике OpenWrt: разведка (uci show/ls/apk search) → изменение → проверка применения → отчёт."
+}
+
+model_list() {
+  # Кандидати primary-моделі для /model (рядок=модель, без пробілів — split-safe)
+  printf '%s\n%s\n%s\n%s\n' \
+    "qwen/qwen3.6-27b" \
+    "openai/gpt-oss-20b" \
+    "openai/gpt-oss-120b" \
+    "nvidia/nemotron-3-super-120b-a12b:free"
 }
 
 ai_intent() {
@@ -1404,6 +1413,20 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
               reply "🧭 Запамʼятав: $ARGS"
             fi
             ;;
+          "/model"*|"/model")
+            CURM=$(uci -q get tgbot.config.ai_model); [ -z "$CURM" ] && CURM="qwen/qwen3.6-27b"
+            ALTM=$(uci -q get tgbot.config.ai_model_alt); [ -z "$ALTM" ] && ALTM="nvidia/nemotron-3-super-120b-a12b:free"
+            GRC=$(uci -q get tgbot.config.ai_groq_chain); [ -z "$GRC" ] && GRC="qwen/qwen3.6-27b openai/gpt-oss-120b"
+            MDL_KB="{\"inline_keyboard\":["
+            N=0
+            for M in $(model_list); do
+              N=$((N+1))
+              MK=""; [ "$M" = "$CURM" ] && MK="✅ "
+              MDL_KB="$MDL_KB[{\"text\":\"$MK$M\",\"callback_data\":\"mdl:$N\"}],"
+            done
+            MDL_KB="${MDL_KB%,}]}"
+            send_mk "$(printf "$(t mdl_title)" "$(esc "$CURM")" "$(esc "$ALTM")" "$(esc "$GRC")")" "$MDL_KB"
+            ;;
           "/alias "*)
             cmd_alias "$TXT"
             ;;
@@ -1482,6 +1505,20 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
               alog CONF "static lease $SIP $SMAC"
               reply "🏷 <code>$SIP</code> тепер статична аренда ($(esc "$SMAC"))"
             fi
+            ;;
+          mdl:*)
+            MIDX="${CB#mdl:}"
+            case "$MIDX" in ""|*[!0-9]*) edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP" ;; *)
+            MSEL=$(model_list | sed -n "${MIDX}p")
+            if [ -n "$MSEL" ]; then
+              uci set tgbot.config.ai_model="$MSEL"
+              uci commit tgbot
+              alog CONF "primary model -> $MSEL"
+              edit_msg "$MSGID_CB" "$(printf "$(t mdl_set)" "$(esc "$MSEL")")" "$MENU_MARKUP"
+            else
+              edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP"
+            fi ;;
+            esac
             ;;
           wan)
             reply "$(t wan_run)"

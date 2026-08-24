@@ -19,14 +19,14 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {)
   ' "$SRC"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
 rm -f "$DIR/.xf"
 [ -z "$MISS" ] || { echo "EXTRACT FAIL:$MISS"; exit 2; }
 . "$DIR/fns"; rm -f "$DIR/fns"
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -130,6 +130,12 @@ ZW=$(printf 'uci set a.b=\342\200\215x')
 if sanitize_cmd "$ZW"; then bad "san: zero-width спуф відхилено" "+"; else ok "san: zero-width спуф відхилено"; fi
 CTL=$(printf 'a\001b')
 if sanitize_cmd "$CTL"; then bad "san: керуючий байт відхилено" "+"; else ok "san: керуючий байт відхилено"; fi
+
+# --- model_list (C6) ---
+ML=$(model_list)
+eq "model_list: 4 кандидати" "$(printf '%s\n' "$ML" | wc -l | tr -d ' ')" "4"
+eq "model_list: перша qwen27b" "$(printf '%s' "$ML" | sed -n 1p)" "qwen/qwen3.6-27b"
+has "model_list: є gpt-oss-120b" "$ML" "openai/gpt-oss-120b"
 
 # --- skill_pick (keyword→скіл; порядок: wifi,vpn,dns,firewall,services,netdhcp,misc) ---
 eq "skill: встанови nlbwmon → services" "$(skill_pick 'встанови nlbwmon')" "$DIR/ai/skills/services.md"
