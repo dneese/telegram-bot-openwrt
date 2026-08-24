@@ -856,6 +856,10 @@ ai_intent() {
   echo "${ACT:-unknown}"
 }
 
+brk_file() { printf '%s/.mf_%s' "$DIR" "$(printf '%s' "$1" | md5sum | cut -c1-8)"; }
+brk_ok() { B=$(brk_file "$1"); [ -f "$B" ] && [ "$(cat "$B" 2>/dev/null)" -gt "$(date +%s)" ] 2>/dev/null && return 1; return 0; }
+brk_set() { B=$(brk_file "$1"); echo $(( $(date +%s) + $2 )) > "$B"; }
+
 ai_call() {
   # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr)
   # Спроба 1-2: основна модель (ретрай після паузи); спроба 3: резервна модель (інша квота-бакет)
@@ -881,6 +885,8 @@ ai_call() {
       or) [ -z "$AIKEY2" ] && continue; M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="$AIKEY2" ;;
       *)  M="$TRY"; U="$AIURL"; K="$AKEY" ;;
     esac
+    # Circuit breaker: модель що щойно зламалась/лімітувалась пропускається (крім останнього рубежу)
+    if [ "$TRY" != "or" ] && ! brk_ok "$M"; then alog MODEL "skip $M (breaker)"; continue; fi
     case $M in
       *qwen*) EXTRA=',"reasoning_format":"hidden"' ;;
       *gpt-oss*) EXTRA=',"reasoning_effort":"low"' ;;
@@ -894,8 +900,15 @@ ai_call() {
       --data-binary "@$DIR/.aiq")
     ANS=$(printf '%s' "$R" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
     TOK=$(printf '%s' "$R" | jsonfilter -e '$.usage.total_tokens' 2>/dev/null)
-    alog MODEL "try=$TRY model=$M ans=${#ANS} tokens=${TOK:-?}"
-    [ -n "$ANS" ] && break
+    if [ -n "$ANS" ]; then
+      alog MODEL "try=$TRY model=$M ans=${#ANS} tokens=${TOK:-?}"
+      break
+    fi
+    alog MODEL "try=$TRY model=$M FAILED"
+    case "$R" in
+      *"Rate limit"*|*"rate limit"*|*quota*) brk_set "$M" 600 ;;
+      *) brk_set "$M" 90 ;;
+    esac
   done
   rm -f "$DIR/.aiq"
   [ -z "$ANS" ] && printf '%s' "$R" | head -c 300 > "$DIR/lasterr"
@@ -1048,6 +1061,16 @@ SAY: $JS"
     PCMD=$(uci_autocommit "$PCMD")
     if is_mut "$PCMD"; then
       kill "$TPID" 2>/dev/null
+      # Дедуп: ту саму команду щойно підтверджено й виконано?
+      if [ -f "$DIR/.lastconf" ]; then
+        LC=$(sed -n '1p' "$DIR/.lastconf"); LT=$(sed -n '2p' "$DIR/.lastconf")
+        case "$Q" in *[Пп]овтор*|*[Rr]epeat*) ;; *)
+          if [ "$PCMD" = "$LC" ] && [ $(( $(date +%s) - ${LT:-0} )) -le 300 ]; then
+            reply "✅ Цю команду вже виконано <5 хв тому — результат вище в чаті. Щоб повторити примусово, додайте слово «повтор»."
+            return
+          fi ;;
+        esac
+      fi
       printf '%s' "$PCMD" > "$DIR/aipend"
       alog PEND "очікує підтвердження: $PCMD"
       RISK=""
@@ -1384,7 +1407,18 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             rm -f "$DIR/aipend"
             if [ -n "$C" ]; then
               alog CONF "підтверджено: $C"
+              case "$C" in
+                *"apk "*|*"tar -czf"*|*.zip*)
+                  printf '%s' "$C" > "$DIR/.lb_cmd"
+                  echo "$MSGID_CB" > "$DIR/.lb_msg"
+                  : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+                  edit_msg "$MSGID_CB" "⏳ Виконую у фоні — важка команда (до ~2 хв). Результат надішлю окремим повідомленням." 
+                  ( OUT=$(ai_run "$C"); printf '%s' "$OUT" > "$DIR/.lb_out"; touch "$DIR/.lb_done" ) &
+                  return
+                  ;;
+              esac
               ai_run "$C"
+              printf '%s\n%s\n' "$C" "$(date +%s)" > "$DIR/.lastconf"
               alog OUT "CONF→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP"
             else
@@ -1397,7 +1431,18 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             if [ -n "$C" ]; then
               alog CONF "зі страховкою: $C"
               : > "$DIR/.dms_ack"
+              case "$C" in
+                *"apk "*|*"tar -czf"*|*.zip*)
+                  printf '%s' "$C" > "$DIR/.lb_cmd"
+                  echo "$MSGID_CB" > "$DIR/.lb_msg"
+                  : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+                  edit_msg "$MSGID_CB" "⏳ Виконую у фоні — важка команда (до ~2 хв). Результат надішлю окремим повідомленням."
+                  ( OUT=$(ai_run "$C"); printf '%s' "$OUT" > "$DIR/.lb_out"; touch "$DIR/.lb_done" ) &
+                  return
+                  ;;
+              esac
               ai_run "$C"
+              printf '%s\n%s\n' "$C" "$(date +%s)" > "$DIR/.lastconf"
               alog OUT "DMS→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")
 ⏳ Страхівка: будь-яке ваше повідомлення за 90с = все ок, інакше авто-відкат." "$MENU_MARKUP"
@@ -1516,6 +1561,14 @@ LASTLANG="$BOT_LANG"
 # --- главный цикл демона ---
 NEXTCHK=0
 while true; do
+  # Доставка результату фонової важкої команди
+  if [ -f "$DIR/.lb_done" ]; then
+    RES=$(head -c 1500 "$DIR/.lb_out" 2>/dev/null)
+    MID=$(cat "$DIR/.lb_msg" 2>/dev/null); CMDD=$(cat "$DIR/.lb_cmd" 2>/dev/null)
+    rm -f "$DIR/.lb_done"
+    [ -n "$MID" ] && edit_msg "$MID" "$(printf "$(t ai_done)" "$(esc "$CMDD")" "$(esc "${RES:-(пусто)}")")"
+    printf '%s\n%s\n' "$CMDD" "$(date +%s)" > "$DIR/.lastconf"
+  fi
   CL="$(uci -q get tgbot.config.lang 2>/dev/null)"
   [ -z "$CL" ] && CL="${TGBOT_LANG:-ru}"
   case "$CL" in en|uk|ru) ;; *) CL=ru ;; esac
