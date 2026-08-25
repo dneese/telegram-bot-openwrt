@@ -44,7 +44,23 @@ wget -O - https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/t
   -s -- --token '123456:ABC' --chatid ВАШ_ID --lang uk
 ```
 
-Бутстрапер сам: стягне всі файли в /tmp, перевірить синтаксис, запустить `install.sh` (той поставить залежності, розкладе файли, створить конфіг, підключить cron-аналізатор і запустить обидва сервіси — бота й вотчер подій).
+<details>
+<summary>📱 Вузький термінал ламає довгі рядки? 4 крихітні команди</summary>
+
+```sh
+cd /tmp
+```
+```sh
+U=ulvis.net/69K4
+```
+```sh
+uclient-fetch -O i https://$U
+```
+```sh
+sh i
+```
+Інсталятор сам поставить питання про токен/chatid/мову.
+</details>
 
 <details>
 <summary>Ручна установка (без wget)</summary>
