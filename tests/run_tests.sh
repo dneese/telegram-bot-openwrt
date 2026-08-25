@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -228,6 +228,55 @@ eq "keyslot: gsk_ → ai_key" "$(key_slot 'gsk_AbC12345678901234567890')" "ai_ke
 eq "keyslot: sk-or-v1 → ai_key2" "$(key_slot 'sk-or-v1-abcdef0123456789abcdef')" "ai_key2"
 eq "keyslot: інший → ai_key3" "$(key_slot 'AQ.Xyz1234567890123456789')" "ai_key3"
 if key_slot '' 2>/dev/null; then bad "keyslot: пустий відхилено" "+"; else ok "keyslot: пустий відхилено"; fi
+
+# --- mk_markups (розширене меню: розділи + підменю) ---
+T_btn_status_uk='📊 Статус'; T_btn_dev_uk='📱 Пристрої'; T_btn_wifi_uk='📶 Wi-Fi'
+T_btn_fw_uk='🛡 Фаєрвол'; T_btn_dg_uk='🔧 Діагностика'; T_btn_sys_uk='⚙️ Система'
+T_btn_watch_uk='👀 Слідкування'; T_btn_alias_uk='🏷 Імена'; T_btn_ai_uk='🤖 AI-чат'
+T_btn_help_uk='❓ Довідка'; T_rbyes_uk='✅ Так'; T_rbno_uk='❌ Скасувати'
+T_aic1_uk='✅ Виконати'; T_aic2_uk='🔒 Зі страховкою'; T_aic0_uk='❌ Скасовано'
+T_aioff_uk='⛔️ Вийти'; T_mnback_uk='⬅️ Меню'; T_btn_qr_uk='🔑 QR Wi-Fi'
+T_btn_scan_uk='📡 Wi-Fi скан'; T_btn_wan_uk='🌐 Інтернет'; T_btn_bk_uk='💾 Бекап'
+T_btn_rb_uk='⚡️ Перезавантаження'; T_rbky_uk='✅ Так, відкотити!'
+mk_markups
+has "menu: головне містить розділ wifi" "$MENU_MARKUP" 'mnu:wifi'
+has "menu: головне містить розділ sys" "$MENU_MARKUP" 'mnu:sys'
+has "menu: головне містить fw і dg" "$MENU_MARKUP" 'mnu:fw'
+has "menu: головне містить dg" "$MENU_MARKUP" 'mnu:dg'
+if command -v jsonfilter >/dev/null 2>&1; then
+  for MK in MENU_MARKUP WIFI_MARKUP FW_MARKUP DG_MARKUP SYS_MARKUP RBK_CONF_MARKUP; do
+    eval "VAL=\$$MK"
+    CHK=$(printf '%s' "$VAL" | jsonfilter -e '$.inline_keyboard[0][0].text' 2>/dev/null)
+    if [ -n "$CHK" ]; then ok "menu: $MK валідний JSON"; else bad "menu: $MK валідний JSON" "$VAL"; fi
+  done
+fi
+has "wifi_kb: QR у підменю wifi" "$WIFI_MARKUP" '"callback_data":"qr"'
+has "wifi_kb: скан у підменю wifi" "$WIFI_MARKUP" '"callback_data":"scn"'
+has "wifi_kb: назад = mn" "$WIFI_MARKUP" '"callback_data":"mn"'
+has "sys_kb: rollback-кнопка rbk1" "$SYS_MARKUP" '"callback_data":"rbk1"'
+has "rbk_conf: підтвердження rbkyes/rbkno" "$RBK_CONF_MARKUP" 'rbkyes'
+
+# --- mact_set / mact_get (контекст вводу текстом) ---
+rm -f "$DIR/.mact"
+if mact_get 'x' >/dev/null 2>&1; then bad "mact: без файлу порожньо" "+"; else ok "mact: без файлу порожньо"; fi
+mact_set diag_ping
+eq "mact: свіжий контекст повертає дію|ввід" "$(mact_get '8.8.8.8')" 'diag_ping|8.8.8.8'
+echo 0 > "$DIR/.mact.ts"; printf 'diag_ping\n%s\n' $(( $(date +%s) - 400 )) > "$DIR/.mact"
+if mact_get 'x' >/dev/null 2>&1; then bad "mact: прострочений (>5хв) скидається" "+"; else ok "mact: прострочений (>5хв) скидається"; fi
+[ -f "$DIR/.mact" ] && bad "mact: файл .mact видалено після таймауту" "+" || ok "mact: файл .mact видалено після таймауту"
+rm -f "$DIR/.mact"
+
+# --- wf_safe (валідація вводу Wi-Fi перед вклеюванням у команду) ---
+if wf_safe 'MyHome_WiFi 5G!'; then ok "wfsafe: звичайний ssid проходить"; else bad "wfsafe: звичайний ssid" "-"; fi
+if wf_safe "pass'word123"; then bad "wfsafe: апостроф відхилено" "+"; else ok "wfsafe: апостроф відхилено"; fi
+if wf_safe "$(printf 'a\002b')"; then bad "wfsafe: керуючий байт відхилено" "+"; else ok "wfsafe: керуючий байт відхилено"; fi
+has "wifi_kb: кнопка моїх мереж wfkb" "$WIFI_MARKUP" '"callback_data":"wfkb"'
+
+# --- ok_port / ok_ip (валідація вводу фаєрвола/діагностики) ---
+if ok_port 80 && ok_port 65535; then ok "okport: 80 і 65535 проходять"; else bad "okport: 80 і 65535" "-"; fi
+if ok_port 0 || ok_port 65536 || ok_port abc; then bad "okport: 0/65536/abc відхилено" "+"; else ok "okport: 0/65536/abc відхилено"; fi
+if ok_ip 192.168.1.50 && ok_ip 8.8.8.8; then ok "okip: звичайні IP проходять"; else bad "okip: звичайні IP" "-"; fi
+if ok_ip 300.1.1.1 || ok_ip 1.2.3 || ok_ip 'a.b.c.d'; then bad "okip: 300.x/короткий/текст відхилено" "+"; else ok "okip: 300.x/короткий/текст відхилено"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 # --- qmatch (нуль-токеновий шар uci) ---

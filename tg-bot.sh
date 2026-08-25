@@ -155,18 +155,113 @@ T_th_ch_ru='Канал'; T_th_ch_en='Channel'; T_th_ch_uk='Канал'
 T_th_ssid_ru='SSID'; T_th_ssid_en='SSID'; T_th_ssid_uk='SSID'
 T_d_hdr2_ru='<h3>📶 Устройства · 🟢 %s из %s</h3>'; T_d_hdr2_en='<h3>📶 Devices · 🟢 %s of %s</h3>'; T_d_hdr2_uk='<h3>📶 Пристрої · 🟢 %s із %s</h3>'
 T_d_offttl_ru='<p>📍 Не в сети (%s)</p>'; T_d_offttl_en='<p>📍 Offline (%s)</p>'; T_d_offttl_uk='<p>📍 Не в мережі (%s)</p>'
-T_ai_429_ru='⏳ Добова квота безкоштовних запитів OpenRouter вичерпана (50/день). Спробуйте після скидання ліміту або додайте кредити на openrouter.ai.'
+T_ai_429_ru='⏳ Добова квота безкоштовних запитів OpenRouter вичерпана (50/день). Спробуйте после сброса лимита или добавьте кредиты на openrouter.ai.'
 T_ai_429_en='⏳ OpenRouter free daily quota exhausted (50/day). Try after the reset or add credits at openrouter.ai.'
 T_ai_429_uk='⏳ Добову квоту безкоштовних запитів OpenRouter вичерпано (50/день). Спробуйте після скидання ліміту або додайте кредити на openrouter.ai.'
+
+# --- розширене меню: розділи ---
+T_btn_wifi_ru='📶 Wi-Fi'; T_btn_wifi_en='📶 Wi-Fi'; T_btn_wifi_uk='📶 Wi-Fi'
+T_btn_fw_ru='🛡 Файрвол'; T_btn_fw_en='🛡 Firewall'; T_btn_fw_uk='🛡 Фаєрвол'
+T_btn_dg_ru='🔧 Диагностика'; T_btn_dg_en='🔧 Diagnostics'; T_btn_dg_uk='🔧 Діагностика'
+T_btn_sys_ru='⚙️ Система'; T_btn_sys_en='⚙️ System'; T_btn_sys_uk='⚙️ Система'
+T_w_title_ru='📶 <b>Wi-Fi и сети</b>\nВыберите действие:'; T_w_title_en='📶 <b>Wi-Fi & networks</b>\nPick an action:'; T_w_title_uk='📶 <b>Wi-Fi і мережі</b>\nОберіть дію:'
+T_f_title_ru='🛡 <b>Файрвол</b>\nВыберите действие:'; T_f_title_en='🛡 <b>Firewall</b>\nPick an action:'; T_f_title_uk='🛡 <b>Фаєрвол</b>\nОберіть дію:'
+T_d_title_ru='🔧 <b>Диагностика</b>\nВыберите действие:'; T_d_title_en='🔧 <b>Diagnostics</b>\nPick an action:'; T_d_title_uk='🔧 <b>Діагностика</b>\nОберіть дію:'
+T_s_title_ru='⚙️ <b>Система</b>\nВыберите действие:'; T_s_title_en='⚙️ <b>System</b>\nPick an action:'; T_s_title_uk='⚙️ <b>Система</b>\nОберіть дію:'
+T_rbky_ru='✅ Да, откатить!'; T_rbky_en='✅ Yes, rollback!'; T_rbky_uk='✅ Так, відкотити!'
+T_rbk_arm_ru='⚠️ Откатить конфиги к последнему снимку?\nЭто перезапишет network/wireless/dhcp/firewall/system/sqm.'; T_rbk_arm_en='⚠️ Rollback configs to the last snapshot?\nThis overwrites network/wireless/dhcp/firewall/system/sqm.'; T_rbk_arm_uk='⚠️ Відкотити конфіги до останнього знімка?\nЦе перезапише network/wireless/dhcp/firewall/system/sqm.'
+T_rbk_none_ru='↩️ Снимков ещё нет — откатывать не из чего'; T_rbk_none_en='↩️ No snapshots yet — nothing to roll back to'; T_rbk_none_uk='↩️ Знімків ще немає — відкатувати не з чого'
+T_rbk_ok_ru='↩️ Конфиги откатаны к снимку %s'; T_rbk_ok_en='↩️ Configs rolled back to snapshot %s'; T_rbk_ok_uk='↩️ Конфіги відкотто до знімка %s'
+T_rbk_exp_ru='⚠️ Время подтверждения истекло. Нажмите ↩️ Rollback заново.'; T_rbk_exp_en='⚠️ Confirmation expired. Press ↩️ Rollback again.'; T_rbk_exp_uk='⚠️ Час підтвердження минув. Натисніть ↩️ Rollback знову.'
+T_c_topo_ru='🧭 Топология сети: /topo IP Метка'; T_c_topo_en='🧭 Network topology: /topo IP Label'; T_c_topo_uk='🧭 Топологія мережі: /topo IP Мітка'
+T_c_rback_ru='↩️ Откат конфигов к снимку'; T_c_rback_en='↩️ Rollback configs to snapshot'; T_c_rback_uk='↩️ Відкат конфігів до знімка'
+T_c_wifi_ru='📶 Керування Wi-Fi'; T_c_wifi_en='📶 Wi-Fi control'; T_c_wifi_uk='📶 Керування Wi-Fi'
+
+# --- Wi-Fi керування (фаза 2) ---
+T_wf_pick_ru='📶 Оберіть мережу:'; T_wf_pick_en='📶 Pick a network:'; T_wf_pick_uk='📶 Оберіть мережу:'
+T_wf_none_ru='📭 Wi-Fi интерфейсы не найдены'; T_wf_none_en='📭 No Wi-Fi interfaces found'; T_wf_none_uk='📭 Wi-Fi інтерфейси не знайдені'
+T_wf_hdr_ru='%s <b>%s</b>\nSSID: <code>%s</code>\n🔑 Пароль: <code>%s</code>\nКанал: <code>%s</code> · Потужність: <code>%s</code>\n\nЩо змінити?'
+T_wf_hdr_en='%s <b>%s</b>\nSSID: <code>%s</code>\n🔑 Password: <code>%s</code>\nChannel: <code>%s</code> · TX power: <code>%s</code>\n\nWhat to change?'
+T_wf_hdr_uk='%s <b>%s</b>\nSSID: <code>%s</code>\n🔑 Пароль: <code>%s</code>\nКанал: <code>%s</code> · Потужність: <code>%s</code>\n\nЩо змінити?'
+T_wf_b_key_ru='🔑 Пароль'; T_wf_b_key_en='🔑 Password'; T_wf_b_key_uk='🔑 Пароль'
+T_wf_b_ssid_ru='✏️ SSID'; T_wf_b_ssid_en='✏️ SSID'; T_wf_b_ssid_uk='✏️ SSID'
+T_wf_b_ch_ru='📶 Канал'; T_wf_b_ch_en='📶 Channel'; T_wf_b_ch_uk='📶 Канал'
+T_wf_b_pwr_ru='💪 Потужність'; T_wf_b_pwr_en='💪 TX power'; T_wf_b_pwr_uk='💪 Потужність'
+T_wf_b_tgl_ru='⏻ Вкл/Выкл'; T_wf_b_tgl_en='⏻ On/Off'; T_wf_b_tgl_uk='⏻ Увімк/Вимк'
+T_wf_ask_key_ru='🔑 Надішліть новий пароль Wi-Fi (від 8 до 63 символів):'; T_wf_ask_key_en='🔑 Send the new Wi-Fi password (8-63 chars):'; T_wf_ask_key_uk='🔑 Надішліть новий пароль Wi-Fi (від 8 до 63 символів):'
+T_wf_ask_ssid_ru='✏️ Надішліть новий SSID (до 32 символів):'; T_wf_ask_ssid_en='✏️ Send the new SSID (up to 32 chars):'; T_wf_ask_ssid_uk='✏️ Надішліть новий SSID (до 32 символів):'
+T_wf_ask_ch_ru='📶 Надішліть номер каналу або слово auto:'; T_wf_ask_ch_en='📶 Send a channel number or the word auto:'; T_wf_ask_ch_uk='📶 Надішліть номер каналу або слово auto:'
+T_wf_bad_key_ru='❌ Пароль має бути 8-63 символи. Спробуйте ще раз:'; T_wf_bad_key_en='❌ Password must be 8-63 chars. Try again:'; T_wf_bad_key_uk='❌ Пароль має бути 8-63 символи. Спробуйте ще раз:'
+T_wf_bad_ssid_ru='❌ SSID має бути 1-32 символи. Спробуйте ще раз:'; T_wf_bad_ssid_en='❌ SSID must be 1-32 chars. Try again:'; T_wf_bad_ssid_uk='❌ SSID має бути 1-32 символи. Спробуйте ще раз:'
+T_wf_bad_ch_ru='❌ Канал — число або слово auto. Спробуйте ще раз:'; T_wf_bad_ch_en='❌ Channel must be a number or auto. Try again:'; T_wf_bad_ch_uk='❌ Канал — число або слово auto. Спробуйте ще раз:'
+T_wf_conf_ru='📶 Застосувати зміни Wi-Fi?\n<code>%s</code>\nМережа перезавантажиться (~5 с).'
+T_wf_conf_en='📶 Apply Wi-Fi changes?\n<code>%s</code>\nThe network will reload (~5 s).'
+T_wf_conf_uk='📶 Застосувати зміни Wi-Fi?\n<code>%s</code>\nМережа перезавантажиться (~5 с).'
+T_wf_b_nets_ru='📡 Мои сети'; T_wf_b_nets_en='📡 My networks'; T_wf_b_nets_uk='📡 Мої мережі'
+
+# --- Фаєрвол (фаза 3) ---
+T_f2_title_ru='🛡 <b>Файрвол</b>\nВыберите действие:'; T_f2_title_en='🛡 <b>Firewall</b>\nPick an action:'; T_f2_title_uk='🛡 <b>Фаєрвол</b>\nОберіть дію:'
+T_fw_btn_pf_ru='🔀 Портфорворди'; T_fw_btn_pf_en='🔀 Port forwards'; T_fw_btn_pf_uk='🔀 Проброси портів'
+T_fw_none_ru='📭 Портфорвордов нет.\nДобавить: кнопка ➕ в разделе 🛡 Файрвол'; T_fw_none_en='📭 No port forwards.\nAdd one via the ➕ button in 🛡 Firewall'; T_fw_none_uk='📭 Пробросів портів немає.\nДодайте кнопкою ➕ у розділі 🛡 Фаєрвол'
+T_fw_hdr_ru='<b>🔀 Портфорворды (WAN)</b>\nТап по правилу — удалить:'; T_fw_hdr_en='<b>🔀 Port forwards (WAN)</b>\nTap a rule to delete:'; T_fw_hdr_uk='<b>🔀 Проброси портів (WAN)</b>\nТап по правилу — видалити:'
+T_fw_addbtn_ru='➕ Додати проброс'; T_fw_addbtn_en='➕ Add forward'; T_fw_addbtn_uk='➕ Додати проброс'
+T_fw_ask_proto_ru='🔀 Оберіть протокол:'; T_fw_ask_proto_en='🔀 Pick a protocol:'; T_fw_ask_proto_uk='🔀 Оберіть протокол:'
+T_fw_ask_eport_ru='🌐 Надішліть зовнішній порт WAN (1-65535):'; T_fw_ask_eport_en='🌐 Send the external WAN port (1-65535):'; T_fw_ask_eport_uk='🌐 Надішліть зовнішній порт WAN (1-65535):'
+T_fw_bad_eport_ru='❌ Потрібен порт 1-65535. Спробуйте ще раз:'; T_fw_bad_eport_en='❌ Need a port 1-65535. Try again:'; T_fw_bad_eport_uk='❌ Потрібен порт 1-65535. Спробуйте ще раз:'
+T_fw_ask_dip_ru='🏠 Надішліть внутрішню IP-адресу (наприклад 192.168.1.50):'; T_fw_ask_dip_en='🏠 Send the internal IP (e.g. 192.168.1.50):'; T_fw_ask_dip_uk='🏠 Надішліть внутрішню IP-адресу (наприклад 192.168.1.50):'
+T_fw_bad_dip_ru='❌ Це не схоже на IPv4-адресу. Спробуйте ще раз:'; T_fw_bad_dip_en="❌ That doesn't look like an IPv4 address. Try again:"; T_fw_bad_dip_uk='❌ Це не схоже на IPv4-адресу. Спробуйте ще раз:'
+T_fw_ask_dport_ru='🎯 Надішліть внутрішній порт, або - якщо той самий:'; T_fw_ask_dport_en='🎯 Send the internal port, or - to keep the same:'; T_fw_ask_dport_uk='🎯 Надішліть внутрішній порт, або - якщо той самий:'
+T_fwd_conf_ru='🛡 Застосувати зміну фаєрвола?\n<code>%s</code>'
+T_fwd_conf_en='🛡 Apply firewall change?\n<code>%s</code>'
+T_fwd_conf_uk='🛡 Застосувати зміну фаєрвола?\n<code>%s</code>'
+
+# --- Діагностика (фаза 4) ---
+T_dg_btn_ping_ru='🏓 Ping'; T_dg_btn_ping_en='🏓 Ping'; T_dg_btn_ping_uk='🏓 Ping'
+T_dg_btn_trace_ru='🛰 Traceroute'; T_dg_btn_trace_en='🛰 Traceroute'; T_dg_btn_trace_uk='🛰 Traceroute'
+T_dg_btn_ns_ru='🔎 NSLookup'; T_dg_btn_ns_en='🔎 NSLookup'; T_dg_btn_ns_uk='🔎 NSLookup'
+T_dg_btn_lr_ru='📜 Системный лог'; T_dg_btn_lr_en='📜 System log'; T_dg_btn_lr_uk='📜 Системний лог'
+T_dg_btn_dm_ru='🧨 Лог ядра'; T_dg_btn_dm_en='🧨 Kernel log'; T_dg_btn_dm_uk='🧨 Лог ядра'
+T_dg_ask_ru='🎯 Надішліть хост або IP для перевірки:'; T_dg_ask_en='🎯 Send a host or IP to check:'; T_dg_ask_uk='🎯 Надішліть хост або IP для перевірки:'
+T_dg_bad_ru='❌ Не схоже на адресу/хост (дозволені літери, цифри, . -). Спробуйте ще раз:'; T_dg_bad_en="❌ Doesn't look like a host/IP (letters, digits, . - only). Try again:"; T_dg_bad_uk='❌ Не схоже на адресу/хост (лише літери, цифри, . -). Спробуйте ще раз:'
+T_dg_doing_ru='⏳ Виконую <code>%s %s</code> — результат надішлю окремим повідомленням.'; T_dg_doing_en='⏳ Running <code>%s %s</code> — result will arrive in a separate message.'; T_dg_doing_uk='⏳ Виконую <code>%s %s</code> — результат надішлю окремим повідомленням.'
+T_dg_logsent_ru='📜 Лог прикріплено файлом.'; T_dg_logsent_en='📜 Log attached as a file.'; T_dg_logsent_uk='📜 Лог прикріплено файлом.'
+
+# --- Система: пакети і SSH-ключі (фаза 5) ---
+T_s_btn_pkg_ru='📦 Пакеты'; T_s_btn_pkg_en='📦 Packages'; T_s_btn_pkg_uk='📦 Пакети'
+T_s_btn_ssh_ru='🔑 SSH-ключи'; T_s_btn_ssh_en='🔑 SSH keys'; T_s_btn_ssh_uk='🔑 SSH-ключі'
+T_pk_ask_ru='📦 Надішліть назву пакета (наприклад nlbwmon):'; T_pk_ask_en='📦 Send a package name (e.g. nlbwmon):'; T_pk_ask_uk='📦 Надішліть назву пакета (наприклад nlbwmon):'
+T_pk_bad_ru='❌ Назва пакета: літери, цифри, . _ -. Спробуйте ще раз:'; T_pk_bad_en="❌ Package name: letters, digits, . _ - only. Try again:"; T_pk_bad_uk='❌ Назва пакета: літери, цифри, . _ -. Спробуйте ще раз:'
+T_ssh_add_ru='➕ Додати ключ'; T_ssh_add_en='➕ Add key'; T_ssh_add_uk='➕ Додати ключ'
+T_ssh_ask_ru='🔑 Надішліть публічний SSH-ключ одним рядком (починається зі ssh-ed25519 або ssh-rsa):'; T_ssh_ask_en='🔑 Send a public SSH key as one line (starts with ssh-ed25519 or ssh-rsa):'; T_ssh_ask_uk='🔑 Надішліть публічний SSH-ключ одним рядком (починається зі ssh-ed25519 або ssh-rsa):'
+T_ssh_bad_ru='❌ Це не схоже на публічний SSH-ключ (очікую ssh-ed25519/ssh-rsa + base64).'; T_ssh_bad_en="❌ Doesn't look like a public SSH key (expected ssh-ed25519/ssh-rsa + base64)."; T_ssh_bad_uk='❌ Це не схоже на публічний SSH-ключ (очікую ssh-ed25519/ssh-rsa + base64).'
 
 # send_rich визначено нижче (файловий payload)
 
 mk_markups() {
-MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
+MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"},{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
 CONFIRM_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbyes)\",\"callback_data\":\"rbyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbno\"}]]}"
 AI_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_CONF2_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic2)\",\"callback_data\":\"aic2\"}],[{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aioff)\",\"callback_data\":\"aioff\"}]]}"
+WIFI_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t wf_b_nets)\",\"callback_data\":\"wfkb\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+FW_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t fw_btn_pf)\",\"callback_data\":\"fwlist\"},{\"text\":\"$(t fw_addbtn)\",\"callback_data\":\"fwa\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+DG_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t dg_btn_ping)\",\"callback_data\":\"dgt:ping\"},{\"text\":\"$(t dg_btn_trace)\",\"callback_data\":\"dgt:trace\"},{\"text\":\"$(t dg_btn_ns)\",\"callback_data\":\"dgt:ns\"}],[{\"text\":\"$(t dg_btn_lr)\",\"callback_data\":\"dgl:logread\"},{\"text\":\"$(t dg_btn_dm)\",\"callback_data\":\"dgl:dmesg\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+SYS_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"}],[{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"},{\"text\":\"↩️ Rollback\",\"callback_data\":\"rbk1\"}],[{\"text\":\"$(t s_btn_pkg)\",\"callback_data\":\"pkgl\"},{\"text\":\"$(t s_btn_ssh)\",\"callback_data\":\"sshkl\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+RBK_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbky)\",\"callback_data\":\"rbkyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbkno\"}]]}"
+}
+
+# --- контекст вводу текстом (.mact): mact_set <дія> | mact_get -> "дія|ввід" ---
+mact_set() { printf '%s\n%s\n' "$1" "$(date +%s)" > "$DIR/.mact"; }
+mact_get() {
+  # повертає 0 і друкує "дія|текст", якщо контекст свіжий (<5 хв); інакше чистить і return 1
+  [ -f "$DIR/.mact" ] || return 1
+  MA_ACTION=$(head -n 1 "$DIR/.mact" 2>/dev/null)
+  MA_TS=$(sed -n '2p' "$DIR/.mact" 2>/dev/null)
+  case "$MA_TS" in ''|*[!0-9]*) rm -f "$DIR/.mact"; return 1 ;; esac
+  if [ $(( $(date +%s) - MA_TS )) -gt 300 ]; then
+    rm -f "$DIR/.mact"; return 1
+  fi
+  printf '%s|%s' "$MA_ACTION" "$1"
 }
 
 mkdir -p "$DIR"
@@ -393,7 +488,7 @@ typing() {
 
 register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
-  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"key\",\"description\":\"$(t c_key)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
+  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"key\",\"description\":\"$(t c_key)\"},{\"command\":\"topo\",\"description\":\"$(t c_topo)\"},{\"command\":\"rollback\",\"description\":\"$(t c_rback)\"},{\"command\":\"wifi\",\"description\":\"$(t c_wifi)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
     -H "Content-Type: application/json" \
     -d "$CMDS" | grep -q '"ok":true' || {
@@ -740,6 +835,108 @@ st_lease_add() {
   uci set dhcp.@host[-1].ip="$2" >/dev/null
   uci set dhcp.@host[-1].name="static-${2##*.}" >/dev/null
   uci commit dhcp && /etc/init.d/dnsmasq restart >/dev/null 2>&1
+}
+
+# --- Wi-Fi керування (фаза 2) ---
+wf_list() {
+  # -> рядки "idx|ssid|disabled|channel|txpower|device" по одному на wifi-iface
+  N=0
+  while :; do
+    S=$(uci -q get wireless.@wifi-iface[$N].ssid 2>/dev/null) || break
+    D=$(uci -q get wireless.@wifi-iface[$N].device 2>/dev/null)
+    DIS=$(uci -q get wireless.$D.disabled 2>/dev/null); DIS=${DIS:-0}
+    CH=$(uci -q get wireless.$D.channel 2>/dev/null); CH=${CH:-auto}
+    PW=$(uci -q get wireless.$D.txpower 2>/dev/null); PW=${PW:-max}
+    printf '%s|%s|%s|%s|%s|%s\n' "$N" "$S" "$DIS" "$CH" "$PW" "$D"
+    N=$((N+1))
+  done
+}
+
+wf_kb() {
+  # клавіатура вибору мережі (cb = wf:<idx>); пусто/rc1 = немає інтерфейсів
+  KB=""
+  TMPF="$DIR/.wfl.$$"; wf_list > "$TMPF" || { rm -f "$TMPF"; return 1; }
+  while IFS='|' read -r N SS DIS CH PW D; do
+    ST=📶; [ "$DIS" = "1" ] && ST=⏻
+    KB="$KB[{\"text\":\"$ST $(esc "$SS") · $CH\",\"callback_data\":\"wf:$N\"}],"
+  done < "$TMPF"
+  rm -f "$TMPF"
+  KB=${KB%,}
+  [ -z "$KB" ] && return 1
+  printf '{"inline_keyboard":[%s,[{"text":"%s","callback_data":"mn"}]]}' "$KB" "$(t mnback)"
+}
+
+wf_view() {
+  # $1=idx -> текст стану мережі в OUTW; клавіатура дій у WF_KB; rc1 = поганий idx
+  case "$1" in ''|*[!0-9]*) return 1 ;; esac
+  SS=$(uci -q get wireless.@wifi-iface[$1].ssid 2>/dev/null) || return 1
+  KY=$(uci -q get wireless.@wifi-iface[$1].key 2>/dev/null)
+  ENC=$(uci -q get wireless.@wifi-iface[$1].encryption 2>/dev/null)
+  D=$(uci -q get wireless.@wifi-iface[$1].device 2>/dev/null)
+  DIS=$(uci -q get wireless.$D.disabled 2>/dev/null); DIS=${DIS:-0}
+  CH=$(uci -q get wireless.$D.channel 2>/dev/null); CH=${CH:-auto}
+  PW=$(uci -q get wireless.$D.txpower 2>/dev/null); PW=${PW:-max}
+  ST=🟢; [ "$DIS" = "1" ] && ST=⏻
+  OUTW=$(printf "$(t wf_hdr)" "$ST" "$(esc "${ENC:-?}")" "$(esc "$SS")" "$(esc "${KY:-(немає)}")" "$CH" "$PW")
+  WF_KB="{\"inline_keyboard\":[[{\"text\":\"$(t wf_b_key)\",\"callback_data\":\"wfk:$1\"},{\"text\":\"$(t wf_b_ssid)\",\"callback_data\":\"wfs:$1\"}],[{\"text\":\"$(t wf_b_ch)\",\"callback_data\":\"wfc:$1\"},{\"text\":\"$(t wf_b_pwr)\",\"callback_data\":\"wfp:$1\"}],[{\"text\":\"$(t wf_b_tgl)\",\"callback_data\":\"wft:$1\"},{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:wifi\"}]]}"
+}
+
+wf_confirm() {
+  # $1=команда → черга підтвердження aic1/aic2(з DMS-страховкою)/aic0
+  printf '%s' "$1" > "$DIR/aipend"
+  send_mk "$(printf "$(t wf_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+}
+
+wf_apply() {
+  # $1=uci-рядок без commit -> + autocommit + wifi reload, через підтвердження
+  wf_confirm "$(uci_autocommit "$1") && wifi reload"
+}
+
+wf_safe() {
+  # $1=значення від користувача (ssid/пароль) -> rc1 = містить ' або керуючі байти
+  case "$1" in *"'"*) return 1 ;; esac
+  printf '%s' "$1" | grep -q '[[:cntrl:]]' && return 1
+  return 0
+}
+
+# --- Фаєрвол (фаза 3) ---
+ok_port() {
+  # $1 -> rc0 = число 1-65535
+  case "$1" in ''|*[!0-9]*) return 1 ;; esac
+  [ "$1" -ge 1 ] && [ "$1" -le 65535 ]
+}
+ok_ip() {
+  printf '%s' "$1" | awk -F. 'NF==4{for(i=1;i<=4;i++)if($i!~/^[0-9]+$/||$i+0>255)exit 1;exit 0}{exit 1}'
+}
+fw_redirects() {
+  # -> рядки "idx|name|proto|sport|dip|dport" по одному на redirect
+  N=0
+  while :; do
+    P=$(uci -q get firewall.@redirect[$N].src_dport 2>/dev/null) || break
+    NM=$(uci -q get firewall.@redirect[$N].name 2>/dev/null)
+    PR=$(uci -q get firewall.@redirect[$N].proto 2>/dev/null); PR=${PR:-tcp udp}
+    DI=$(uci -q get firewall.@redirect[$N].dest_ip 2>/dev/null)
+    DP=$(uci -q get firewall.@redirect[$N].dest_port 2>/dev/null); DP=${DP:-$P}
+    printf '%s|%s|%s|%s|%s|%s\n' "$N" "${NM:-?}" "$PR" "$P" "${DI:-?}" "$DP"
+    N=$((N+1))
+  done
+}
+fw_kb() {
+  # клавіатура списку пробросів: fwdel:<idx>; пусто/rc1 = немає правил
+  KB=""; TMPF="$DIR/.fwl.$$"
+  fw_redirects > "$TMPF" || { rm -f "$TMPF"; return 1; }
+  while IFS='|' read -r N NM PR SP DI DP; do
+    KB="$KB[{\"text\":\"❌ ${SP}→${DI}:${DP} (${PR})\",\"callback_data\":\"fwdel:$N\"}],"
+  done < "$TMPF"
+  rm -f "$TMPF"
+  KB=${KB%,}
+  [ -z "$KB" ] && return 1
+  printf '{"inline_keyboard":[%s]}' "$KB"
+}
+fw_confirm() {
+  # $1=команда → черга підтвердження aic1/aic2(з DMS)/aic0
+  printf '%s' "$1" > "$DIR/aipend"
+  send_mk "$(printf "$(t fwd_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
 }
 
 skill_pick() {
@@ -1629,6 +1826,116 @@ process_updates() {
 
     if [ "$CID" = "$CHAT" ]; then
       if [ -n "$TXT" ]; then
+        # --- контекст вводу текстом (.mact): не-командне повідомлення споживається
+        # відкладеною дією меню (ввід SSID/пароля/цілі ping тощо); команди / проходять ---
+        case "$TXT" in
+          "/"*) ;;
+          *)
+            MIN=$(mact_get "$TXT")
+            if [ -n "$MIN" ]; then
+              rm -f "$DIR/.mact"
+              MA_A="${MIN%%|*}"; MA_V="${MIN#*|}"
+              case "$MA_A" in
+                wfk:*|wfs:*|wfc:*)
+                  IDX="${MA_A#*:}"
+                  D=$(uci -q get wireless.@wifi-iface[$IDX].device 2>/dev/null)
+                  if [ -z "$D" ]; then
+                    reply "$(t wf_none)"
+                  elif ! wf_safe "$MA_V"; then
+                    mact_set "$MA_A"
+                    case "$MA_A" in wfk:*) reply "$(t wf_bad_key)" ;; wfs:*) reply "$(t wf_bad_ssid)" ;; *) reply "$(t wf_bad_ch)" ;; esac
+                  else
+                    case "$MA_A" in
+                      wfk:*)
+                        L=${#MA_V}
+                        if [ "$L" -ge 8 ] && [ "$L" -le 63 ]; then
+                          wf_apply "uci set wireless.@wifi-iface[$IDX].key='$MA_V'"
+                        else
+                          mact_set "$MA_A"; reply "$(t wf_bad_key)"
+                        fi ;;
+                      wfs:*)
+                        L=${#MA_V}
+                        if [ "$L" -ge 1 ] && [ "$L" -le 32 ]; then
+                          wf_apply "uci set wireless.@wifi-iface[$IDX].ssid='$MA_V'"
+                        else
+                          mact_set "$MA_A"; reply "$(t wf_bad_ssid)"
+                        fi ;;
+                      wfc:*)
+                        case "$MA_V" in auto|[0-9]*)
+                          wf_apply "uci set wireless.$D.channel='$MA_V'" ;;
+                          *) mact_set "$MA_A"; reply "$(t wf_bad_ch)" ;;
+                        esac ;;
+                    esac
+                  fi
+                  i=$((i+1)); continue ;;
+                fwa_e:*|fwa_i:*|fwa_p:*)
+                  PR="${MA_A#fwa_}"; STEP="${PR%%:*}"; REST="${PR#*:}"
+                  # REST: e-крок="" | i-крок="proto" | p-крок="proto:eport"
+                  case "$STEP" in
+                    e)
+                      if ok_port "$MA_V"; then
+                        mact_set "fwa_i:$REST:$MA_V"; reply "$(t fw_ask_dip)"
+                      else
+                        mact_set "$MA_A"; reply "$(t fw_bad_eport)"
+                      fi ;;
+                    i)
+                      if ok_ip "$MA_V"; then
+                        mact_set "fwa_p:$REST:$MA_V"; reply "$(t fw_ask_dport)"
+                      else
+                        mact_set "$MA_A"; reply "$(t fw_bad_dip)"
+                      fi ;;
+                    p)
+                      PROTO="${REST%%:*}"
+                      TMPR="${REST#*:}"
+                      EPORT="${TMPR%%:*}"
+                      DIP="${TMPR##*:}"
+                      if [ "$MA_V" != "-" ] && ! ok_port "$MA_V"; then
+                        mact_set "$MA_A"; reply "$(t fw_bad_eport)"; i=$((i+1)); continue
+                      fi
+                      case "$PROTO" in tcp|udp) PP="$PROTO" ;; *) PP="tcp udp" ;; esac
+                      CMDL="uci add firewall redirect && uci set firewall.@redirect[-1].name='tgbot_$EPORT' && uci set firewall.@redirect[-1].proto='$PP' && uci set firewall.@redirect[-1].src='wan' && uci set firewall.@redirect[-1].src_dport='$EPORT' && uci set firewall.@redirect[-1].dest_ip='$DIP'"
+                      [ "$MA_V" != "-" ] && CMDL="$CMDL && uci set firewall.@redirect[-1].dest_port='$MA_V'"
+                  fw_confirm "$CMDL && uci commit firewall && /etc/init.d/firewall restart"
+                      ;;
+                esac
+                i=$((i+1)); continue ;;
+                dg:*)
+                  case "$MA_V" in *[!A-Za-z0-9.-]*|'') mact_set "$MA_A"; reply "$(t dg_bad)"; i=$((i+1)); continue ;; esac
+                  case "${MA_A#dg:}" in
+                    ping)  DGCMD="ping -c 4 $MA_V" ; DGNAME="ping" ;;
+                    trace) DGCMD="traceroute -m 15 -w 2 $MA_V 2>&1" ; DGNAME="traceroute" ;;
+                    ns)    DGCMD="nslookup $MA_V" ; DGNAME="nslookup" ;;
+                    *) i=$((i+1)); continue ;;
+                  esac
+                  printf '%s' "$DGCMD" > "$DIR/.lb_cmd"
+                  echo "$MSGID_CB" > "$DIR/.lb_msg"
+                  : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+                  reply "$(printf "$(t dg_doing)" "$DGNAME" "$(esc "$MA_V")")"
+                  ( OUT=$(ai_run "$DGCMD"); printf '%s' "$OUT" > "$DIR/.lb_out"; touch "$DIR/.lb_done" ) &
+                  i=$((i+1)); continue ;;
+                pkg:q)
+                  case "$MA_V" in *[!a-zA-Z0-9._-]*|"") mact_set "pkg:q"; reply "$(t pk_bad)"; i=$((i+1)); continue ;; esac
+                  PINST=$(apk info -e "$MA_V" 2>/dev/null && echo ✅встановлено || echo ❌не знайдено)
+                  PINFO=$(timeout 15 apk search -e "$MA_V" 2>/dev/null | head -3)
+                  PK_KB="{\"inline_keyboard\":[[{\"text\":\"➕ apk add\",\"callback_data\":\"pki:$MA_V\"},{\"text\":\"➖ apk del\",\"callback_data\":\"pkr:$MA_V\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:sys\"}]]}"
+                  send_mk "📦 <b>$(esc "$MA_V")</b>: $PINST
+${PINFO:+<code>$(esc "$PINFO")</code>}" "$PK_KB"
+                  i=$((i+1)); continue ;;
+                sshk:a)
+                  case "$MA_V" in
+                    ssh-ed25519\ *|ssh-rsa\ *|ecdsa-sha2-nistp*\ *)
+                      if ! wf_safe "$MA_V"; then reply "$(t ssh_bad)"; i=$((i+1)); continue; fi
+                      K64=$(printf '%s' "$MA_V" | awk '{print $2}')
+                      case "$K64" in *[!A-Za-z0-9+/=]*|"") reply "$(t ssh_bad)"; i=$((i+1)); continue ;; esac
+                      fw_confirm "echo '$MA_V' >> /etc/dropbear/authorized_keys" ;;
+                    *) reply "$(t ssh_bad)" ;;
+                  esac
+                  i=$((i+1)); continue ;;
+                *) : ;;
+              esac
+            fi
+            ;;
+        esac
         case "$TXT" in
           "/start"|"/menu")
             send_menu "$(menu_text)"
@@ -1657,6 +1964,9 @@ process_updates() {
             ;;
           "/scan")
             cmd_scan
+            ;;
+          "/wifi")
+            KB=$(wf_kb) && send_mk "$(t wf_pick)" "$KB" || reply "$(t wf_none)"
             ;;
           "/ai"*|"/ai")
             touch "$DIR/aimode"
@@ -1946,6 +2256,188 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             ;;
           mn)
             edit_msg "$MSGID_CB" "$(menu_text)" "$MENU_MARKUP"
+            ;;
+          mnu:wifi)
+            edit_msg "$MSGID_CB" "$(t w_title)" "$WIFI_MARKUP"
+            ;;
+          mnu:fw)
+            edit_msg "$MSGID_CB" "$(t f_title)" "$FW_MARKUP"
+            ;;
+          fwlist)
+            KB=$(fw_kb)
+            if [ -n "$KB" ]; then
+              send_mk "$(t fw_hdr)" "$KB"
+            else
+              reply "$(t fw_none)"
+            fi
+            ;;
+          fwdel:*)
+            IDX="${CB#fwdel:}"
+            case "$IDX" in ''|*[!0-9]*) ;; *)
+              SP=$(uci -q get firewall.@redirect[$IDX].src_dport 2>/dev/null)
+              if [ -n "$SP" ]; then
+                fw_confirm "uci -q delete firewall.@redirect[$IDX] && uci commit firewall && /etc/init.d/firewall restart"
+              else
+                reply "$(t ai_pendnone)"
+              fi
+            ;; esac
+            ;;
+          fwa)
+            PROTO_KB="{\"inline_keyboard\":[[{\"text\":\"TCP\",\"callback_data\":\"fst:tcp\"},{\"text\":\"UDP\",\"callback_data\":\"fst:udp\"},{\"text\":\"TCP+UDP\",\"callback_data\":\"fst:any\"}]]}"
+            edit_msg "$MSGID_CB" "$(t fw_ask_proto)" "$PROTO_KB"
+            ;;
+          fst:*)
+            PR="${CB#fst:}"
+            case "$PR" in tcp|udp|any) mact_set "fwa_e:$PR"; reply "$(t fw_ask_eport)" ;; esac
+            ;;
+          pkgl)
+            mact_set "pkg:q"; reply "$(t pk_ask)"
+            ;;
+          pki:*|pkr:*)
+            PN="${CB#pki:}"; [ "$CB" = "$PN" ] && PN="${CB#pkr:}"
+            case "$PN" in *[!a-zA-Z0-9._-]*|"") reply "$(t ai_pendnone)" ;;
+              *)
+                case "$CB" in pki:*) PCC="apk add $PN" ;; *) PCC="apk del $PN" ;; esac
+                printf '%s' "$PCC" > "$DIR/aipend"
+                send_mk "$(printf "$(t wf_conf)" "$(esc "$PCC")")" "$AI_CONF2_MARKUP"
+            ;; esac
+            ;;
+          sshkl)
+            SKB=""; NK=0
+            if [ -s /etc/dropbear/authorized_keys ]; then
+              while IFS= read -r KL; do
+                NK=$((NK+1))
+                KT=$(printf '%s' "$KL" | awk '{print $1}'); KT=${KT:-key}
+                KB4=$(printf '%s' "$KL" | awk '{print substr($2,length($2)-7)}')
+                SKB="$SKB[{\"text\":\"❌ $NK: $KT …$KB4\",\"callback_data\":\"sshkd:$NK\"}],"
+                [ $NK -ge 8 ] && break
+              done < /etc/dropbear/authorized_keys
+            fi
+            SKB=${SKB%,}
+            SSH_KB="{\"inline_keyboard\":["
+            [ -n "$SKB" ] && SSH_KB="$SSH_KB$SKB,"
+            SSH_KB="$SSH_KB[{\"text\":\"$(t ssh_add)\",\"callback_data\":\"ssha\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:sys\"}]]}"
+            edit_msg "$MSGID_CB" "🔑 <b>/etc/dropbear/authorized_keys</b>\nТап по ключу — удалить:" "$SSH_KB"
+            ;;
+          ssha)
+            mact_set "sshk:a"; reply "$(t ssh_ask)"
+            ;;
+          sshkd:*)
+            NKEY="${CB#sshkd:}"
+            case "$NKEY" in ''|*[!0-9]*) ;; *)
+              TOTK=$(wc -l < /etc/dropbear/authorized_keys 2>/dev/null)
+              if [ -n "$TOTK" ] && [ "$NKEY" -ge 1 ] && [ "$NKEY" -le "$TOTK" ]; then
+                fw_confirm "sed -i '${NKEY}d' /etc/dropbear/authorized_keys"
+              else
+                reply "$(t ai_pendnone)"
+              fi
+            ;; esac
+            ;;
+          mnu:dg)
+            edit_msg "$MSGID_CB" "$(t d_title)" "$DG_MARKUP"
+            ;;
+          dgt:*)
+            DT="${CB#dgt:}"
+            case "$DT" in ping|trace|ns) mact_set "dg:$DT"; reply "$(t dg_ask)" ;; esac
+            ;;
+          dgl:*)
+            DL="${CB#dgl:}"
+            case "$DL" in
+              logread)
+                logread 2>/dev/null | tail -n 150 > "$DIR/.logdoc" ;;
+              dmesg)
+                dmesg 2>/dev/null | tail -n 150 > "$DIR/.logdoc" ;;
+              *) : ;;
+            esac
+            if [ -s "$DIR/.logdoc" ]; then
+              reply_doc "$DIR/.logdoc" "📜 $DL (останні 150 рядків)"
+              reply "$(t dg_logsent)"
+            else
+              reply "$(t ai_noans)"
+            fi
+            ;;
+          mnu:sys)
+            edit_msg "$MSGID_CB" "$(t s_title)" "$SYS_MARKUP"
+            ;;
+          wfkb)
+            KB=$(wf_kb) && send_mk "$(t wf_pick)" "$KB" || reply "$(t wf_none)"
+            ;;
+          wf:*)
+            IDX="${CB#wf:}"
+            if wf_view "$IDX"; then
+              edit_msg "$MSGID_CB" "$OUTW" "$WF_KB"
+            else
+              reply "$(t wf_none)"
+            fi
+            ;;
+          wfk:*|wfs:*|wfc:*)
+            mact_set "$CB"
+            case "$CB" in
+              wfk:*) reply "$(t wf_ask_key)" ;;
+              wfs:*) reply "$(t wf_ask_ssid)" ;;
+              *) reply "$(t wf_ask_ch)" ;;
+            esac
+            ;;
+          wfp:*)
+            IDX="${CB#wfp:}"
+            case "$IDX" in ''|*[!0-9]*) ;; *)
+              PWR_KB="{\"inline_keyboard\":[[{\"text\":\"📉 10 dBm\",\"callback_data\":\"wpz:$IDX:10\"},{\"text\":\"📊 20 dBm\",\"callback_data\":\"wpz:$IDX:20\"},{\"text\":\"🚀 max\",\"callback_data\":\"wpz:$IDX:max\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}"
+              edit_msg "$MSGID_CB" "💪 $(t wf_b_pwr)" "$PWR_KB"
+            ;; esac
+            ;;
+          wpz:*)
+            R="${CB#wpz:}"; IDX="${R%%:*}"; V="${R##*:}"
+            D=$(uci -q get wireless.@wifi-iface[$IDX].device 2>/dev/null)
+            if [ -n "$D" ]; then
+              case "$V" in
+                10|20) wf_apply "uci set wireless.$D.txpower='$V'" ;;
+                max) wf_apply "uci -q delete wireless.$D.txpower" ;;
+              esac
+            fi
+            ;;
+          wft:*)
+            IDX="${CB#wft:}"
+            D=$(uci -q get wireless.@wifi-iface[$IDX].device 2>/dev/null)
+            if [ -n "$D" ]; then
+              DIS=$(uci -q get wireless.$D.disabled 2>/dev/null)
+              if [ "${DIS:-0}" = "1" ]; then
+                wf_apply "uci -q delete wireless.$D.disabled"
+              else
+                wf_apply "uci set wireless.$D.disabled='1'"
+              fi
+            fi
+            ;;
+          rbk1)
+            date +%s > "$DIR/rbkarm"
+            edit_msg "$MSGID_CB" "$(t rbk_arm)" "$RBK_CONF_MARKUP"
+            ;;
+          rbkyes|rbkno)
+            if [ "$CB" = "rbkno" ]; then
+              rm -f "$DIR/rbkarm"
+              edit_msg "$MSGID_CB" "$(t ai_cancelled)" "$MENU_MARKUP"
+            else
+              ARMED=0
+              if [ -f "$DIR/rbkarm" ]; then
+                A=$(cat "$DIR/rbkarm")
+                [ $(( $(date +%s) - A )) -le 300 ] && ARMED=1
+              fi
+              L=$(ls -d "$DIR/rb/"* 2>/dev/null | tail -n 1)
+              if [ "$ARMED" != "1" ]; then
+                edit_msg "$MSGID_CB" "$(t rbk_exp)" "$MENU_MARKUP"
+              elif [ -z "$L" ]; then
+                edit_msg "$MSGID_CB" "$(t rbk_none)" "$SYS_MARKUP"
+              else
+                rm -f "$DIR/rbkarm"
+                for CC in network wireless dhcp firewall system sqm; do
+                  [ -f "$L/$CC" ] && cp "$L/$CC" "/etc/config/$CC"
+                done
+                /etc/init.d/network reload 2>/dev/null
+                /etc/init.d/dnsmasq restart 2>/dev/null
+                /etc/init.d/firewall restart 2>/dev/null
+                alog CONF "rollback -> $L (кнопка)"
+                edit_msg "$MSGID_CB" "$(printf "$(t rbk_ok)" "$(basename "$L")")" "$SYS_MARKUP"
+              fi
+            fi
             ;;
           al)
             reply "$(alias_help)"
