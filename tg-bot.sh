@@ -257,9 +257,7 @@ T_v_aoff_ru='⏸ Припинити'; T_v_aoff_en='⏸ Stop routing'; T_v_aoff_u
 T_v_delete_ru='🗑 Видалити WARP'; T_v_delete_en='🗑 Remove WARP'; T_v_delete_uk='🗑 Видалити WARP'
 T_v_go_ru='✅ Так, створити'; T_v_go_en='✅ Yes, create'; T_v_go_uk='✅ Так, створити'
 T_v_noconf_ru='📭 WARP ще не налаштований.\nНатисніть ⚡️ Підключити — бот сам встановить wireguard-tools, зареєструє тунель на серверах Cloudflare і створить конфіг (без перехоплення трафіку).'; T_v_noconf_en='📭 WARP is not configured yet.\nTap ⚡️ Set up — the bot will install wireguard-tools, register the tunnel with Cloudflare and create the config (no traffic rerouting).'; T_v_noconf_uk='📭 WARP ще не налаштований.\nНатисніть ⚡️ Підключити — бот сам встановить wireguard-tools, зареєструє тунель на серверах Cloudflare і створить конфіг (без перехоплення трафіку).'
-T_v_reg_ask_ru='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\nОсновний канал не зачіпається.'
-T_v_reg_ask_en='⚡️ Create the WARP tunnel?\n\n• installs <code>wireguard-tools</code> package\n• registers via public Cloudflare API (keys stay on the router)\n• new <code>warp</code> interface WITHOUT changing the main route\n\nYour main channel is not touched.'
-T_v_reg_ask_uk='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\nОсновний канал не зачіпається.'
+T_v_reg_ask_ru='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\n⚠️ Можливий короткий збій інтернету (~30 с) при першому запуску.'; T_v_reg_ask_en='⚡️ Create the WARP tunnel?\n\n• installs <code>wireguard-tools</code> package\n• registers via public Cloudflare API (keys stay on the router)\n• new <code>warp</code> interface WITHOUT changing the main route\n\n⚠️ A brief internet blip (~30 s) is possible on first run.'; T_v_reg_ask_uk='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\n⚠️ Можливий короткий збій інтернету (~30 с) при першому запуску.'
 T_v_reg_run_ru='⏳ Реєстрація та налаштування WARP у фоні (до ~2 хв)…'; T_v_reg_run_en='⏳ Registering and configuring WARP in background (~2 min)…'; T_v_reg_run_uk='⏳ Реєстрація та налаштування WARP у фоні (до ~2 хв)…'
 T_v_aon_warn_ru='⚠️ Пустити ВЕСЬ трафік через WARP?\nЯкщо тунель упаде — інтернет зникне до відкату.\nРекомендую 🔒 зі страховкою (авто-відкат 90с).\n<code>%s</code>'; T_v_aon_warn_en='⚠️ Route ALL traffic via WARP?\nIf the tunnel dies, internet goes down until rollback.\n🔒 Safety-net recommended (auto-rollback 90s).\n<code>%s</code>'; T_v_aon_warn_uk='⚠️ Пустити ВЕСЬ трафік через WARP?\nЯкщо тунель впаде — інтернет зникне до відкату.\nРекомендую 🔒 зі страховкою (авто-відкат 90с).\n<code>%s</code>'
 T_v_del_ask_ru='🗑 Видалити WARP повністю?\n(інтерфейс, peer, зону файрвола, ключі)'; T_v_del_ask_en='🗑 Remove WARP completely?\n(interface, peer, firewall zone, keys)'; T_v_del_ask_uk='🗑 Видалити WARP повністю?\n(інтерфейс, peer, зону файрвола, ключі)'
@@ -1125,8 +1123,12 @@ grep -q '"id"' "$DIR/.wreg.json" || {
   printf '%s' "❌ Реєстрація Cloudflare не пройшла:
 $(head -c 200 "$DIR/.wreg.json")" > "$DIR/.lb_out"; touch "$DIR/.lb_done"; exit 0
 }
-V4=$(jsonfilter -s "$DIR/.wreg.json" '@.config.interface.addresses.v4')
-PEERPK=$(jsonfilter -s "$DIR/.wreg.json" '@.config.peers[0].public_key')
+V4=$(grep -o '"v4":"[0-9.]*"' "$DIR/.wreg.json" | head -1 | cut -d'"' -f4)
+PEERPK=$(grep -o '"public_key":"[^"]*"' "$DIR/.wreg.json" | head -1 | cut -d'"' -f4)
+[ -n "$V4" ] && [ -n "$PEERPK" ] || {
+  printf '%s' "❌ Реєстрація пройшла, але парсинг профілю не вдався:
+$(head -c 200 "$DIR/.wreg.json")" > "$DIR/.lb_out"; touch "$DIR/.lb_done"; exit 0
+}
 umask 077; printf '%s\n%s\n%s\n' "$PRIV" "$V4" "$PEERPK" > "$DIR/warp.reg"; rm -f "$DIR/.wreg.json"
 # --- uci setup: інтерфейс БЕЗ перехоплення трафіку (route_allowed_ips=0) ---
 uci -q delete network.warp >/dev/null 2>&1
@@ -1161,11 +1163,20 @@ while :; do N=$(uci -q get firewall.@zone[$i].name 2>/dev/null) || break
 }
 ifup warp
 # --- handshake, fallback портами якщо CF блокує 2408 ---
+# якщо netifd ще не знає proto wireguard (свіже встановлений пакет) — рестарт мережі
+NEED_RS=""
+ubus call network get_proto_handlers 2>/dev/null | grep -q wireguard || NEED_RS=1
 HS=""
 for PT in 2408 500 1701 4500; do
   uci set network.@wireguard_warp[-1].endpoint_port="$PT"; uci commit network
-  /etc/init.d/network reload >/dev/null 2>&1
-  sleep 6
+  if [ -n "$NEED_RS" ]; then
+    /etc/init.d/network restart >/dev/null 2>&1
+    NEED_RS=""
+    sleep 25
+  else
+    /etc/init.d/network reload >/dev/null 2>&1
+    sleep 6
+  fi
   HS=$(wg show warp latest-handshakes 2>/dev/null | awk '{print $2}')
   [ -n "$HS" ] && [ "$HS" != "0" ] && break
 done
