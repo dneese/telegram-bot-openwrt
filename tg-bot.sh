@@ -57,9 +57,9 @@ T_d_hdr_ru='<b>📶 Устройства</b> · 🟢 онлайн: %s из %s'; 
 T_d_on_ru='\n<b>📍 В сети</b>\n%s'; T_d_on_en='\n<b>📍 Online</b>\n%s'; T_d_on_uk='\n<b>📍 В мережі</b>\n%s'
 T_d_off_ru='\n\n<b>📍 Не в сети</b>\n%s'; T_d_off_en='\n\n<b>📍 Offline</b>\n%s'; T_d_off_uk='\n\n<b>📍 Не в мережі</b>\n%s'
 T_d_name_ru='устройство'; T_d_name_en='device'; T_d_name_uk='пристрій'
-T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/ai вопрос</code> · спросить AI (видит статус сети)\n<code>/model</code> · сменить AI-модель\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/alias del IP</code> · убрать имя\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/watch list|del MAC</code>\n<code>/mon add host Метка</code> · следить за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс ежечасный: время устарело — роутер лежит.</i>'
-T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/ai question</code> · ask AI (sees network state)\n<code>/model</code> · switch AI model\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/alias del IP</code> · remove name\n<code>/watch add MAC Name</code> · watch a person\n<code>/watch list|del MAC</code>\n<code>/mon add host Label</code> · monitor a host\n<code>/mon list|del host</code>\n\n✅ <i>Hourly heartbeat: time stale = router down.</i>'
-T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/ai питання</code> · спитати AI (бачить стан мережі)\n<code>/model</code> · змінити AI-модель\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/alias del IP</code> · прибрати назву\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/watch list|del MAC</code>\n<code>/mon add host Мітка</code> · слідкувати за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс щогодинний: час застарів — роутер лежить.</i>'
+T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/ai вопрос</code> · спросить AI (видит статус сети)\n<code>/model</code> · сменить AI-модель\n<code>/key КЛЮЧ</code> · добавить AI-ключ (Groq/OpenRouter/Gemini)\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/alias del IP</code> · убрать имя\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/watch list|del MAC</code>\n<code>/mon add host Метка</code> · следить за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс ежечасный: время устарело — роутер лежит.</i>'
+T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/ai question</code> · ask AI (sees network state)\n<code>/model</code> · switch AI model\n<code>/key KEY</code> · add AI key (Groq/OpenRouter/Gemini)\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/alias del IP</code> · remove name\n<code>/watch add MAC Name</code> · watch a person\n<code>/watch list|del MAC</code>\n<code>/mon add host Label</code> · monitor a host\n<code>/mon list|del host</code>\n\n✅ <i>Hourly heartbeat: time stale = router down.</i>'
+T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/ai питання</code> · спитати AI (бачить стан мережі)\n<code>/model</code> · змінити AI-модель\n<code>/key КЛЮЧ</code> · додати AI-ключ (Groq/OpenRouter/Gemini)\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/alias del IP</code> · прибрати назву\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/watch list|del MAC</code>\n<code>/mon add host Мітка</code> · слідкувати за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс щогодинний: час застарів — роутер лежить.</i>'
 T_al_help_ru='🏷 <b>Свои имена устройств</b>\n\nЗадать имя:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nУбрать имя:\n<code>/alias del 192.168.1.105</code>\n\nИмена видны в 📱 Устройствах и в 👀 Слежке.'
 T_al_help_en='🏷 <b>Custom device names</b>\n\nSet a name:\n<code>/alias 192.168.1.105 Laptop</code>\n\nRemove a name:\n<code>/alias del 192.168.1.105</code>\n\nNames appear in 📱 Devices and 👀 Watch.'
 T_al_help_uk='🏷 <b>Свої назви пристроїв</b>\n\nЗадати назву:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nПрибрати назву:\n<code>/alias del 192.168.1.105</code>\n\nНазви видно в 📱 Пристроях та 👀 Слідкуванні.'
@@ -122,6 +122,7 @@ T_pend_hint_ru='⏳ Команда ещё ждёт подтверждения:\n
   T_mdl_title_ru='⚙️ <b>AI-модель</b>\n\nОсновная: <code>%s</code>\nРезерв: <code>%s</code>\nЦепочка Groq: <code>%s</code>\n\nВыберите основную модель — применяется сразу, без рестарта:'; T_mdl_title_en='⚙️ <b>AI model</b>\n\nPrimary: <code>%s</code>\nAlt: <code>%s</code>\nGroq chain: <code>%s</code>\n\nPick the primary model — applies instantly, no restart:'; T_mdl_title_uk='⚙️ <b>AI-модель</b>\n\nОсновна: <code>%s</code>\nРезерв: <code>%s</code>\nЛанцюг Groq: <code>%s</code>\n\nВиберіть основну модель — застосовується одразу, без рестарту:'
   T_mdl_set_ru='✅ Основная модель: %s'; T_mdl_set_en='✅ Primary model: %s'; T_mdl_set_uk='✅ Основна модель: %s'
   T_c_mdl_ru='сменить AI-модель'; T_c_mdl_en='switch AI model'; T_c_mdl_uk='змінити AI-модель'
+  T_c_key_ru='добавить AI-ключ'; T_c_key_en='add AI key'; T_c_key_uk='додати AI-ключ'
 T_cmd_run_ru='⚙️ Выполняю: <code>%s</code>'; T_cmd_run_en='⚙️ Running: <code>%s</code>'; T_cmd_run_uk='⚙️ Виконую: <code>%s</code>'
 T_rb_arm_ru='⚠️ Подтвердите: /reboot yes (или кнопкой ниже 👇)'; T_rb_arm_en='⚠️ Confirm: /reboot yes (or the button below 👇)'; T_rb_arm_uk='⚠️ Підтвердіть: /reboot yes (або кнопкою нижче 👇)'
 T_rb_menu_ru='🤖 Меню:'; T_rb_menu_en='🤖 Menu:'; T_rb_menu_uk='🤖 Меню:'
@@ -392,7 +393,7 @@ typing() {
 
 register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
-  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
+  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"key\",\"description\":\"$(t c_key)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
     -H "Content-Type: application/json" \
     -d "$CMDS" | grep -q '"ok":true' || {
@@ -975,6 +976,46 @@ ai_call() {
       ;;
   esac
   ANS=$(printf '%s' "$ANS" | sed 's/```[a-zA-Z]*//g; s/```//g; /<think>/,/<\/think>/d; s/<think>.*$//')
+}
+
+key_slot() {
+  # $1=ключ -> назва слота (ai_key|ai_key2|ai_key3) або "" ; та сама логіка в install.sh
+  case "$1" in
+    gsk_*) echo ai_key ;;
+    sk-or-v1*) echo ai_key2 ;;
+    ??*) echo ai_key3 ;;
+    *) return 1 ;;
+  esac
+}
+
+key_cmd() {
+  # /key            -> статус слотів (замасковано)
+  # /key <КЛЮЧ>     -> зберегти у свій слот за префіксом; БЕЗ AI — працює завжди
+  K=$(printf '%s' "$1" | awk '{print $2}')
+  if [ -z "$K" ]; then
+    S=""
+    for SLOT in ai_key ai_key2 ai_key3; do
+      V=$(uci -q get tgbot.config.$SLOT)
+      [ -n "$V" ] && S="$S\n• $SLOT: ${V%????????}…"
+    done
+    reply "🔑 AI-ключі:${S:-\n• жодного.}
+Додати: /key gsk_… (Groq) | /key sk-or-v1… (OpenRouter) | /key інший (Gemini)"
+    return
+  fi
+  case "$K" in
+    *[!A-Za-z0-9_.\-]*) reply "🚫 Ключ містить недопустимі символи."; return ;;
+  esac
+  [ "${#K}" -lt 20 ] && { reply "🚫 Занадто короткий для ключа."; return; }
+  SLOT=$(key_slot "$K") || { reply "🚫 Невідомий формат ключа. Підтримую: gsk_* / sk-or-v1* / інший (Gemini)."; return; }
+  uci set tgbot.config.$SLOT="$K"
+  case $SLOT in
+    ai_key) uci -q get tgbot.config.ai_url >/dev/null || { uci set tgbot.config.ai_url="https://api.groq.com/openai/v1/chat/completions"; uci -q get tgbot.config.ai_model >/dev/null || uci set tgbot.config.ai_model="qwen/qwen3.6-27b"; } ;;
+    ai_key2) [ -z "$(uci -q get tgbot.config.ai_url2)" ] && uci set tgbot.config.ai_url2="https://openrouter.ai/api/v1/chat/completions" ;;
+    ai_key3) [ -z "$(uci -q get tgbot.config.ai_model3)" ] && uci set tgbot.config.ai_model3="gemini-3.6-flash" ;;
+  esac
+  uci commit tgbot
+  alog CONF "/key → $SLOT (довжина ${#K})"
+  reply "✅ Ключ збережено у <code>$SLOT</code>. Ланцюг підхопить його одразу, рестарт не потрібен."
 }
 
 is_mut() {
@@ -1616,6 +1657,9 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
           "/mon"*|"/mon")
             [ "$TXT" = "/mon" ] && TXT="/mon list"
             cmd_mon "$TXT"
+            ;;
+          "/key"*|"/key")
+            key_cmd "$TXT"
             ;;
           "/reboot")
             date +%s > "$DIR/rbarm"

@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -223,6 +223,13 @@ if cmd_banned "nft flush table inet fw4"; then ok "ban: nft flush table лови
 if cmd_banned "iptables -F && reboot"; then ok "ban: iptables -F ловиться"; else bad "ban: iptables -F" "-"; fi
 if cmd_banned "nft list ruleset | head -20"; then bad "ban: nft list НЕ має банитись" "+"; else ok "ban: nft list дозволений"; fi
 if cmd_banned "conntrack -F"; then bad "ban: conntrack -F (безпечний метод) НЕ має банитись" "+"; else ok "ban: conntrack -F дозволений"; fi
+# --- key_slot (маршрут ключів за префіксом; та сама логіка в install.sh і /key) ---
+eq "keyslot: gsk_ → ai_key" "$(key_slot 'gsk_AbC12345678901234567890')" "ai_key"
+eq "keyslot: sk-or-v1 → ai_key2" "$(key_slot 'sk-or-v1-abcdef0123456789abcdef')" "ai_key2"
+eq "keyslot: інший → ai_key3" "$(key_slot 'AQ.Xyz1234567890123456789')" "ai_key3"
+if key_slot '' 2>/dev/null; then bad "keyslot: пустий відхилено" "+"; else ok "keyslot: пустий відхилено"; fi
+
+printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
 [ "$FAIL" = 0 ]

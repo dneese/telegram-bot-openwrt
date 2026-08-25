@@ -92,15 +92,32 @@ touch "$DIR/ai/corrections.md" "$DIR/ai/topology.md"
 # --- конфігурація uci ---
 if ! uci -q get tgbot.config >/dev/null 2>&1; then
   echo "=== Первинне налаштування ==="
-  [ -z "$TOKEN" ] && printf 'Токен від @BotFather: ' && [ -z "$TOKEN" ] && read -r TOKEN
-  [ -z "$CHATID" ] && printf 'Ваш Chat ID (число): ' && [ -z "$CHATID" ] && read -r CHATID
+  [ -z "$TOKEN" ] && printf 'Токен від @BotFather: ' && read -r TOKEN
+  [ -z "$CHATID" ] && printf 'Ваш Chat ID (число): ' && read -r CHATID
   [ -z "$LANG_" ] && { printf 'Мова [ru/uk/en, def ru]: '; read -r LANG_; }
+  [ -z "$KEY" ] && printf 'AI-ключ (gsk_/sk-or-v1/інший; Enter = пропустити, додасте пізніше в LuCI або /key у боті): ' && read -r KEY
   touch /etc/config/tgbot && chown root:root /etc/config/tgbot
   uci set tgbot.config=config 2>/dev/null || uci set tgbot.config='config'
 fi
 [ -n "$TOKEN" ] && uci set tgbot.config.token="$TOKEN"
 [ -n "$CHATID" ] && uci set tgbot.config.chatid="$CHATID"
 [ -n "$LANG_" ] && uci set tgbot.config.lang="$LANG_"
+# AI-ключ: авто-маршрут за префіксом (та сама логіка що й /key у боті)
+case "$KEY" in
+  gsk_*)
+    [ -z "$URL" ] && URL="https://api.groq.com/openai/v1/chat/completions"
+    [ -z "$MODEL" ] && MODEL="qwen/qwen3.6-27b"
+    uci set tgbot.config.ai_key="$KEY"; echo "ключ → ai_key (Groq)" ;;
+  sk-or-v1*)
+    uci set tgbot.config.ai_url2="https://openrouter.ai/api/v1/chat/completions"
+    uci set tgbot.config.ai_key2="$KEY"
+    [ -z "$(uci -q get tgbot.config.ai_model)" ] && uci set tgbot.config.ai_model="openai/gpt-oss-20b"
+    echo "ключ → ai_key2 (OpenRouter)" ;;
+  ??*)
+    uci set tgbot.config.ai_key3="$KEY"
+    uci set tgbot.config.ai_model3="gemini-3.6-flash"
+    echo "ключ → ai_key3 (Gemini)" ;;
+esac
 [ -n "$MODEL" ] && uci set tgbot.config.ai_model="$MODEL"
 [ -n "$KEY" ] && uci set tgbot.config.ai_key="$KEY"
 [ -n "$URL" ] && uci set tgbot.config.ai_url="$URL"
@@ -136,6 +153,8 @@ TT=$(uci -q get tgbot.config.token)
 echo ""
 echo "Готово. Далі:"
 echo " • Напишіть боту /status"
-echo " • AI: /ai ваше питання   (ключ AI: uci set tgbot.config.ai_key=... )"
+echo " • AI-ключі можна додати ПОЗНІШЕ будь-коли:"
+echo "     LuCI → Services → Telegram Bot, АБО просто надішліть боту: /key gsk_ваш_ключ"
+echo " • AI: /ai ваше питання   (без ключа AI-режим не запуститься)"
 echo " • Лог діалогів: /ailog   Відкат змін: /rollback"
 echo " • Мова: uci set tgbot.config.lang=uk|ru|en ; скіли: $DIR/ai/skills/"
