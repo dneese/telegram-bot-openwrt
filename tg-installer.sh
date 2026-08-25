@@ -40,7 +40,7 @@ prompts/learned/lessons.md \
 prompts/skills/wifi.md prompts/skills/vpn.md prompts/skills/dns.md prompts/skills/firewall.md \
 prompts/skills/services.md prompts/skills/network-dhcp.md prompts/skills/system-misc.md"
 
-mkdir -p "$TMP/prompts/skills" || die "Немає доступу до /tmp"
+mkdir -p "$TMP/prompts/skills" "$TMP/prompts/learned" || die "Немає доступу до /tmp"
 
 say "⬇️  Завантажую tg-router-bot ($REPO@$BR)..."
 for F in $FILES; do
