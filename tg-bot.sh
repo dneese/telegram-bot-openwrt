@@ -57,9 +57,9 @@ T_d_hdr_ru='<b>📶 Устройства</b> · 🟢 онлайн: %s из %s'; 
 T_d_on_ru='\n<b>📍 В сети</b>\n%s'; T_d_on_en='\n<b>📍 Online</b>\n%s'; T_d_on_uk='\n<b>📍 В мережі</b>\n%s'
 T_d_off_ru='\n\n<b>📍 Не в сети</b>\n%s'; T_d_off_en='\n\n<b>📍 Offline</b>\n%s'; T_d_off_uk='\n\n<b>📍 Не в мережі</b>\n%s'
 T_d_name_ru='устройство'; T_d_name_en='device'; T_d_name_uk='пристрій'
-T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/ai вопрос</code> · спросить AI (видит статус сети)\n<code>/model</code> · сменить AI-модель\n<code>/key КЛЮЧ</code> · добавить AI-ключ (Groq/OpenRouter/Gemini)\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/alias del IP</code> · убрать имя\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/watch list|del MAC</code>\n<code>/mon add host Метка</code> · следить за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс ежечасный: время устарело — роутер лежит.</i>'
-T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/ai question</code> · ask AI (sees network state)\n<code>/model</code> · switch AI model\n<code>/key KEY</code> · add AI key (Groq/OpenRouter/Gemini)\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/alias del IP</code> · remove name\n<code>/watch add MAC Name</code> · watch a person\n<code>/watch list|del MAC</code>\n<code>/mon add host Label</code> · monitor a host\n<code>/mon list|del host</code>\n\n✅ <i>Hourly heartbeat: time stale = router down.</i>'
-T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/ai питання</code> · спитати AI (бачить стан мережі)\n<code>/model</code> · змінити AI-модель\n<code>/key КЛЮЧ</code> · додати AI-ключ (Groq/OpenRouter/Gemini)\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/alias del IP</code> · прибрати назву\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/watch list|del MAC</code>\n<code>/mon add host Мітка</code> · слідкувати за хостом\n<code>/mon list|del host</code>\n\n✅ <i>Пульс щогодинний: час застарів — роутер лежить.</i>'
+T_help_ru='<b>🤖 Управление роутером</b>\n\n<b>📍 Основное</b>\n<code>/status</code> · статус системы\n<code>/devices</code> · устройства в сети\n<code>/wan</code> · переподключить интернет\n<code>/reboot yes</code> · перезагрузка\n\n<b>📍 Инструменты</b>\n<code>/wifi</code> · меню Wi-Fi (пароль/SSID/канал/мощность)\n<code>/backup</code> · бэкап конфигов файлом сюда\n<code>/qr</code> · QR для подключения к Wi-Fi\n<code>/scan</code> · скан соседних сетей\n<code>/rollback</code> · откат конфигов к снимку\n<code>/topo IP опис</code> · запомнить устройство\n<code>/ai вопрос</code> · AI-агент (знает состояние, делает изменения)\n<code>/model</code> · сменить AI-модель · <code>/key КЛЮЧ</code>\n<code>/usage</code> · расход токенов · <code>/cancel</code> · отмена\n\n<b>📍 Алиасы и слежка</b>\n<code>/alias IP Имя</code> · своё имя устройству\n<code>/watch add MAC Имя</code> · следить за человеком\n<code>/mon add host Метка</code> · мониторинг хоста\n\n✅ <i>Меню /start: Wi-Fi · Файрвол · Диагностика · Система. Пульс ежечасный.</i>'
+T_help_en='<b>🤖 Router control</b>\n\n<b>📍 Basics</b>\n<code>/status</code> · system status\n<code>/devices</code> · network devices\n<code>/wan</code> · reconnect internet\n<code>/reboot yes</code> · reboot\n\n<b>📍 Tools</b>\n<code>/wifi</code> · Wi-Fi menu (password/SSID/channel/power)\n<code>/backup</code> · config backup as a file here\n<code>/qr</code> · Wi-Fi connect QR code\n<code>/scan</code> · scan nearby networks\n<code>/rollback</code> · restore config snapshot\n<code>/topo IP desc</code> · remember a device\n<code>/ai question</code> · AI agent (knows the state, makes changes)\n<code>/model</code> · switch AI model · <code>/key KEY</code>\n<code>/usage</code> · token usage · <code>/cancel</code> · cancel\n\n<b>📍 Aliases and watching</b>\n<code>/alias IP Name</code> · custom device name\n<code>/watch add MAC Name</code> · watch a person\n<code>/mon add host Label</code> · host monitoring\n\n✅ <i>/start menu: Wi-Fi · Firewall · Diagnostics · System. Hourly heartbeat.</i>'
+T_help_uk='<b>🤖 Керування роутером</b>\n\n<b>📍 Основне</b>\n<code>/status</code> · статус системи\n<code>/devices</code> · пристрої в мережі\n<code>/wan</code> · перепідключити інтернет\n<code>/reboot yes</code> · перезавантаження\n\n<b>📍 Інструменти</b>\n<code>/wifi</code> · меню Wi-Fi (пароль/SSID/канал/потужність)\n<code>/backup</code> · бекап конфігів файлом сюди\n<code>/qr</code> · QR для підключення до Wi-Fi\n<code>/scan</code> · скан сусідніх мереж\n<code>/rollback</code> · відкат конфігів до знімка\n<code>/topo IP опис</code> · запамʼятати пристрій\n<code>/ai питання</code> · AI-агент (знає стан, робить зміни)\n<code>/model</code> · змінити AI-модель · <code>/key КЛЮЧ</code>\n<code>/usage</code> · витрати токенів · <code>/cancel</code> · скасувати\n\n<b>📍 Аліаси та слідкування</b>\n<code>/alias IP Назва</code> · свою назву пристрою\n<code>/watch add MAC Назва</code> · слідкувати за людиною\n<code>/mon add host Мітка</code> · моніторинг хоста\n\n✅ <i>Меню /start: Wi-Fi · Фаєрвол · Діагностика · Система. Пульс щогодинний.</i>'
 T_al_help_ru='🏷 <b>Свои имена устройств</b>\n\nЗадать имя:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nУбрать имя:\n<code>/alias del 192.168.1.105</code>\n\nИмена видны в 📱 Устройствах и в 👀 Слежке.'
 T_al_help_en='🏷 <b>Custom device names</b>\n\nSet a name:\n<code>/alias 192.168.1.105 Laptop</code>\n\nRemove a name:\n<code>/alias del 192.168.1.105</code>\n\nNames appear in 📱 Devices and 👀 Watch.'
 T_al_help_uk='🏷 <b>Свої назви пристроїв</b>\n\nЗадати назву:\n<code>/alias 192.168.1.105 Ноутбук</code>\n\nПрибрати назву:\n<code>/alias del 192.168.1.105</code>\n\nНазви видно в 📱 Пристроях та 👀 Слідкуванні.'
@@ -234,6 +234,18 @@ T_pk_bad_ru='❌ Назва пакета: літери, цифри, . _ -. Сп�
 T_ssh_add_ru='➕ Додати ключ'; T_ssh_add_en='➕ Add key'; T_ssh_add_uk='➕ Додати ключ'
 T_ssh_ask_ru='🔑 Надішліть публічний SSH-ключ одним рядком (починається зі ssh-ed25519 або ssh-rsa):'; T_ssh_ask_en='🔑 Send a public SSH key as one line (starts with ssh-ed25519 or ssh-rsa):'; T_ssh_ask_uk='🔑 Надішліть публічний SSH-ключ одним рядком (починається зі ssh-ed25519 або ssh-rsa):'
 T_ssh_bad_ru='❌ Це не схоже на публічний SSH-ключ (очікую ssh-ed25519/ssh-rsa + base64).'; T_ssh_bad_en="❌ Doesn't look like a public SSH key (expected ssh-ed25519/ssh-rsa + base64)."; T_ssh_bad_uk='❌ Це не схоже на публічний SSH-ключ (очікую ssh-ed25519/ssh-rsa + base64).'
+
+# --- токен-оптимізація агента (фази A-G) ---
+T_c_usage_ru='📈 Витрати AI-токенів за добу'; T_c_usage_en='📈 AI token usage today'; T_c_usage_uk='📈 Витрати AI-токенів за добу'
+T_c_cancel_ru='🛑 Скасувати очікування/дію'; T_c_cancel_en='🛫 Cancel pending action'; T_c_cancel_uk='🛑 Скасувати очікування/дію'
+T_cancel_ok_ru='🛑 Скасовано: очікувані підтвердження, контекст вводу і фонові задачі скинуто.'; T_cancel_ok_en='🛑 Cancelled: pending confirmations, input context and background tasks cleared.'; T_cancel_ok_uk='🛑 Скасовано: очікувані підтвердження, контекст вводу і фонові задачі скинуто.'
+T_batch_mut_ru='🚫 У батчі є команда зміни налаштувань — мутації виконуються ТІЛЬКИ по одній з підтвердженням. Надішліть запит ще раз: спершу читання, потім зміну окремо.'; T_batch_mut_en='🚫 The batch contains a settings change — mutations run ONLY one at a time with confirmation. Please rephrase: reads first, then the change separately.'; T_batch_mut_uk='🚫 У батчі є команда зміни налаштувань — мутації виконуються ТІЛЬКИ по одній з підтвердженням. Надішліть запит ще раз: спершу читання, потім зміну окремо.'
+T_plan_lbl_ru='📋 План задачі:'; T_plan_lbl_en='📋 Task plan:'; T_plan_lbl_uk='📋 План задачі:'
+T_usage_none_ru='📊 Записів про витрати ще немає (toklog порожній).\nДані зʼявляються після перших звернень до AI.'; T_usage_none_en='📊 No usage records yet (empty toklog).\nData appears after your first AI queries.'; T_usage_none_uk='📊 Записів про витрати ще немає (toklog порожній).\nДані зʼявляються після перших звернень до AI.'
+T_q_temp_ru='🌡 <b>Температура</b>\n%s'; T_q_temp_en='🌡 <b>Temperature</b>\n%s'; T_q_temp_uk='🌡 <b>Температура</b>\n%s'
+T_q_res_ru='🧠 <b>Ресурси</b>\nRAM: %s\nДиск /: %s\nLoad: %s'; T_q_res_en='🧠 <b>Resources</b>\nRAM: %s\nDisk /: %s\nLoad: %s'; T_q_res_uk='🧠 <b>Ресурси</b>\nRAM: %s\nДиск /: %s\nLoad: %s'
+T_q_pubip_ru='🌍 <b>Публічний IP</b>: <code>%s</code>%s'; T_q_pubip_en='🌍 <b>Public IP</b>: <code>%s</code>%s'; T_q_pubip_uk='🌍 <b>Публічний IP</b>: <code>%s</code>%s'
+T_q_cgnat_ru='\n⚠️ CGNAT — адреса приватна, проброс портів ззовні не працює'; T_q_cgnat_en='\n⚠️ CGNAT — private address, port forwarding from outside will not work'; T_q_cgnat_uk='\n⚠️ CGNAT — приватна адреса, проброс портів ззовні не працюватиме'
 
 # send_rich визначено нижче (файловий payload)
 
@@ -488,7 +500,7 @@ typing() {
 
 register_commands() {
   # Список команд для кнопки ☰ Menu в Telegram
-  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"key\",\"description\":\"$(t c_key)\"},{\"command\":\"topo\",\"description\":\"$(t c_topo)\"},{\"command\":\"rollback\",\"description\":\"$(t c_rback)\"},{\"command\":\"wifi\",\"description\":\"$(t c_wifi)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
+  CMDS="{\"commands\":[{\"command\":\"status\",\"description\":\"$(t c_status)\"},{\"command\":\"devices\",\"description\":\"$(t c_dev)\"},{\"command\":\"wan\",\"description\":\"$(t c_wan)\"},{\"command\":\"backup\",\"description\":\"$(t c_bk)\"},{\"command\":\"qr\",\"description\":\"$(t c_qr)\"},{\"command\":\"scan\",\"description\":\"$(t c_scan)\"},{\"command\":\"ai\",\"description\":\"$(t c_ai)\"},{\"command\":\"alias\",\"description\":\"$(t c_alias)\"},{\"command\":\"watch\",\"description\":\"$(t c_watch)\"},{\"command\":\"mon\",\"description\":\"$(t c_mon)\"},{\"command\":\"reboot\",\"description\":\"$(t c_rb)\"},{\"command\":\"ailog\",\"description\":\"$(t c_ailog)\"},{\"command\":\"model\",\"description\":\"$(t c_mdl)\"},{\"command\":\"key\",\"description\":\"$(t c_key)\"},{\"command\":\"topo\",\"description\":\"$(t c_topo)\"},{\"command\":\"rollback\",\"description\":\"$(t c_rback)\"},{\"command\":\"wifi\",\"description\":\"$(t c_wifi)\"},{\"command\":\"usage\",\"description\":\"$(t c_usage)\"},{\"command\":\"cancel\",\"description\":\"$(t c_cancel)\"},{\"command\":\"help\",\"description\":\"$(t c_help)\"}]}"
   curl -s --max-time 15 "$API/setMyCommands" \
     -H "Content-Type: application/json" \
     -d "$CMDS" | grep -q '"ok":true' || {
@@ -939,6 +951,92 @@ fw_confirm() {
   send_mk "$(printf "$(t fwd_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
 }
 
+# --- токен-оптимізація: хелпери (фази A/C/D/F/G) ---
+trim_out() {
+  # $1=текст [$2=ліміт, дефолт 1000] -> head+tail з маркером обрізання (економія токенів фідбеку)
+  TX="$1"; L="${2:-1000}"
+  [ "${#TX}" -le "$L" ] && { printf '%s' "$TX"; return; }
+  H=$((L*6/10)); T=$((L*4/10))
+  printf '%s\n…(обрізано, повний вивід у журналі бота)…\n%s' \
+    "$(printf '%s' "$TX" | head -c $H)" "$(printf '%s' "$TX" | tail -c $T)"
+}
+tok_log() {
+  # $1=model $2=prompt_tokens $3=completion_tokens -> рядок у toklog (ротація 20КБ)
+  [ -n "$2" ] || return 0
+  printf '%s|%s|%s|%s\n' "$(date +%s)" "$1" "${2:-0}" "${3:-0}" >> "$DIR/toklog" 2>/dev/null
+  tail -c 20000 "$DIR/toklog" > "$DIR/toklog.t" 2>/dev/null && mv "$DIR/toklog.t" "$DIR/toklog"
+}
+prog_msg() {
+  # $1=HTML -> створює або редагує ЄДНЕ повідомлення прогресу (msgid у $DIR/.pmid)
+  PM=$(cat "$DIR/.pmid" 2>/dev/null)
+  if [ -n "$PM" ]; then
+    printf '{"chat_id":"%s","message_id":%s,"parse_mode":"HTML","text":"%s"}' \
+      "$CHAT" "$PM" "$(jesc "$1")" > "$DIR/.rq"
+    _req editMessageText "$DIR/.rq" >/dev/null || rm -f "$DIR/.pmid"
+  else
+    RSP=$(printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s"}' \
+      "$CHAT" "$(jesc "$1")" > "$DIR/.rq"; _req sendMessage "$DIR/.rq")
+    NM=$(printf '%s' "$RSP" | jsonfilter -e '$.result.message_id' 2>/dev/null)
+    [ -n "$NM" ] && echo "$NM" > "$DIR/.pmid"
+  fi
+}
+prog_done() { rm -f "$DIR/.pmid"; }
+
+state_rebuild() {
+  # Повний механічний знімок статичних параметрів -> $DIR/ai/state.md (0 токенів).
+  # Викликається: на старті якщо нема/застарів, після кожної мутації, раз на добу з пульса.
+  SB=$(cat /tmp/sysinfo/model 2>/dev/null)
+  FW=$(grep DISTRIB_RELEASE /etc/openwrt_release 2>/dev/null | cut -d"'" -f2)
+  LANIP=$(uci -q get network.lan.ipaddr 2>/dev/null)
+  WANIP=$(ip addr show wan 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1)
+  CGN=""
+  case "$WANIP" in 100.6[4-9].*|100.7*|100.8*|100.9*|100.1[01][0-9].*|100.12[0-7].*) CGN=" (CGNAT — проброс ззовні не працює)" ;; esac
+  DNSU=$(uci -q get dhcp.@dnsmasq[0].server 2>/dev/null | tr ' ' ',' | sed "s/'//g"); DNSU=${DNSU:-авто від провайдера}
+  WF=""
+  N=0
+  while :; do
+    S=$(uci -q get wireless.@wifi-iface[$N].ssid 2>/dev/null) || break
+    D=$(uci -q get wireless.@wifi-iface[$N].device 2>/dev/null)
+    EN=$(uci -q get wireless.$D.disabled 2>/dev/null); EN=${EN:-0}
+    ST=on; [ "$EN" = "1" ] && ST=off
+    CH=$(uci -q get wireless.$D.channel 2>/dev/null); CH=${CH:-auto}
+    PW=$(uci -q get wireless.$D.txpower 2>/dev/null); PW=${PW:-max}
+    KY=$(uci -q get wireless.@wifi-iface[$N].key 2>/dev/null); KY=${KY:+(пароль відомий боту)}
+    WF="$WF
+- SSID \"$S\": радіо $ST, канал $CH, потужність $PW, ${KY:-без пароля}"
+    N=$((N+1))
+  done
+  PFC=0; while :; do uci -q get firewall.@redirect[$PFC].src_dport >/dev/null 2>&1 || break; PFC=$((PFC+1)); done
+  PKG=""
+  for P in nlbwmon sqm-scripts wireguard-tools adblock https-dns-proxy miniupnpd; do
+    apk info -e "$P" >/dev/null 2>&1 && PKG="$PKG $P"
+  done
+  mkdir -p "$DIR/ai" 2>/dev/null
+  {
+    printf '# СТАН РОУТЕРА (оновлено %s)\n' "$(date '+%d.%m %H:%M')"
+    printf 'Модель: %s | Прошивка: ImmortalWrt %s\n' "${SB:-?}" "${FW:-?}"
+    printf 'LAN IP: %s | WAN IP: %s%s\n' "${LANIP:-?}" "${WANIP:-невідомо}" "${CGN}"
+    printf 'DNS upstream (dnsmasq): %s\n' "$DNSU"
+    [ -n "$WF" ] && printf 'Wi-Fi:%s\n' "$WF"
+    printf 'Портфорвордів WAN: %s\n' "$PFC"
+    printf 'Додаткові пакети:%s\n' "${PKG:- немає}"
+    printf '\nЦЕ КЕШ: параметри вважай чинними без перевірки CMD; оновлюється ботом автоматично після кожної зміни.\n'
+  } > "$DIR/ai/state.md" 2>/dev/null
+  date +%s > "$DIR/.state_ts"
+}
+state_fresh() {
+  # rc0 = state.md є і молодший за 48год
+  [ -s "$DIR/ai/state.md" ] || return 1
+  TS=$(cat "$DIR/.state_ts" 2>/dev/null)
+  case "$TS" in ''|*[!0-9]*) return 1 ;; esac
+  [ $(( $(date +%s) - TS )) -le 172800 ]
+}
+act_log() {
+  # $1=команда $2=rc -> механічний журнал дій агента (памʼять "що я робив")
+  printf '%s | %s => rc=%s\n' "$(date '+%d.%m %H:%M')" "$(printf '%s' "$1" | tr '\n\t' '  ' | head -c 120)" "${2:-?}" >> "$DIR/ai/actions.log" 2>/dev/null
+  tail -c 4000 "$DIR/ai/actions.log" > "$DIR/ai/actions.log.t" 2>/dev/null && mv "$DIR/ai/actions.log.t" "$DIR/ai/actions.log"
+}
+
 skill_pick() {
   # $1=Q -> шлях до скіла за ключовими словами; порожньо/rc=1 — тема не розпізнана.
   # ASCII знижуємо tr-ом, кирилиця — парними патернами (busybox tr байтовий, UTF-8 не мапить).
@@ -965,7 +1063,7 @@ skill_pick() {
 # --- зовнішні промпти та скіли: файли в $DIR/ai/ мають пріоритет над вбудованими ---
 # Правки core.txt / recipes.txt / skills/*.md застосовуються БЕЗ перезапуску бота.
 # facts.md = статичні факти; corrections.md = виправлення від власника (самонавчання).
-EMERGENCY_CORE='Ты AI-агент OpenWrt-роутера. Формат ответа: строка CMD: <команда или -> и строка SAY: <ответ пользователю>. Никогда не выполняй деструктивные команды (rm -rf, mkfs, sysupgrade) и не трогай сервис tg-bot.'
+EMERGENCY_CORE='Ты AI-агент OpenWrt-роутера. Формат: строки CMD: <команда или -> и SAY: <ответ>. Можно несколько CMD (CMD:, CMD2:, CMD3:) — ТОЛЬКО чтение (uci show/get, cat, iwinfo, ubus call); изменения — ровно одна команда за ход. Для сложных задач первая строка PLAN: <краткий план>. Никогда не выполняй деструктивные команды (rm -rf, mkfs, sysupgrade) и не трогай сервис tg-bot.'
 ai_file() { [ -s "$DIR/ai/$1" ] && cat "$DIR/ai/$1" 2>/dev/null; }
 ai_rules() {
   R=$(ai_file core.txt)
@@ -1081,14 +1179,19 @@ fast_intent() {
 }
 
 ai_intent() {
-  # $1=Q -> ACTION (sys_info|devices|wifi_scan|help|unknown); дешевий виклик ~250 токенів
+  # $1=Q -> ACTION (sys_info|devices|wifi_scan|help|unknown); класифікатор на МАЛІЙ моделі
+  # (ai_model_classifier, дефолт llama-3.1-8b-instant) — свій безкоштовний TPD-бакет Groq,
+  # основна квота не витрачається. Фолбек: основна модель, якщо Groq-ключа нема.
   ITP=$(ai_file intent.txt)
   [ -z "$ITP" ] && { echo unknown; return; }
-  IM=$(uci -q get tgbot.config.ai_model)
-  [ -z "$IM" ] && IM="qwen/qwen3.6-27b"
-  IU=$(uci -q get tgbot.config.ai_url)
-  [ -z "$IU" ] && IU="https://openrouter.ai/api/v1/chat/completions"
+  IM=$(uci -q get tgbot.config.ai_model_classifier)
+  IU=$(uci -q get tgbot.config.ai_url); [ -z "$IU" ] && IU="https://api.groq.com/openai/v1/chat/completions"
   IK=$(uci -q get tgbot.config.ai_key)
+  if [ -z "$IM" ] || [ -z "$IK" ]; then
+    IM=$(uci -q get tgbot.config.ai_model); [ -z "$IM" ] && IM="qwen/qwen3.6-27b"
+    IU=$(uci -q get tgbot.config.ai_url); [ -z "$IU" ] && IU="https://openrouter.ai/api/v1/chat/completions"
+    IK=$(uci -q get tgbot.config.ai_key)
+  fi
   # qwen: reasoning_effort=none (hidden ненадійний — іноді порожній content навіть на finish:stop);
   # gpt-oss: low. Класифікації міркування не потребують.
   printf '{"model":"%s","max_tokens":250%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
@@ -1101,6 +1204,9 @@ ai_intent() {
   rm -f "$DIR/.iq"
   IA=$(printf '%s' "$IR" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
   ACT=$(printf '%s' "$IA" | tr -d '`' | grep -o '"action"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*:[[:space:]]*"//; s/"$//')
+  tok_log "classifier/$IM" \
+    "$(printf '%s' "$IR" | jsonfilter -e '$.usage.prompt_tokens' 2>/dev/null)" \
+    "$(printf '%s' "$IR" | jsonfilter -e '$.usage.completion_tokens' 2>/dev/null)"
   echo "${ACT:-unknown}"
 }
 
@@ -1109,8 +1215,8 @@ brk_ok() { B=$(brk_file "$1"); [ -f "$B" ] && [ "$(cat "$B" 2>/dev/null)" -gt "$
 brk_set() { B=$(brk_file "$1"); echo $(( $(date +%s) + $2 )) > "$B"; }
 
 ai_call() {
-  # $1=system $2=user -> ANS (пусто = ошибка, детали в lasterr)
-  # Спроба 1-2: основна модель (ретрай після паузи); спроба 3: резервна модель (інша квота-бакет)
+  # $1=system $2=user [$3=max_tokens; дефолт 1200] -> ANS (пусто = ошибка, детали в lasterr)
+  MTOK="${3:-1200}"
   AIMODEL=$(uci -q get tgbot.config.ai_model)
   [ -z "$AIMODEL" ] && AIMODEL="qwen/qwen3.6-27b"
   ALTMODEL=$(uci -q get tgbot.config.ai_model_alt)
@@ -1149,16 +1255,19 @@ ai_call() {
       *gemini*) EXTRA=',"reasoning_effort":"low"' ;;
       *) EXTRA="" ;;
     esac
-    printf '{"model":"%s","max_tokens":1200%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
-      "$M" "$EXTRA" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
+    printf '{"model":"%s","max_tokens":%s%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+      "$M" "$MTOK" "$EXTRA" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
     R=$(curl -s --max-time 90 "$U" \
       -H "Authorization: Bearer $K" \
       -H "Content-Type: application/json" \
       --data-binary "@$DIR/.aiq")
     ANS=$(printf '%s' "$R" | jsonfilter -e '$.choices[0].message.content' 2>/dev/null)
     TOK=$(printf '%s' "$R" | jsonfilter -e '$.usage.total_tokens' 2>/dev/null)
+    PTK=$(printf '%s' "$R" | jsonfilter -e '$.usage.prompt_tokens' 2>/dev/null)
+    CTK=$(printf '%s' "$R" | jsonfilter -e '$.usage.completion_tokens' 2>/dev/null)
     if [ -n "$ANS" ]; then
       alog MODEL "try=$TRY model=$M ans=${#ANS} tokens=${TOK:-?}"
+      tok_log "$M" "$PTK" "$CTK"
       break
     fi
     alog MODEL "try=$TRY model=$M FAILED"
@@ -1299,14 +1408,16 @@ learn_note() {
 
 lessons_fetch() {
   # кешований (24год) хвіст спільних уроків з GitHub prompts/learned/lessons.md; офлайн/404 = тихо ""
+  # Санітизація: utf8fix + викид керуючих байтів і тегів — контекст іде в промпт моделі
   LF="$DIR/kbcache/_lessons.md"
   if [ -s "$LF" ] && [ "$(find "$DIR/kbcache" -name '_lessons.md' -mmin -1440 2>/dev/null | wc -l)" -ge 1 ]; then
-    tail -c 2600 "$LF"; return 0
+    utf8fix "$(tail -c 1200 "$LF")" | tr -d '\000-\010\013\014\016-\037' | sed 's/[<>]//g'
+    return 0
   fi
   mkdir -p "$DIR/kbcache" 2>/dev/null || return 0
-  curl -fsSL --max-time 8 "https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/prompts/learned/lessons.md" 2>/dev/null | tail -c 2600 > "$LF.tmp" || { rm -f "$LF.tmp"; return 0; }
+  curl -fsSL --max-time 8 "https://raw.githubusercontent.com/dneese/telegram-bot-openwrt/master/prompts/learned/lessons.md" 2>/dev/null | tail -c 1200 > "$LF.tmp" || { rm -f "$LF.tmp"; return 0; }
   [ -s "$LF.tmp" ] && mv "$LF.tmp" "$LF"
-  tail -c 2600 "$LF" 2>/dev/null
+  utf8fix "$(tail -c 1200 "$LF")" | tr -d '\000-\010\013\014\016-\037' | sed 's/[<>]//g'
 }
 
 gh_sync_lessons() {
@@ -1402,6 +1513,15 @@ qmatch() {
   case "$1" in
     *користувач*|*Користувач*|*юзер*|*Юзер*|*users*|*Users*) echo users; return ;;
   esac
+  case "$1" in
+    *температур*|*Температур*|*перегрі*|*Перегрі*|*перегріва*|*гріється*|*грілк*|*градус*|*temp*) echo q_temp; return ;;
+  esac
+  case "$1" in
+    *ram*|*RAM*|*оперативн*|*Оперативн*|*"вільне місце"*|*"Вільне місце"*|*диск*|*Диск*|*сховищ*) echo q_res; return ;;
+  esac
+  case "$1" in
+    *публічн*|*Публічн*|*публичн*|*"мій ip"*|*"Мій IP"*|"my ip"|*"зовнішній ip"*|*"білий ip"*) echo q_pubip; return ;;
+  esac
   return 1
 }
 
@@ -1433,6 +1553,28 @@ ${DO6:+• DHCP клієнтам: <code>$DO6</code>}
       send_rich "<b>Користувачі системи</b>
 ${U:-• лише root}
 • SSH-ключів dropbear: <code>$DK</code>"
+      ;;
+    q_temp)
+      T=""
+      for TZ in /sys/class/thermal/thermal_zone*/temp; do
+        [ -r "$TZ" ] || continue
+        V=$(awk '{printf "%d", $1/1000}' "$TZ" 2>/dev/null); ZN=$(basename "$(dirname "$TZ")")
+        [ -n "$V" ] && T="$T
+• $ZN: <code>${V}°C</code>"
+      done
+      [ -n "$T" ] && send_rich "$(printf "$(t q_temp)" "$T")" || reply "$(t ai_noans)"
+      ;;
+    q_res)
+      RAM=$(free | awk '/Mem:/ {printf "%d/%d МБ (%d%%)", $3/1024, $2/1024, $3*100/$2}')
+      DSK=$(df -h / | awk 'NR==2{print $3"/"$2" ("$5")"}')
+      LD=$(cut -d' ' -f1-3 /proc/loadavg 2>/dev/null)
+      send_rich "$(printf "$(t q_res)" "$RAM" "$DSK" "$LD")"
+      ;;
+    q_pubip)
+      WIP=$(ip addr show wan 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1)
+      CG=""
+      case "$WIP" in 100.6[4-9].*|100.7*|100.8*|100.9*|100.1[01][0-9].*|100.12[0-7].*) CG="$(t q_cgnat)" ;; esac
+      send_rich "$(printf "$(t q_pubip)" "${WIP:-невідомо}" "$CG")"
       ;;
   esac
 }
@@ -1512,16 +1654,29 @@ ai_agent() {
   reply "$(t ai_think)"
   ( N=0; while [ $N -lt 40 ]; do typing; sleep 4; N=$((N+1)); done ) &
   TPID=$!
+  prog_done
+  # F: постійна памʼять стану — кеш оновлюється механічно, модель не робить розвідку
+  state_fresh || state_rebuild
   ai_snapshot
-  # --- СЕСІЙНІСТЬ: історія тільки якщо попередній AI-обмін < 10 хв тому ---
-  SESS_NOW=$(date +%s); SESS_PREV=0
-  [ -f "$DIR/.sess" ] && SESS_PREV=$(cat "$DIR/.sess" 2>/dev/null)
-  echo "$SESS_NOW" > "$DIR/.sess"
+  STATETXT=""
+  if [ -s "$DIR/ai/state.md" ]; then
+    STATETXT="
+СТАН РОУТЕРА (кеш, АКТУАЛЬНИЙ — бот оновлює його сам після кожної зміни; НЕ витрачай ходи на перевірку цих параметрів CMD):
+$(cat "$DIR/ai/state.md")"
+  fi
+  # --- G: ПАМʼЯТЬ ДІАЛОГУ БЕЗ ЧАСОВОГО ГЕЙТА (безперервна, файл обрізається за розміром) ---
   HIST=""
-  if [ -s "$DIR/aihist" ] && [ $((SESS_NOW-SESS_PREV)) -le 1800 ]; then
+  if [ -s "$DIR/aihist" ]; then
     HIST="
 Предыдущий диалог:
-$(tail -n 10 "$DIR/aihist" | cut -c1-160)"
+$(tail -n 14 "$DIR/aihist" | cut -c1-160)"
+  fi
+  # G: механічний журнал дій агента — "що я нещодавно робив" навіть тижневої давнини
+  ACTL=""
+  if [ -s "$DIR/ai/actions.log" ]; then
+    ACTL="
+ЩО ТИ НЕЩОДАВНО РОБИВ (твій журнал дій):
+$(tail -n 8 "$DIR/ai/actions.log")"
   fi
   # C1: скіл за темою питання інʼєктується одразу — модель не витрачає хід на `cat skills/*`
   SKF=$(skill_pick "$Q"); SKILL_TXT=""
@@ -1556,12 +1711,18 @@ $LESSONS"
 $(cat "$SKF")"
     alog INTENT "skill=$(basename "$SKF")"
   fi
-  SYS1="$(ai_rules_full)$SKILL_TXT$KB_TXT$LES_TXT
-Состояние роутера сейчас: $SNAP
-Устройства онлайн: ${DEVS:-нет}$HIST"
-  SYSN="$(ai_rules)$HIST
+  SYS1="$(ai_rules_full)$SKILL_TXT$KB_TXT$LES_TXT$STATETXT
+Состояние роутера сейчас (динамика — uptime/RAM/load/сеть): $SNAP
+Устройства онлайн: ${DEVS:-нет}$ACTL$HIST"
+  # C3: легке ядро для продовжень — без повного core.txt/recipes (економія ~1000 ток/хід)
+  CONT_CORE="$(EMERGENCY_CORE)
+ПРАВИЛО UCI: будь-яка зміна = uci set ... && uci commit <конфіг>; повідомляй успіх лише після перевірки значення зворотною командою."
+  [ -s "$DIR/ai/corrections.md" ] && CONT_CORE="$CONT_CORE
+КОРЕКЦІЇ ВЛАСНИКА:
+$(tail -c 600 "$DIR/ai/corrections.md")"
+  SYSN="$(printf '%s' "$CONT_CORE")$HIST
 Вопрос пользователя: $Q
-(Продовжуй діалог з урахуванням історії вище; якщо історії немає — відповідай як на нове питання.)"
+(Продовжуй діалог; історія та журнал дій вище.)"
   CUR="$Q"
   CHFAIL=""
   STEP=0
@@ -1574,12 +1735,13 @@ $(cat "$SKF")"
   esac
   while [ $STEP -lt $MAXSTEP ]; do
     STEP=$((STEP+1))
-    [ $STEP -gt 1 ] && CUR="РЕЗУЛЬТАТ КОМАНДЫ '$PCMD':
-$OUT"
     if [ "$STEP" = "1" ]; then
-      ai_call "$SYS1" "$CUR"
+      ai_call "$SYS1" "$CUR" 700
     else
-      ai_call "$SYSN" "$CUR"
+      # C4: продовження — коротший бюджет (проміжний SAY ≤40 симв.)
+      CUR="РЕЗУЛЬТАТ КОМАНДЫ '$PCMD':
+$(trim_out "${OUT:-}" 1000)"
+      ai_call "$SYSN" "$CUR" 500
     fi
     [ -z "$ANS" ] && { alog ERR "step$STEP порожня відповідь; lasterr: $(head -c 140 "$DIR/lasterr" 2>/dev/null)"; CHFAIL=1; break; }
     ANS=$(printf '%s' "$ANS" | sed -e 's/^[[:space:]]*<SAY:/SAY:/' -e 's/^[[:space:]]*<CMD:/CMD:/' -e 's/<SAY>//g' -e 's/<\/SAY>//g' -e 's/<CMD>//g' -e 's/<\/CMD>//g' -e 's/>[[:space:]]*$//')
@@ -1594,7 +1756,14 @@ SAY: $JS"
     esac
     # хвіст «... CMD: -» вклеєний в SAY — розрізаємо до парсингу
     ANS=$(unglue_cmd "$ANS")
-    PCMD=$(printf '%s' "$ANS" | sed -n 's/^CMD:[[:space:]]*//p' | head -1)
+    # C1-мульти: збираємо УСІ команди ходу (CMD:, CMD2:, …) — батч читання за один виклик моделі
+    ALLCMDS=$(printf '%s' "$ANS" | sed -n 's/^CMD[0-9]*:[[:space:]]*//p' | sed '/^[[:space:]]*$/d')
+    NCMD=$(printf '%s\n' "$ALLCMDS" | grep -c '^')
+    PCMD=$(printf '%s' "$ALLCMDS" | head -1)
+    # D: план задачі — прозорість без зайвого ходу
+    PLANL=$(printf '%s' "$ANS" | sed -n 's/^PLAN:[[:space:]]*//p' | head -c 300)
+    [ -n "$PLANL" ] && send_mk "<b>📋 $(printf '%s' "$(t plan_lbl)" | sed 's/📋 //')</b>
+$(esc "$PLANL")"
     FSAY=$(printf '%s' "$ANS" | sed -n 's/^SAY:[[:space:]]*//p' | head -1)
     if [ -z "$FSAY" ] && [ -z "$PCMD" ]; then
       FSAY=$(printf '%s' "$ANS" | sed '/./,$!d' | head -c 600)
@@ -1602,24 +1771,60 @@ SAY: $JS"
       FSAY=$(printf '%s' "$ANS" | grep -v '^CMD:' | tr '\n' ' ' | head -c 600)
     fi
     PSTRIP=$(printf '%s' "$PCMD" | tr -d ' \t\r\n')
-    alog STEP "step$STEP CMD=[${PCMD:-—}] SAYLEN=${#FSAY} raw:$(printf '%s' "$ANS" | tr '\n\t' '  ' | head -c 240)"
+    alog STEP "step$STEP CMD=[$NCMD:${PCMD:-—}] SAYLEN=${#FSAY} raw:$(printf '%s' "$ANS" | tr '\n\t' '  ' | head -c 240)"
     case "$PSTRIP" in
       ""|"-"|"--"|"->"|"→"|"—") break ;;
       *"–"*|*"—"*) break ;;
     esac
+    # C1: БАТЧ читання — кілька read-only команд за один хід (мутації заборонені)
+    if [ "$NCMD" -gt 1 ]; then
+      BLIST="$DIR/.batch.$$"
+      printf '%s\n' "$ALLCMDS" > "$BLIST"
+      BRES=""
+      BMUT=""
+      while IFS= read -r BC; do
+        [ -z "$BC" ] && continue
+        case "$(printf '%s' "$BC" | tr -d ' \t')" in "-"|"--") continue ;; esac
+        BC=$(printf '%s' "$BC" | sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g' | sed 's/^[[:space:]`]*//; s/[[:space:]`]*$//')
+        BC=$(uci_autocommit "$BC")
+        if ! sanitize_cmd "$BC"; then
+          rm -f "$BLIST"; kill "$TPID" 2>/dev/null; prog_done
+          alog ERR "batch sanitize REJECT: $(printf '%s' "$BC" | head -c 140)"
+          reply "$(t san_rej)"
+          return
+        fi
+        if is_mut "$BC"; then BMUT="$BC"; break; fi
+        ai_run "$BC"
+        act_log "$BC" "${RC:-?}"
+        BRES="$BRES
+── $BC:
+$(trim_out "$OUT" 500)"
+        TASKLOG="$TASKLOG
+• <code>$(printf '%s' "$BC" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 110)</code> → <i>$(printf '%s' "$OUT" | tr '\n\t' '  ' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 90)</i>"
+      done < "$BLIST"
+      rm -f "$BLIST"
+      if [ -n "$BMUT" ]; then
+        kill "$TPID" 2>/dev/null; prog_done
+        alog CONF "batch з мутацією відхилено: $(printf '%s' "$BMUT" | head -c 120)"
+        reply "$(t batch_mut)"
+        return
+      fi
+      CUR="РЕЗУЛЬТАТ КОМАНД (у порядку виконання):$BRES"
+      continue
+    fi
     PCMD=$(printf '%s' "$PCMD" | sed 's/^->//; s/^→//')
     # Модель інколи загортає команду в HTML — зрізаємо теги і розкодуємо entities
     PCMD=$(printf '%s' "$PCMD" | sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g' | sed 's/^[[:space:]`]*//; s/[[:space:]`]*$//')
     PCMD=$(uci_autocommit "$PCMD")
     # C5: захист у глибину — підстановки/; /&/спуф-юнікод у CMD недопустимі
     if ! sanitize_cmd "$PCMD"; then
-      kill "$TPID" 2>/dev/null
+      kill "$TPID" 2>/dev/null; prog_done
       alog ERR "sanitize REJECT: $(printf '%s' "$PCMD" | tr '\n\t' '  ' | head -c 160)"
       reply "$(t san_rej)"
       return
     fi
     if is_mut "$PCMD"; then
-      kill "$TPID" 2>/dev/null
+      kill "$TPID" 2>/dev/null; prog_done
       # Дедуп: ту саму команду щойно підтверджено й виконано?
       if [ -f "$DIR/.lastconf" ]; then
         LC=$(sed -n '1p' "$DIR/.lastconf"); LT=$(sed -n '2p' "$DIR/.lastconf")
@@ -1648,14 +1853,16 @@ $(esc "$DIFF")"
       send_mk "$(t ai_conflbl)$RISK" "$CONFMK"
       return
     fi
-    reply "$(printf "$(t cmd_run)" "$(esc "$PCMD")")"
+    prog_msg "$(printf "$(t cmd_run)" "$(esc "$PCMD")")"
     ai_run "$PCMD"
+    act_log "$PCMD" "${RC:-?}"
     alog OUT "→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
     # незнищенний слід для власника: що робили і що вийшло (навіть якщо модель помре серед задачі)
     TASKLOG="$TASKLOG
 • <code>$(printf '%s' "$PCMD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 110)</code> → <i>$(printf '%s' "$OUT" | tr '\n\t' '  ' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' | head -c 90)</i>"
   done
   kill "$TPID" 2>/dev/null
+  prog_done
   if [ -n "$TASKLOG" ] && [ "$STEP" -ge "$MAXSTEP" ]; then
     FSAY="${FSAY:-}
 <b>⚠️ Ліміт ходів — журнал задачі (що встиг зробити):</b>$TASKLOG
@@ -1687,7 +1894,7 @@ $(esc "$DIFF")"
   reply_rich "🤖 $FSAY"
   if [ -z "$CHFAIL" ]; then
     { printf 'Пользователь: %.120s\nАссистент: %.200s\n' "$Q" "$FSAY"; } >> "$DIR/aihist"
-    tail -c 2000 "$DIR/aihist" > "$DIR/aihist.t" 2>/dev/null && mv "$DIR/aihist.t" "$DIR/aihist"
+    tail -c 3072 "$DIR/aihist" > "$DIR/aihist.t" 2>/dev/null && mv "$DIR/aihist.t" "$DIR/aihist"
   fi
 }
 
@@ -1968,6 +2175,20 @@ ${PINFO:+<code>$(esc "$PINFO")</code>}" "$PK_KB"
           "/wifi")
             KB=$(wf_kb) && send_mk "$(t wf_pick)" "$KB" || reply "$(t wf_none)"
             ;;
+          "/cancel")
+            rm -f "$DIR/aipend" "$DIR/.mact" "$DIR/.lb_cmd" "$DIR/.lb_msg" "$DIR/.lb_out" "$DIR/.lb_done" "$DIR/.pmid" "$DIR/rbarm" "$DIR/rbkarm"
+            reply "$(t cancel_ok)"
+            ;;
+          "/usage")
+            if [ -s "$DIR/toklog" ]; then
+              TODAY=$(date +%s)
+              OUTU=$(awk -F'|' -v today=$((TODAY-86400)) '$1>=today {c[$2]++; p[$2]+=$3; k[$2]+=$4} END {for (m in c) printf "• %s — %d викликів | вхідні: %d | вихідні: %d\n", m, c[m], p[m], k[m]}' "$DIR/toklog")
+              [ -n "$OUTU" ] && reply_rich "<b>📈 Витрати AI за 24 год</b>
+$OUTU" || reply "$(t usage_none)"
+            else
+              reply "$(t usage_none)"
+            fi
+            ;;
           "/ai"*|"/ai")
             touch "$DIR/aimode"
             ai_agent "${TXT#/ai}"
@@ -2151,6 +2372,8 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
                   ;;
               esac
               ai_run "$C"
+              act_log "$C" "${RC:-?}"
+              state_rebuild
               printf '%s\n%s\n' "$C" "$(date +%s)" > "$DIR/.lastconf"
               alog OUT "CONF→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP"
@@ -2175,6 +2398,8 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
                   ;;
               esac
               ai_run "$C"
+              act_log "$C" "${RC:-?}"
+              state_rebuild
               printf '%s\n%s\n' "$C" "$(date +%s)" > "$DIR/.lastconf"
               alog OUT "DMS→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
               edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")
@@ -2462,6 +2687,8 @@ check_pulse() {
   NOW=$(date +%s)
   LP=0
   [ -f "$DIR/lastpulse" ] && LP=$(cat "$DIR/lastpulse")
+  # F: щодобовий повний refresh кешу стану роутера (WAN IP тощо можуть змінитись самі)
+  state_fresh || state_rebuild
   if [ $((NOW-LP)) -ge $PULSE_INTERVAL ]; then
     pulse_edit_or_send "$(printf "$(t pulse)" "$(uptime_short)" "$(internet_ok)" "$(date '+%H:%M')")"
     echo "$NOW" > "$DIR/lastpulse"
@@ -2481,6 +2708,8 @@ while true; do
     RES=$(head -c 1500 "$DIR/.lb_out" 2>/dev/null)
     MID=$(cat "$DIR/.lb_msg" 2>/dev/null); CMDD=$(cat "$DIR/.lb_cmd" 2>/dev/null)
     rm -f "$DIR/.lb_done"
+    act_log "$CMDD" "?"
+    state_rebuild
     [ -n "$MID" ] && edit_msg "$MID" "$(printf "$(t ai_done)" "$(esc "$CMDD")" "$(esc "${RES:-(пусто)}")")"
     printf '%s\n%s\n' "$CMDD" "$(date +%s)" > "$DIR/.lastconf"
   fi

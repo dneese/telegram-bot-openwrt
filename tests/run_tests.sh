@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -277,6 +277,20 @@ if ok_port 80 && ok_port 65535; then ok "okport: 80 і 65535 проходять"
 if ok_port 0 || ok_port 65536 || ok_port abc; then bad "okport: 0/65536/abc відхилено" "+"; else ok "okport: 0/65536/abc відхилено"; fi
 if ok_ip 192.168.1.50 && ok_ip 8.8.8.8; then ok "okip: звичайні IP проходять"; else bad "okip: звичайні IP" "-"; fi
 if ok_ip 300.1.1.1 || ok_ip 1.2.3 || ok_ip 'a.b.c.d'; then bad "okip: 300.x/короткий/текст відхилено" "+"; else ok "okip: 300.x/короткий/текст відхилено"; fi
+
+# --- trim_out (економія токенів фідбеку: head+tail замість повного виводу) ---
+SMALL=$(trim_out 'короткий вивід' 1000)
+eq "trim: короткий недоторканий" "$SMALL" 'короткий вивід'
+BIG=$(trim_out "$(printf 'A%.0s' $(seq 1 2000))" 1000)
+BL=${#BIG}
+if [ "$BL" -le 1100 ] && [ "$BL" -ge 900 ]; then ok "trim: 2000Б стиснуто до ~1000 ($BL)"; else bad "trim: 2000Б -> ~1000" "got $BL"; fi
+has "trim: маркер обрізання присутній" "$BIG" 'обрізано'
+
+# --- qmatch нові нуль-токенові теми ---
+eq "qm: температура CPU" "$(qmatch 'яка температура процесора?')" "q_temp"
+eq "qm: вільна RAM" "$(qmatch 'скільки ram вільно?')" "q_res"
+eq "qm: публічний IP" "$(qmatch 'який у мене публічний ip?')" "q_pubip"
+if qmatch 'зроби проброс порту' >/dev/null; then bad "qm: зміни не матчяться в quick" "+"; else ok "qm: зміни не матчяться в quick"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 # --- qmatch (нуль-токеновий шар uci) ---
