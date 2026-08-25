@@ -952,7 +952,7 @@ ai_call() {
       *gemini*) EXTRA=',"reasoning_effort":"low"' ;;
       *) EXTRA="" ;;
     esac
-    printf '{"model":"%s","max_tokens":2000%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
+    printf '{"model":"%s","max_tokens":1200%s,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}' \
       "$M" "$EXTRA" "$(jesc "$(utf8fix "$1")")" "$(jesc "$(utf8fix "$2")")" > "$DIR/.aiq"
     R=$(curl -s --max-time 90 "$U" \
       -H "Authorization: Bearer $K" \
@@ -1271,23 +1271,31 @@ ai_agent() {
   [ -f "$DIR/.sess" ] && SESS_PREV=$(cat "$DIR/.sess" 2>/dev/null)
   echo "$SESS_NOW" > "$DIR/.sess"
   HIST=""
-  if [ -s "$DIR/aihist" ] && [ $((SESS_NOW-SESS_PREV)) -le 600 ]; then
+  if [ -s "$DIR/aihist" ] && [ $((SESS_NOW-SESS_PREV)) -le 1800 ]; then
     HIST="
 Предыдущий диалог:
-$(tail -n 6 "$DIR/aihist" | cut -c1-160)"
+$(tail -n 10 "$DIR/aihist" | cut -c1-160)"
   fi
   # C1: скіл за темою питання інʼєктується одразу — модель не витрачає хід на `cat skills/*`
   SKF=$(skill_pick "$Q"); SKILL_TXT=""
-  # глибокий док з GitHub-бази: механічно за темою питання, кеш 7 днів
-  KBD=$(kb_fetch "$(kb_pick "$Q")"); KB_TXT=""
-  if [ -n "$KBD" ]; then
-    KB_TXT="
-ПОГЛИБЛЕНІ ЗНАННЯ ПО ТЕМІ (GitHub, джерело надійне) — застосовуй напряму:
-$(printf '%s' "$KBD" | sed 's/[[:space:]]*$//')"
+  # РАЦІОНАЛЬНІСТЬ ТОКЕНІВ: кеш греємо завжди (безкоштовно), а ТІЛО дока — лише для складних
+  # задач; на прості питання модель отримує тільки вказівник і читає кеш сама, якщо треба.
+  KBD_TOPIC=$(kb_pick "$Q"); KB_TXT=""
+  if [ -n "$KBD_TOPIC" ]; then
+    KBD=$(kb_fetch "$KBD_TOPIC")
+    case "$Q" in
+      *налашту*|*Налашту*|*зроби*|*Зроби*|*встанови*|*Встанови*|*чому*|*Чому*|*діагност*|*"не працює"*|*відвалю*|*пропада*|*настроить*|*Сделай*)
+        [ -n "$KBD" ] && KB_TXT="
+ПОГЛИБЛЕНІ ЗНАННЯ ПО ТЕМІ $KBD_TOPIC (джерело надійне):
+$(printf '%s' "$KBD" | sed 's/[[:space:]]*$//')" ;;
+      *)
+        [ -n "$KBD" ] && KB_TXT="
+Тема $KBD_TOPIC: коротко кажи з голови; глибокий довідник лежить у /etc/tg-bot/kbcache/$KBD_TOPIC.md — CMD: cat його ЛИШЕ якщо проста відповідь неможлива без деталей." ;;
+    esac
   fi
   # уроки з минулого: локальні провали + спільний журнал GitHub (кеш 24год)
   LESSONS=""
-  [ -s "$DIR/ai/mistakes.md" ] && LESSONS="$(tail -n 12 "$DIR/ai/mistakes.md")"
+  [ -s "$DIR/ai/mistakes.md" ] && LESSONS="$(tail -n 8 "$DIR/ai/mistakes.md")"
   LGH=$(lessons_fetch); [ -n "$LGH" ] && LESSONS="${LESSONS}
 --- Спільні уроки (GitHub): ---
 $LGH"
