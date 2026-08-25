@@ -1192,6 +1192,54 @@ kb_fetch() {
   cat "$KF" 2>/dev/null
 }
 
+qmatch() {
+  # $1=Q -> тема швидкої відповіді з uci БЕЗ AI | rc1 = нема впевненого збігу
+  case "$1" in
+    *пароль*|*Пароль*|*passw*|*Passw*)
+      case "$1" in *wifi*|*WiFi*|*WIFI*|*вайфай*|*"wi-fi"*|*Wi-Fi*|*мереж*) echo wifi_pass; return ;; esac ;;
+  esac
+  case "$1" in
+    *dns*|*DNS*|*ДНС*)
+      case "$1" in *як*|*Яки*|*яки*|*что*|*Що*|*шо*|*сервер*|*Сервер*|*налашту*|*стоит*|*стоїть*|*використ*) echo dns_cfg; return ;; esac ;;
+  esac
+  case "$1" in
+    *користувач*|*Користувач*|*юзер*|*Юзер*|*users*|*Users*) echo users; return ;;
+  esac
+  return 1
+}
+
+quick_uci() {
+  # $1=тема з qmatch -> надсилає відповідь з uci; жодного токена
+  case "$1" in
+    wifi_pass)
+      O=""
+      for S in $(uci show wireless 2>/dev/null | grep "=wifi-iface" | cut -d. -f2); do
+        SS=$(uci -q get wireless.$S.ssid); KY=$(uci -q get wireless.$S.key); EN=$(uci -q get wireless.$S.encryption)
+        BAND=2.4G; [ "$(uci -q get wireless.$S.device)" = "radio1" ] && BAND="5G"
+        [ -n "$SS" ] && O="$O
+🔒 <b>$SS</b> ($BAND): <code>$KY</code>"
+      done
+      [ -n "$O" ] && send_rich "<b>Wi-Fi паролі</b>$O
+<i>Показано власнику.</i>" || reply "$(t ai_noans)"
+      ;;
+    dns_cfg)
+      UP=$(uci -q get dhcp.@dnsmasq[0].server 2>/dev/null | tr ' ' '\n' | sed "s/'//g" | tr '\n' ' ')
+      DO6=$(uci -q get dhcp.lan.dhcp_option 2>/dev/null)
+      send_rich "<b>DNS зараз</b>
+• Вгору (dnsmasq): <code>${UP:-авто від провайдера}</code>
+${DO6:+• DHCP клієнтам: <code>$DO6</code>}
+• Резолвер роутера: <code>127.0.0.1:53</code>"
+      ;;
+    users)
+      U=$(awk -F: '$3>=1000 && $7!~/nologon|false/{printf "• %s (home: %s)\n",$1,$6}' /etc/passwd 2>/dev/null)
+      DK=$(wc -l < /etc/dropbear/authorized_keys 2>/dev/null || echo 0)
+      send_rich "<b>Користувачі системи</b>
+${U:-• лише root}
+• SSH-ключів dropbear: <code>$DK</code>"
+      ;;
+  esac
+}
+
 ai_agent() {
   # ворота: хоча б ОДИН ключ будь-якого провайдера (Groq/OpenRouter/Gemini)
   [ -z "$(uci -q get tgbot.config.ai_key)" ] && \
@@ -1225,6 +1273,8 @@ ai_agent() {
     *)
       ACT=$(fast_intent "$Q")
       [ -z "$ACT" ] && ACT=$(ai_intent "$Q")
+      # нуль-токеновий шар: прості факти з uci напряму
+      QT=$(qmatch "$Q") && { alog FINAL "quick:$QT"; quick_uci "$QT"; return; }
       alog INTENT "action=$ACT"
       case "$ACT" in
         sys_info)

@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot t; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -230,6 +230,13 @@ eq "keyslot: інший → ai_key3" "$(key_slot 'AQ.Xyz1234567890123456789')" "
 if key_slot '' 2>/dev/null; then bad "keyslot: пустий відхилено" "+"; else ok "keyslot: пустий відхилено"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
+# --- qmatch (нуль-токеновий шар uci) ---
+eq "qm: пароль wifi" "$(qmatch 'який пароль від wifi?')" "wifi_pass"
+eq "qm: Пароль мереж" "$(qmatch 'Пароль мережі який?')" "wifi_pass"
+eq "qm: dns сервери" "$(qmatch 'які dns сервери стоять?')" "dns_cfg"
+eq "qm: юзери" "$(qmatch 'хто такі користувачі системи?')" "users"
+if qmatch 'налаштуй wireguard' >/dev/null; then bad "qm: складне не матчиться" "+"; else ok "qm: складне не матчиться"; fi
+if qmatch 'погода київ' >/dev/null; then bad "qm: погода не матчиться" "+"; else ok "qm: погода не матчиться"; fi
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 rm -rf "$DIR" 2>/dev/null
 [ "$FAIL" = 0 ]
