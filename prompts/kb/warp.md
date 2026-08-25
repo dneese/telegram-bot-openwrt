@@ -46,3 +46,11 @@ V4=$(jsonfilter -s /tmp/reg.json '@.config.interface.addresses.v4')
 PEERPK=$(jsonfilter -s /tmp/reg.json '@.config.peers[0].public_key')
 Далі — uci-блок з Кроку 2 вище, private_key=$PRIV, addresses=$V4/32, peer public_key=$PEERPK.
 Альтернатива якщо API-версія віджила: веб-генератор lanrat.github.io/wireguard-warp-generator → власник дає готовий конфіг → Крок 2.
+
+## АКТУАЛЬНЕ (2025-2026, з веб-перевірки):
+- CF періодично блокує сторонніх WireGuard-клієнтів/endpoint'и (пости спільноти листопад 2025). Якщо handshake нема на 2408 — перебери порти 500/1701/4500 (бот робить це автоматично у ⚡️ Підключити).
+- Офіційна позиція CF: WARP не підтримує сторонні клієнти — збої можливі без попередження; тримай запасний канал доступу.
+- Для точкового обходу українських блокувань: списки IP https://hayahora.futbol/ + маршрути на warp (режим PBR), рецепт: github.com/Noltari/laliga-isp-blocks.
+- MTU: 1280 надійно; можна спробувати 1420 для швидкості за відсутності PPPoE.
+- Верифікація завжди: curl --interface warp https://www.cloudflare.com/cdn-cgi/trace → warp=on.
+- У БОТА тепер є кнопковий розділ 🌐 VPN (mnu:vpn) — детерміновані дії замість цього рецепта вручну.

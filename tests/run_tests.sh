@@ -238,13 +238,15 @@ T_aic1_uk='✅ Виконати'; T_aic2_uk='🔒 Зі страховкою'; T_
 T_aioff_uk='⛔️ Вийти'; T_mnback_uk='⬅️ Меню'; T_btn_qr_uk='🔑 QR Wi-Fi'
 T_btn_scan_uk='📡 Wi-Fi скан'; T_btn_wan_uk='🌐 Інтернет'; T_btn_bk_uk='💾 Бекап'
 T_btn_rb_uk='⚡️ Перезавантаження'; T_rbky_uk='✅ Так, відкотити!'
+T_btn_vpn_uk='🌐 VPN'; T_v_status_uk='📊 Статус'; T_v_connect_uk='⚡️ Підключити'
+T_v_aon_uk='🟢 Весь трафік'; T_v_aoff_uk='⏸ Припинити'; T_v_delete_uk='🗑 Видалити WARP'; T_v_go_uk='✅ Так'
 mk_markups
 has "menu: головне містить розділ wifi" "$MENU_MARKUP" 'mnu:wifi'
 has "menu: головне містить розділ sys" "$MENU_MARKUP" 'mnu:sys'
 has "menu: головне містить fw і dg" "$MENU_MARKUP" 'mnu:fw'
 has "menu: головне містить dg" "$MENU_MARKUP" 'mnu:dg'
 if command -v jsonfilter >/dev/null 2>&1; then
-  for MK in MENU_MARKUP WIFI_MARKUP FW_MARKUP DG_MARKUP SYS_MARKUP RBK_CONF_MARKUP; do
+  for MK in MENU_MARKUP WIFI_MARKUP FW_MARKUP DG_MARKUP SYS_MARKUP RBK_CONF_MARKUP VPN_MARKUP WARP_CONF_MARKUP WDEL_CONF_MARKUP; do
     eval "VAL=\$$MK"
     CHK=$(printf '%s' "$VAL" | jsonfilter -e '$.inline_keyboard[0][0].text' 2>/dev/null)
     if [ -n "$CHK" ]; then ok "menu: $MK валідний JSON"; else bad "menu: $MK валідний JSON" "$VAL"; fi

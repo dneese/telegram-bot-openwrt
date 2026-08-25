@@ -247,10 +247,32 @@ T_q_res_ru='🧠 <b>Ресурси</b>\nRAM: %s\nДиск /: %s\nLoad: %s'; T_q_
 T_q_pubip_ru='🌍 <b>Публічний IP</b>: <code>%s</code>%s'; T_q_pubip_en='🌍 <b>Public IP</b>: <code>%s</code>%s'; T_q_pubip_uk='🌍 <b>Публічний IP</b>: <code>%s</code>%s'
 T_q_cgnat_ru='\n⚠️ CGNAT — адреса приватна, проброс портів ззовні не працює'; T_q_cgnat_en='\n⚠️ CGNAT — private address, port forwarding from outside will not work'; T_q_cgnat_uk='\n⚠️ CGNAT — приватна адреса, проброс портів ззовні не працюватиме'
 
+# --- VPN-розділ: Cloudflare WARP ---
+T_btn_vpn_ru='🌐 VPN'; T_btn_vpn_en='🌐 VPN'; T_btn_vpn_uk='🌐 VPN'
+T_vpn_title_ru='🌐 <b>VPN · Cloudflare WARP</b>\nПриватний вихід через WireGuard-тунель до Cloudflare.\nОбхід блокувань по IP; MTU 1280; безкоштовно.'; T_vpn_title_en='🌐 <b>VPN · Cloudflare WARP</b>\nPrivate exit via a WireGuard tunnel to Cloudflare.\nIP-block bypass; MTU 1280; free.'; T_vpn_title_uk='🌐 <b>VPN · Cloudflare WARP</b>\nПриватний вихід через WireGuard-тунель до Cloudflare.\nОбхід блокувань по IP; MTU 1280; безкоштовно.'
+T_v_status_ru='📊 Статус'; T_v_status_en='📊 Status'; T_v_status_uk='📊 Статус'
+T_v_connect_ru='⚡️ Підключити'; T_v_connect_en='⚡️ Set up'; T_v_connect_uk='⚡️ Підключити'
+T_v_aon_ru='🟢 Весь трафік'; T_v_aon_en='🟢 All traffic'; T_v_aon_uk='🟢 Весь трафік'
+T_v_aoff_ru='⏸ Припинити'; T_v_aoff_en='⏸ Stop routing'; T_v_aoff_uk='⏸ Припинити'
+T_v_delete_ru='🗑 Видалити WARP'; T_v_delete_en='🗑 Remove WARP'; T_v_delete_uk='🗑 Видалити WARP'
+T_v_go_ru='✅ Так, створити'; T_v_go_en='✅ Yes, create'; T_v_go_uk='✅ Так, створити'
+T_v_noconf_ru='📭 WARP ще не налаштований.\nНатисніть ⚡️ Підключити — бот сам встановить wireguard-tools, зареєструє тунель на серверах Cloudflare і створить конфіг (без перехоплення трафіку).'; T_v_noconf_en='📭 WARP is not configured yet.\nTap ⚡️ Set up — the bot will install wireguard-tools, register the tunnel with Cloudflare and create the config (no traffic rerouting).'; T_v_noconf_uk='📭 WARP ще не налаштований.\nНатисніть ⚡️ Підключити — бот сам встановить wireguard-tools, зареєструє тунель на серверах Cloudflare і створить конфіг (без перехоплення трафіку).'
+T_v_reg_ask_ru='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\nОсновний канал не зачіпається.'
+T_v_reg_ask_en='⚡️ Create the WARP tunnel?\n\n• installs <code>wireguard-tools</code> package\n• registers via public Cloudflare API (keys stay on the router)\n• new <code>warp</code> interface WITHOUT changing the main route\n\nYour main channel is not touched.'
+T_v_reg_ask_uk='⚡️ Створити WARP-тунель?\n\n• встановиться пакет <code>wireguard-tools</code>\n• реєстрація через публічний API Cloudflare (ключі лишаться на роутері)\n• новий інтерфейс <code>warp</code> БЕЗ зміни основного маршруту\n\nОсновний канал не зачіпається.'
+T_v_reg_run_ru='⏳ Реєстрація та налаштування WARP у фоні (до ~2 хв)…'; T_v_reg_run_en='⏳ Registering and configuring WARP in background (~2 min)…'; T_v_reg_run_uk='⏳ Реєстрація та налаштування WARP у фоні (до ~2 хв)…'
+T_v_aon_warn_ru='⚠️ Пустити ВЕСЬ трафік через WARP?\nЯкщо тунель упаде — інтернет зникне до відкату.\nРекомендую 🔒 зі страховкою (авто-відкат 90с).\n<code>%s</code>'; T_v_aon_warn_en='⚠️ Route ALL traffic via WARP?\nIf the tunnel dies, internet goes down until rollback.\n🔒 Safety-net recommended (auto-rollback 90s).\n<code>%s</code>'; T_v_aon_warn_uk='⚠️ Пустити ВЕСЬ трафік через WARP?\nЯкщо тунель впаде — інтернет зникне до відкату.\nРекомендую 🔒 зі страховкою (авто-відкат 90с).\n<code>%s</code>'
+T_v_del_ask_ru='🗑 Видалити WARP повністю?\n(інтерфейс, peer, зону файрвола, ключі)'; T_v_del_ask_en='🗑 Remove WARP completely?\n(interface, peer, firewall zone, keys)'; T_v_del_ask_uk='🗑 Видалити WARP повністю?\n(інтерфейс, peer, зону файрвола, ключі)'
+T_v_s_on_ru='🟢 Тунель активний'; T_v_s_on_en='🟢 Tunnel active'; T_v_s_on_uk='🟢 Тунель активний'
+T_v_s_off_ru='🔴 Немає handshake'; T_v_s_off_en='🔴 No handshake'; T_v_s_off_uk='🔴 Немає handshake'
+T_v_s_nc_ru='📭 не налаштовано'; T_v_s_nc_en='📭 not configured'; T_v_s_nc_uk='📭 не налаштовано'
+T_v_mode_all_ru='режим: весь трафік через WARP'; T_v_mode_all_en='mode: all traffic via WARP'; T_v_mode_all_uk='режим: весь трафік через WARP'
+T_v_mode_idle_ru='режим: тунель є, трафік не перехоплюється'; T_v_mode_idle_en='mode: tunnel up, traffic not routed'; T_v_mode_idle_uk='режим: тунель є, трафік не перехоплюється'
+
 # send_rich визначено нижче (файловий payload)
 
 mk_markups() {
-MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"},{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"}],[{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"},{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
+MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_vpn)\",\"callback_data\":\"mnu:vpn\"},{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"}],[{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
 CONFIRM_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbyes)\",\"callback_data\":\"rbyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbno\"}]]}"
 AI_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_CONF2_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic2)\",\"callback_data\":\"aic2\"}],[{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
@@ -260,6 +282,9 @@ FW_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t fw_btn_pf)\",\"callback_data\"
 DG_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t dg_btn_ping)\",\"callback_data\":\"dgt:ping\"},{\"text\":\"$(t dg_btn_trace)\",\"callback_data\":\"dgt:trace\"},{\"text\":\"$(t dg_btn_ns)\",\"callback_data\":\"dgt:ns\"}],[{\"text\":\"$(t dg_btn_lr)\",\"callback_data\":\"dgl:logread\"},{\"text\":\"$(t dg_btn_dm)\",\"callback_data\":\"dgl:dmesg\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 SYS_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"}],[{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"},{\"text\":\"↩️ Rollback\",\"callback_data\":\"rbk1\"}],[{\"text\":\"$(t s_btn_pkg)\",\"callback_data\":\"pkgl\"},{\"text\":\"$(t s_btn_ssh)\",\"callback_data\":\"sshkl\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 RBK_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbky)\",\"callback_data\":\"rbkyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbkno\"}]]}"
+VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\":\"wst\"},{\"text\":\"$(t v_connect)\",\"callback_data\":\"wup1\"}],[{\"text\":\"$(t v_aon)\",\"callback_data\":\"won\"},{\"text\":\"$(t v_aoff)\",\"callback_data\":\"woff\"}],[{\"text\":\"$(t v_delete)\",\"callback_data\":\"wdel1\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+WARP_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_go)\",\"callback_data\":\"wgo\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
+WDEL_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"🗑 $(t v_delete)\",\"callback_data\":\"wdel2\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
 }
 
 # --- контекст вводу текстом (.mact): mact_set <дія> | mact_get -> "дія|ввід" ---
@@ -1050,6 +1075,113 @@ act_log() {
   # $1=команда $2=rc -> механічний журнал дій агента (памʼять "що я робив")
   printf '%s | %s => rc=%s\n' "$(date '+%d.%m %H:%M')" "$(printf '%s' "$1" | tr '\n\t' '  ' | head -c 120)" "${2:-?}" >> "$DIR/ai/actions.log" 2>/dev/null
   tail -c 4000 "$DIR/ai/actions.log" > "$DIR/ai/actions.log.t" 2>/dev/null && mv "$DIR/ai/actions.log.t" "$DIR/ai/actions.log"
+}
+
+# --- VPN: Cloudflare WARP (детерміновані дії замість AI-агента) ---
+warp_status_text() {
+  # -> текст стану WARP у OUTW (0 токенів)
+  if ! uci -q get network.warp >/dev/null 2>&1; then
+    OUTW="$(t vpn_title)
+
+$(t v_noconf)"
+    return
+  fi
+  RA=$(uci -q get network.@wireguard_warp[0].route_allowed_ips 2>/dev/null)
+  MODE=$(t v_mode_idle); [ "${RA:-0}" = "1" ] && MODE=$(t v_mode_all)
+  ST=$(t v_s_off)
+  TRC=""
+  if command -v wg >/dev/null 2>&1 && ip link show warp >/dev/null 2>&1; then
+    HS=$(wg show warp latest-handshakes 2>/dev/null | awk '{print $2}')
+    if [ -n "$HS" ] && [ "$HS" != "0" ]; then
+      ST=$(t v_s_on)
+      TRC=$(curl -s --max-time 8 --interface warp https://www.cloudflare.com/cdn-cgi/trace 2>/dev/null | grep -E '^(warp|ip)=' | tr '\n' '; ')
+    fi
+  fi
+  PORT=$(uci -q get network.@wireguard_warp[0].endpoint_port 2>/dev/null)
+  OUTW="$(t vpn_title)
+
+$ST · порт ${PORT:-2408} · $MODE
+${TRC:+<code>$TRC</code>}"
+}
+
+warp_reg_script() {
+  # друкує фоновий скрипт реєстрації+setup (викликається в ( ... ) & ; результат через .lb_*)
+  cat <<'WEOF'
+LOG=""
+command -v wg >/dev/null 2>&1 || {
+  AO=$(apk add wireguard-tools 2>&1 | tail -2); LOG="$LOG
+apk add wireguard-tools → $AO"
+}
+command -v wg >/dev/null 2>&1 || {
+  printf '%s' "❌ wireguard-tools не встановився.$LOG" > "$DIR/.lb_out"; touch "$DIR/.lb_done"; exit 0
+}
+PRIV=$(wg genkey 2>/dev/null)
+PUB=$(printf '%s' "$PRIV" | wg pubkey 2>/dev/null)
+TOS=$(date -u +%FT%TZ)
+curl -s --max-time 20 -X POST https://api.cloudflareclient.com/v0a2158/reg \
+  -H "Content-Type: application/json" -H "User-Agent: okhttp/3.12.1" \
+  -d "{\"key\":\"$PUB\",\"install_id\":\"\",\"fcm_token\":\"\",\"tos\":\"$TOS\",\"model\":\"OpenWrt\",\"locale\":\"en\"}" > "$DIR/.wreg.json"
+grep -q '"id"' "$DIR/.wreg.json" || {
+  printf '%s' "❌ Реєстрація Cloudflare не пройшла:
+$(head -c 200 "$DIR/.wreg.json")" > "$DIR/.lb_out"; touch "$DIR/.lb_done"; exit 0
+}
+V4=$(jsonfilter -s "$DIR/.wreg.json" '@.config.interface.addresses.v4')
+PEERPK=$(jsonfilter -s "$DIR/.wreg.json" '@.config.peers[0].public_key')
+umask 077; printf '%s\n%s\n%s\n' "$PRIV" "$V4" "$PEERPK" > "$DIR/warp.reg"; rm -f "$DIR/.wreg.json"
+# --- uci setup: інтерфейс БЕЗ перехоплення трафіку (route_allowed_ips=0) ---
+uci -q delete network.warp >/dev/null 2>&1
+while uci -q delete network.@wireguard_warp[0] >/dev/null 2>&1; do :; done
+uci set network.warp=interface
+uci set network.warp.proto='wireguard'
+uci set network.warp.private_key="$PRIV"
+uci add_list network.warp.addresses="$V4/32"
+uci set network.warp.mtu='1280'
+uci add network wireguard_warp >/dev/null
+uci set network.@wireguard_warp[-1].public_key="$PEERPK"
+uci set network.@wireguard_warp[-1].endpoint_host='engage.cloudflareclient.com'
+uci set network.@wireguard_warp[-1].endpoint_port='2408'
+uci add_list network.@wireguard_warp[-1].allowed_ips='0.0.0.0/0'
+uci add_list network.@wireguard_warp[-1].allowed_ips='::/0'
+uci set network.@wireguard_warp[-1].persistent_keepalive='25'
+uci set network.@wireguard_warp[-1].route_allowed_ips='0'
+uci commit network
+i=0; ZF=""
+while :; do N=$(uci -q get firewall.@zone[$i].name 2>/dev/null) || break
+  [ "$N" = "warp" ] && ZF=$i && break; i=$((i+1)); done
+[ -z "$ZF" ] && {
+  uci add firewall zone >/dev/null
+  Z=$(( $(uci show firewall | grep -c '=zone') - 1 ))
+  uci set firewall.@zone[$Z].name='warp'
+  uci set firewall.@zone[$Z].input='REJECT'
+  uci set firewall.@zone[$Z].output='ACCEPT'
+  uci set firewall.@zone[$Z].forward='REJECT'
+  uci add_list firewall.@zone[$Z].network='warp'
+  uci set firewall.@zone[$Z].masq='1'
+  uci commit firewall
+}
+ifup warp
+# --- handshake, fallback портами якщо CF блокує 2408 ---
+HS=""
+for PT in 2408 500 1701 4500; do
+  uci set network.@wireguard_warp[-1].endpoint_port="$PT"; uci commit network
+  /etc/init.d/network reload >/dev/null 2>&1
+  sleep 6
+  HS=$(wg show warp latest-handshakes 2>/dev/null | awk '{print $2}')
+  [ -n "$HS" ] && [ "$HS" != "0" ] && break
+done
+state_rebuild
+if [ -n "$HS" ] && [ "$HS" != "0" ]; then
+  TRC=$(curl -s --max-time 8 --interface warp https://www.cloudflare.com/cdn-cgi/trace 2>/dev/null | grep -E '^warp=|^ip=' | tr '\n' ' ')
+  printf '%s' "✅ WARP створено (порт $PT). Тунель живий.
+$TRC
+
+Далі: кнопка 🟢 «Весь трафік» — пустить увесь трафік роутера через WARP (з підтвердженням і страховкою)." > "$DIR/.lb_out"
+else
+  printf '%s' "❌ Тунель створений, але handshake не вдався жодним портом (2408/500/1701/4500).
+Можливо, провайдер блокує WireGuard або CF обмежив реєстрацію. Спробуйте пізніше." > "$DIR/.lb_out"
+fi
+touch "$DIR/.lb_done"
+WEOF
 }
 
 skill_pick() {
@@ -2607,6 +2739,82 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             ;;
           mnu:sys)
             edit_msg "$MSGID_CB" "$(t s_title)" "$SYS_MARKUP"
+            ;;
+          mnu:vpn)
+            edit_msg "$MSGID_CB" "$(t vpn_title)" "$VPN_MARKUP"
+            ;;
+          wst)
+            warp_status_text
+            edit_msg "$MSGID_CB" "$OUTW" "$VPN_MARKUP"
+            ;;
+          wup1)
+            edit_msg "$MSGID_CB" "$(t v_reg_ask)" "$WARP_CONF_MARKUP"
+            ;;
+          wgo)
+            printf '%s' "⚡️ WARP setup" > "$DIR/.lb_cmd"
+            echo "$MSGID_CB" > "$DIR/.lb_msg"
+            : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+            reply "$(t v_reg_run)"
+            ( DIR="$DIR"; CHAT="$CHAT"; eval "$(warp_reg_script)" ) &
+            ;;
+          won)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
+            else
+              i=0; FWD=""
+              while :; do FS=$(uci -q get firewall.@forwarding[$i].src 2>/dev/null) || break
+                FD=$(uci -q get firewall.@forwarding[$i].dest 2>/dev/null)
+                [ "$FS" = "lan" ] && [ "$FD" = "warp" ] && FWD=1 && break; i=$((i+1)); done
+              CMDL="uci set network.@wireguard_warp[0].route_allowed_ips='1'"
+              [ -z "$FWD" ] && CMDL="$CMDL && uci add firewall forwarding && uci set firewall.@forwarding[-1].src='lan' && uci set firewall.@forwarding[-1].dest='warp' && uci commit firewall"
+              CMDL="$CMDL && uci commit network && /etc/init.d/firewall restart && sleep 3 && curl -s --max-time 8 --interface warp https://www.cloudflare.com/cdn-cgi/trace | head -4"
+              printf '%s' "$CMDL" > "$DIR/aipend"; date +%s > "$DIR/.apts"
+              send_mk "$(printf "$(t v_aon_warn)" "$(esc "${CMDL:0:200}…")")" "$AI_CONF2_MARKUP"
+            fi
+            ;;
+          woff)
+            if ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
+            else
+              printf '%s' "uci set network.@wireguard_warp[0].route_allowed_ips='0' && uci commit network && /etc/init.d/network reload" > "$DIR/aipend"; date +%s > "$DIR/.apts"
+              send_mk "$(printf "$(t ai_confirm)" "$(esc "$(cat "$DIR/aipend")")")" "$AI_CONF2_MARKUP"
+            fi
+            ;;
+          wdel1)
+            if ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
+            else
+              edit_msg "$MSGID_CB" "$(t v_del_ask)" "$WDEL_CONF_MARKUP"
+            fi
+            ;;
+          wdel2)
+            (
+              ifdown warp 2>/dev/null
+              while uci -q delete network.@wireguard_warp[0] >/dev/null 2>&1; do :; done
+              uci -q delete network.warp >/dev/null 2>&1
+              N=$(uci show firewall | grep -c '=forwarding')
+              i=$((N-1))
+              while [ "$i" -ge 0 ]; do
+                FS=$(uci -q get firewall.@forwarding[$i].src 2>/dev/null)
+                FD=$(uci -q get firewall.@forwarding[$i].dest 2>/dev/null)
+                [ "$FS" = "lan" ] && [ "$FD" = "warp" ] && uci -q delete firewall.@forwarding[$i] >/dev/null 2>&1
+                i=$((i-1))
+              done
+              Z=$(uci show firewall | grep -c '=zone')
+              i=$((Z-1))
+              while [ "$i" -ge 0 ]; do
+                [ "$(uci -q get firewall.@zone[$i].name 2>/dev/null)" = "warp" ] && uci -q delete firewall.@zone[$i] >/dev/null 2>&1
+                i=$((i-1))
+              done
+              uci commit network; uci commit firewall
+              /etc/init.d/firewall restart >/dev/null 2>&1
+              rm -f "$DIR/warp.reg"
+              act_log "warp delete" 0
+              state_rebuild
+            )
+            edit_msg "$MSGID_CB" "$(t vpn_title)
+
+🗑 WARP видалено." "$VPN_MARKUP"
             ;;
           wfkb)
             KB=$(wf_kb) && send_mk "$(t wf_pick)" "$KB" || reply "$(t wf_none)"
