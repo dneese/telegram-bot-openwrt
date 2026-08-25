@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  shell-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check all shell scripts
+        run: |
+          for f in *.sh tests/*.sh; do
+            sh -n "$f" && echo "ok: $f"
+          done
+
+      - name: Offline test suite (117 checks)
+        run: sh tests/run_tests.sh tg-bot.sh
