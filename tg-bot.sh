@@ -1046,7 +1046,7 @@ state_rebuild() {
   done
   PFC=0; while :; do uci -q get firewall.@redirect[$PFC].src_dport >/dev/null 2>&1 || break; PFC=$((PFC+1)); done
   PKG=""
-  for P in nlbwmon sqm-scripts wireguard-tools adblock https-dns-proxy miniupnpd; do
+  for P in nlbwmon sqm-scripts wireguard-tools adblock https-dns-proxy miniupnpd luci-proto-wireguard; do
     apk info -e "$P" >/dev/null 2>&1 && PKG="$PKG $P"
   done
   mkdir -p "$DIR/ai" 2>/dev/null
@@ -1058,6 +1058,15 @@ state_rebuild() {
     [ -n "$WF" ] && printf 'Wi-Fi:%s\n' "$WF"
     printf 'Портфорвордів WAN: %s\n' "$PFC"
     printf 'Додаткові пакети:%s\n' "${PKG:- немає}"
+    if uci -q get network.warp >/dev/null 2>&1; then
+      RA=$(uci -q get network.@wireguard_warp[0].route_allowed_ips 2>/dev/null)
+      WP=$(uci -q get network.@wireguard_warp[0].endpoint_port 2>/dev/null); WP=${WP:-2408}
+      WS="тунель створений, трафік НЕ перехоплюється"
+      [ "${RA:-0}" = "1" ] && WS="АКТИВНИЙ — ВЕСЬ трафік роутера йде через WARP"
+      printf 'VPN: Cloudflare WARP (порт %s) — %s\n' "$WP" "$WS"
+    else
+      printf 'VPN: WARP не налаштований (є кнопковий розділ 🌐 VPN).\n'
+    fi
     printf '\nЦЕ КЕШ: параметри вважай чинними без перевірки CMD; оновлюється ботом автоматично після кожної зміни.\n'
   } > "$DIR/ai/state.md" 2>/dev/null
   date +%s > "$DIR/.state_ts"
