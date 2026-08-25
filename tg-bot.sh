@@ -102,7 +102,7 @@ T_mon_fol_ru='👁 Следю за <code>%s</code> (%s) — сообщу о па
 T_mon_del_ru='🗑 Убрал из мониторинга'; T_mon_del_en='🗑 Removed from monitoring'; T_mon_del_uk='🗑 Прибрано з моніторингу'
 T_h_down_ru='🔴 <b>%s</b> НЕДОСТУПЕН · <code>%s</code> · %s'; T_h_down_en='🔴 <b>%s</b> DOWN · <code>%s</code> · %s'; T_h_down_uk='🔴 <b>%s</b> НЕДОСТУПНИЙ · <code>%s</code> · %s'
 T_h_up_ru='🟢 <b>%s</b> снова в сети · <code>%s</code> · %s'; T_h_up_en='🟢 <b>%s</b> back online · <code>%s</code> · %s'; T_h_up_uk='🟢 <b>%s</b> знову в мережі · <code>%s</code> · %s'
-T_ai_nokey_ru='🤖 AI не настроен — нет ключа OpenRouter.'; T_ai_nokey_en='🤖 AI not configured - no OpenRouter key.'; T_ai_nokey_uk='🤖 AI не налаштований — немає ключа OpenRouter.'
+T_ai_nokey_ru='🔑 AI-ключей нет. Надішліть боту: /key gsk_… (Groq), /key sk-or-v1… (OpenRouter) або будь-який інший ключ (Gemini). Або LuCI → Services → Telegram Bot.'; T_ai_nokey_en='🔑 No AI keys yet. Send: /key gsk_… (Groq), /key sk-or-v1… (OpenRouter) or any other key (Gemini). Or LuCI → Services → Telegram Bot.'; T_ai_nokey_uk='🔑 AI-ключів немає. Надішліть боту: /key gsk_… (Groq), /key sk-or-v1… (OpenRouter) або будь-який інший ключ (Gemini). Або LuCI → Services → Telegram Bot.'
 T_ai_think_ru='🤔 Думаю...'; T_ai_think_en='🤔 Thinking...'; T_ai_think_uk='🤔 Думаю...'
 T_ai_hint_ru='🤖 Напишите вопрос текстом. Выйти: /ai off'; T_ai_hint_en='🤖 Type your question. Exit: /ai off'; T_ai_hint_uk='🤖 Напишіть питання текстом. Вихід: /ai off'
 T_ai_entered_ru='🤖 <b>AI-чат включён</b>\nПишите вопрос текстом — я вижу состояние роутера\nи могу выполнять команды (настройки — только с подтверждением).\nВыйти: /ai off или кнопкой ниже.'
@@ -942,6 +942,8 @@ ai_call() {
       or) [ -z "$AIKEY2" ] && continue; M="$ALTMODEL"; U="${AIURL2:-$AIURL}"; K="$AIKEY2" ;;
       *)  M="$TRY"; U="$AIURL"; K="$AKEY" ;;
     esac
+    # безключові ланки пропускаємо одразу (напр. primary порожній, а є лише Gemini)
+    [ -z "$K" ] && { alog MODEL "skip $TRY (no key)"; continue; }
     # Circuit breaker: модель що щойно зламалась/лімітувалась пропускається (крім останнього рубежу)
     if [ "$TRY" != "or" ] && ! brk_ok "$M"; then alog MODEL "skip $M (breaker)"; continue; fi
     case $M in
@@ -1191,7 +1193,10 @@ kb_fetch() {
 }
 
 ai_agent() {
-  [ -z "$(uci -q get tgbot.config.ai_key)" ] && {
+  # ворота: хоча б ОДИН ключ будь-якого провайдера (Groq/OpenRouter/Gemini)
+  [ -z "$(uci -q get tgbot.config.ai_key)" ] && \
+  [ -z "$(uci -q get tgbot.config.ai_key2)" ] && \
+  [ -z "$(uci -q get tgbot.config.ai_key3)" ] && {
     reply "$(t ai_nokey)"
     return
   }
