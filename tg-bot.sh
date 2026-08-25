@@ -933,7 +933,7 @@ ai_call() {
   AIURL=$(uci -q get tgbot.config.ai_url)
   [ -z "$AIURL" ] && AIURL="https://openrouter.ai/api/v1/chat/completions"
   AKEY=$(uci -q get tgbot.config.ai_key)
-  ANS=""
+  ANS=""; R=""
   # Ланцюг: primary (дешева) → Groq-фолбеки (свої TPD) → Gemini → OpenRouter. Без ретраїв тієї ж моделі.
   for TRY in primary $GCHAIN gem or; do
     case $TRY in
