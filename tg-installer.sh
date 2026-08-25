@@ -21,13 +21,15 @@ TMP="/tmp/tgrb.$$"
 say() { printf '%s\n' "$*"; }
 die() { say "❌ $*"; rm -rf "$TMP" 2>/dev/null; exit 1; }
 
-fetch() { # $1=relpath -> stdout; curl->wget (на свіжому OpenWrt є обидва, wget без TLS-сертів бува)
-  if command -v curl >/dev/null 2>&1; then
+fetch() { # $1=relpath -> stdout; uclient-fetch (рідний OpenWrt, з TLS) -> curl -> wget
+  if command -v uclient-fetch >/dev/null 2>&1; then
+    uclient-fetch -qO- "$RAW/$1" 2>/dev/null
+  elif command -v curl >/dev/null 2>&1; then
     curl -fsSL --max-time 60 "$RAW/$1" 2>/dev/null
   elif command -v wget >/dev/null 2>&1; then
     wget -q -T 60 -O - "$RAW/$1" 2>/dev/null
   else
-    die "У системі немає ні curl, ні wget"
+    die "У системі немає ні uclient-fetch, ні curl, ні wget"
   fi || die "Не вдалося завантажити $1. Перевірте дату/час (date) та SSL: /etc/init.d/sysntpd restart"
 }
 
