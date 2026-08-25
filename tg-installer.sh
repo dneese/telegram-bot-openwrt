@@ -33,9 +33,10 @@ fetch() { # $1=relpath -> stdout; uclient-fetch (рідний OpenWrt, з TLS) -
   fi || die "Не вдалося завантажити $1. Перевірте дату/час (date) та SSL: /etc/init.d/sysntpd restart"
 }
 
-FILES="tg-bot.sh tg-analyze.sh tg-watch.sh tg-bot.init tg-watch.init install.sh \
+FILES="tg-bot.sh tg-analyze.sh tg-watch.sh tg-doctor.sh tg-bot.init tg-watch.init tg-doctor.hotplug install.sh \
 tgbot.menu.json tgbot.acl.json tgbot.settings.js \
-prompts/core.txt prompts/recipes.txt prompts/facts.md prompts/intent.txt prompts/topology.md prompts/corrections.md \
+prompts/core.txt prompts/recipes.txt prompts/facts.md prompts/intent.txt \
+prompts/learned/lessons.md \
 prompts/skills/wifi.md prompts/skills/vpn.md prompts/skills/dns.md prompts/skills/firewall.md \
 prompts/skills/services.md prompts/skills/network-dhcp.md prompts/skills/system-misc.md"
 
