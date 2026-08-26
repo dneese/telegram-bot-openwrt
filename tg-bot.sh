@@ -272,6 +272,34 @@ T_v_s_off_ru='🔴 Немає handshake'; T_v_s_off_en='🔴 No handshake'; T_v_
 T_v_s_nc_ru='📭 не налаштовано'; T_v_s_nc_en='📭 not configured'; T_v_s_nc_uk='📭 не налаштовано'
 T_v_mode_all_ru='режим: весь трафік через WARP'; T_v_mode_all_en='mode: all traffic via WARP'; T_v_mode_all_uk='режим: весь трафік через WARP'
 T_v_mode_idle_ru='режим: тунель є, трафік не перехоплюється'; T_v_mode_idle_en='mode: tunnel up, traffic not routed'; T_v_mode_idle_uk='режим: тунель є, трафік не перехоплюється'
+T_v_mode_pbr_ru='режим: тільки заблоковані через WARP (PBR)'; T_v_mode_pbr_en='mode: blocked-only via WARP (PBR)'; T_v_mode_pbr_uk='режим: тільки заблоковані через WARP (PBR)'
+
+# --- WARP-оптимізатор: MTU-тестер і пінг endpoint-ів ---
+T_v_btn_mtu_ru='📏 MTU-тест'; T_v_btn_mtu_en='📏 MTU test'; T_v_btn_mtu_uk='📏 MTU-тест'
+T_v_btn_ep_ru='📡 Пінг endpoint'; T_v_btn_ep_en='📡 Endpoint ping'; T_v_btn_ep_uk='📡 Пінг endpoint'
+T_v_mtu_run_ru='⏳ Тестую MTU 1420/1400/1380/1280 (~1.5 хв).\n⚠️ Інтернет мигатиме по ~10 с на кожного кандидата. Результат надішлю окремо.'; T_v_mtu_run_en='⏳ Testing MTU 1420/1400/1380/1280 (~1.5 min).\n⚠️ Internet will blip ~10 s per candidate. Result arrives separately.'; T_v_mtu_run_uk='⏳ Тестую MTU 1420/1400/1380/1280 (~1.5 хв).\n⚠️ Інтернет мигатиме по ~10 с на кожного кандидата. Результат надішлю окремо.'
+T_v_ep_run_ru='⏳ Пінгую 6 endpoint-ів Cloudflare (~15 с)…'; T_v_ep_run_en='⏳ Pinging 6 Cloudflare endpoints (~15 s)…'; T_v_ep_run_uk='⏳ Пінгую 6 endpoint-ів Cloudflare (~15 с)…'
+T_v_mtu_tbl_ru='📏 MTU-тест (завантажено за 8 с через тунель):'; T_v_mtu_tbl_en='📏 MTU test (downloaded in 8 s via tunnel):'; T_v_mtu_tbl_uk='📏 MTU-тест (завантажено за 8 с через тунель):'
+T_v_ep_tbl_ru='📡 Пінг endpoint-ів Cloudflare:'; T_v_ep_tbl_en='📡 Cloudflare endpoint ping:'; T_v_ep_tbl_uk='📡 Пінг endpoint-ів Cloudflare:'
+T_v_apply_best_ru='✅ Застосувати %s'; T_v_apply_best_en='✅ Apply %s'; T_v_apply_best_uk='✅ Застосувати %s'
+T_v_mtu_fail_ru='❌ Жоден MTU не дав handshake — повернув безпечний 1280.'; T_v_mtu_fail_en='❌ No MTU produced a handshake — restored safe 1280.'; T_v_mtu_fail_uk='❌ Жоден MTU не дав handshake — повернув безпечний 1280.'
+T_v_ping_fail_ru='❌ ICMP до Cloudflare заблоковано провайдером — пінг-тест неможливий.'; T_v_ping_fail_en="❌ ICMP to Cloudflare is blocked by the ISP — ping test impossible."; T_v_ping_fail_uk='❌ ICMP до Cloudflare заблоковано провайдером — пінг-тест неможливий.'
+T_v_best_mark_ru=' ✅ найкращий'; T_v_best_mark_en=' ✅ best'; T_v_best_mark_uk=' ✅ найкращий'
+T_v_cur_mark_ru=' (поточний)'; T_v_cur_mark_en=' (current)'; T_v_cur_mark_uk=' (поточний)'
+
+# --- PBR: ручний список заблокованих IP ---
+T_pbr_btn_ru='📋 Список'; T_pbr_btn_en='📋 List'; T_pbr_btn_uk='📋 Список'
+T_pbr_btnp_ru='🟡 Тільки заблоковані'; T_pbr_btnp_en='🟡 Blocked only'; T_pbr_btnp_uk='🟡 Тільки заблоковані'
+T_pbr_title_ru='📋 Список заблокованих IP (%d записів):'; T_pbr_title_en='📋 Blocked IP list (%d entries):'; T_pbr_title_uk='📋 Список заблокованих IP (%d записів):'
+T_pbr_empty_ru='📋 Список порожній. Натисніть ➕ Додати.'; T_pbr_empty_en='📋 List empty. Press ➕ Add.'; T_pbr_empty_uk='📋 Список порожній. Натисніть ➕ Додати.'
+T_pbr_add_ask_ru='Введіть IP або CIDR (напр. 93.184.216.34 або 5.188.86.0/24):'; T_pbr_add_ask_en='Enter IP or CIDR (e.g. 93.184.216.34 or 5.188.86.0/24):'; T_pbr_add_ask_uk='Введіть IP або CIDR (напр. 93.184.216.34 або 5.188.86.0/24):'
+T_pbr_add_ok_ru='✅ Додано: %s. Додайте ще або 🔄 Застосуйте правила.'; T_pbr_add_ok_en='✅ Added: %s. Add more or 🔄 Apply rules.'; T_pbr_add_ok_uk='✅ Додано: %s. Додайте ще або 🔄 Застосуйте правила.'
+T_pbr_add_bad_ru='❌ Невірний формат. Потрібно: IP або IP/N (напр. 93.184.216.34 або 5.188.86.0/24)'; T_pbr_add_bad_en='❌ Bad format. Need: IP or IP/N (e.g. 93.184.216.34 or 5.188.86.0/24)'; T_pbr_add_bad_uk='❌ Невірний формат. Потрібно: IP або IP/N (напр. 93.184.216.34 або 5.188.86.0/24)'
+T_pbr_del_ok_ru='✅ Видалено: %s'; T_pbr_del_ok_en='✅ Removed: %s'; T_pbr_del_ok_uk='✅ Видалено: %s'
+T_pbr_apply_ru='✅ PBR-правила застосовано. Тільки %d записів через WARP.'; T_pbr_apply_en='✅ PBR rules applied. Only %d entries via WARP.'; T_pbr_apply_uk='✅ PBR-правила застосовано. Тільки %d записів через WARP.'
+T_pbr_clear_ru='✅ PBR-правила прибрано. Увесь трафік напряму.'; T_pbr_clear_en='✅ PBR rules cleared. All traffic direct.'; T_pbr_clear_uk='✅ PBR-правила прибрано. Увесь трафік напряму.'
+T_pbr_no_warp_ru='⚠️ Спочатку створіть WARP (кнопка ⚡️ Підключити)'; T_pbr_no_warp_en='⚠️ Create WARP first (button ⚡️ Connect)'; T_pbr_no_warp_uk='⚠️ Спочатку створіть WARP (кнопка ⚡️ Підключити)'
+T_pbr_empty_err_ru='⚠️ Список порожній — додайте хоча б один запис'; T_pbr_empty_err_en='⚠️ List empty — add at least one entry'; T_pbr_empty_err_uk='⚠️ Список порожній — додайте хоча б один запис'
 
 # send_rich визначено нижче (файловий payload)
 
@@ -286,9 +314,10 @@ FW_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t fw_btn_pf)\",\"callback_data\"
 DG_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t dg_btn_ping)\",\"callback_data\":\"dgt:ping\"},{\"text\":\"$(t dg_btn_trace)\",\"callback_data\":\"dgt:trace\"},{\"text\":\"$(t dg_btn_ns)\",\"callback_data\":\"dgt:ns\"}],[{\"text\":\"$(t dg_btn_lr)\",\"callback_data\":\"dgl:logread\"},{\"text\":\"$(t dg_btn_dm)\",\"callback_data\":\"dgl:dmesg\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 SYS_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"}],[{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"},{\"text\":\"↩️ Rollback\",\"callback_data\":\"rbk1\"}],[{\"text\":\"$(t s_btn_pkg)\",\"callback_data\":\"pkgl\"},{\"text\":\"$(t s_btn_ssh)\",\"callback_data\":\"sshkl\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 RBK_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbky)\",\"callback_data\":\"rbkyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbkno\"}]]}"
-VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\":\"wst\"},{\"text\":\"$(t v_connect)\",\"callback_data\":\"wup1\"}],[{\"text\":\"$(t v_aon)\",\"callback_data\":\"won\"},{\"text\":\"$(t v_aoff)\",\"callback_data\":\"woff\"}],[{\"text\":\"$(t v_delete)\",\"callback_data\":\"wdel1\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\":\"wst\"},{\"text\":\"$(t v_connect)\",\"callback_data\":\"wup1\"}],[{\"text\":\"$(t v_aon)\",\"callback_data\":\"won\"},{\"text\":\"$(t v_aoff)\",\"callback_data\":\"woff\"}],[{\"text\":\"$(t pbr_btn)\",\"callback_data\":\"pbr_menu\"},{\"text\":\"$(t v_btn_mtu)\",\"callback_data\":\"wmtu\"},{\"text\":\"$(t v_btn_ep)\",\"callback_data\":\"wep\"}],[{\"text\":\"$(t v_delete)\",\"callback_data\":\"wdel1\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 WARP_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_go)\",\"callback_data\":\"wgo\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
 WDEL_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"🗑 $(t v_delete)\",\"callback_data\":\"wdel2\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
+PBR_MARKUP="{\"inline_keyboard\":[[{\"text\":\"📄 $(t pbr_btn)\",\"callback_data\":\"pbr_list\"},{\"text\":\"➕ Додати\", \"callback_data\":\"pbr_add_ask\"}],[{\"text\":\"🗑 Видалити запис\",\"callback_data\":\"pbr_del\"},{\"text\":\"🔄 Застосувати\",\"callback_data\":\"pbr_apply\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:vpn\"}]]}"
 }
 
 # --- контекст вводу текстом (.mact): mact_set <дія> | mact_get -> "дія|ввід" ---
@@ -1101,7 +1130,14 @@ $(t v_noconf)"
     return
   fi
   RA=$(uci -q get network.@wireguard_warp[0].route_allowed_ips 2>/dev/null)
-  MODE=$(t v_mode_idle); [ "${RA:-0}" = "1" ] && MODE=$(t v_mode_all)
+  PBRF="$DIR/.pbr_active"
+  if [ -f "$PBRF" ] && [ "$(cat "$PBRF" 2>/dev/null)" = "1" ]; then
+    MODE=$(t v_mode_pbr)
+  elif [ "${RA:-0}" = "1" ]; then
+    MODE=$(t v_mode_all)
+  else
+    MODE=$(t v_mode_idle)
+  fi
   ST=$(t v_s_off)
   TRC=""
   if command -v wg >/dev/null 2>&1 && ip link show warp >/dev/null 2>&1; then
@@ -1116,6 +1152,133 @@ $(t v_noconf)"
 
 $ST · порт ${PORT:-2408} · $MODE
 ${TRC:+<code>$TRC</code>}"
+}
+
+fmt_speed() {
+  # $1=байти -> "8.4 МБ" (для таблиць MTU-тесту)
+  awk -v b="${1:-0}" 'BEGIN{printf "%.1f МБ", b/1048576}'
+}
+parse_ping_avg() {
+  # stdin: вивід ping -> середній RTT ("14.1") або пусто
+  awk '/min\/avg\/max/ {split($4,a,"/"); print a[2]; exit}'
+}
+
+warp_mtu_script() {
+  # друкує фоновий MTU-тест: 1420/1400/1380/1280 -> швидкість за 8с кожен;
+  # наприкінці ПОВЕРТАЄ початковий MTU (рішення про зміну — за власником кнопкою)
+  cat <<'MEOF'
+ORIG=$(uci -q get network.@wireguard_warp[0].mtu); ORIG=${ORIG:-1280}
+OUT=""; BEST=""; BESTB=0
+for M in 1420 1400 1380 1280; do
+  uci set network.@wireguard_warp[0].mtu="$M"; uci commit network
+  ifup warp 2>/dev/null
+  HS=""; n=0
+  while [ $n -lt 10 ]; do
+    sleep 1; n=$((n+1))
+    HS=$(wg show warp latest-handshakes 2>/dev/null | awk '{print $2}')
+    [ -n "$HS" ] && [ "$HS" != "0" ] && break
+  done
+  if [ -z "$HS" ] || [ "$HS" = "0" ]; then
+    OUT="$OUT
+$M → ❌ немає handshake"
+    continue
+  fi
+  B=$(curl --interface warp -s -o /dev/null -w '%{size_download}' --max-time 8 'https://speed.cloudflare.com/__down?bytes=50000000')
+  B=${B:-0}
+  OUT="$OUT
+$M → $(awk -v b="$B" 'BEGIN{printf "%.1f МБ", b/1048576}')"
+  if [ "$B" -gt "$BESTB" ]; then BESTB=$B; BEST=$M; fi
+done
+# повертаємо початковий MTU (застосування найкращого — окрема кнопка з підтвердженням)
+uci set network.@wireguard_warp[0].mtu="$ORIG"; uci commit network
+ifup warp 2>/dev/null
+if [ -z "$BEST" ]; then
+  printf '%s' "❌ Жоден MTU не дав handshake — повернув безпечний 1280." > "$DIR/.lb_out"
+else
+  printf '%s' "📏 MTU-тест (завантажено за 8 с через тунель):
+$OUT
+
+Найкращий: $BEST. Поточний ($ORIG) відновлено." > "$DIR/.lb_out"
+fi
+touch "$DIR/.lb_done"
+MEOF
+}
+
+warp_ep_script() {
+  cat <<'EEOF'
+EPING=0; OUT=""; BESTIP=""; BESTP=999999
+for IP in 162.159.192.1 162.159.192.2 162.159.192.3 162.159.192.4 162.159.192.5 engage.cloudflareclient.com; do
+  R=$(ping -c 3 -W 2 "$IP" 2>/dev/null | awk '/min\/avg\/max/{split($4,a,"/");print a[2]}')
+  if [ -n "$R" ]; then
+    EPING=$((EPING+1))
+    OUT="$OUT
+$IP → $R мс"
+    HIT=$(awk -v a="$R" -v b="$BESTP" 'BEGIN{print (a<b)?1:0}')
+    [ "$HIT" = "1" ] && BESTP=$R && BESTIP=$IP
+  else
+    OUT="$OUT
+$IP → ❌ 100% втрат"
+  fi
+done
+if [ "$EPING" = "0" ]; then
+  printf '%s' "❌ ICMP до Cloudflare заблоковано провайдером — пінг-тест неможливий." > "$DIR/.lb_out"
+else
+  printf '%s' "📡 Пінг endpoint-ів Cloudflare:
+$OUT
+
+Найшвидший: $BESTIP ($BESTP мс)." > "$DIR/.lb_out"
+fi
+touch "$DIR/.lb_done"
+EEOF
+}
+
+parse_ip_cidr() {
+  # $1=рядок -> 0= валідний IP/CIDR, 1=невалідний
+  case "$1" in
+    ''|*[!0-9./]*) return 1 ;;
+  esac
+  echo "$1" | grep -qE '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(/([0-9]|[12][0-9]|3[012]))?$' || return 1
+  IPOCT="${1%%/*}"
+  A=$(echo "$IPOCT" | cut -d. -f1); B=$(echo "$IPOCT" | cut -d. -f2); C=$(echo "$IPOCT" | cut -d. -f3); D=$(echo "$IPOCT" | cut -d. -f4)
+  [ "$A" -le 255 ] && [ "$B" -le 255 ] && [ "$C" -le 255 ] && [ "$D" -le 255 ] || return 1
+  return 0
+}
+
+pbr_apply_script() {
+  # застосовує PBR: тільки IP з blocked.list через WARP (nftables set + iptables mark + ip rule)
+  cat <<'PEOF'
+BFILE="/etc/tg-bot/blocked.list"
+if [ ! -s "$BFILE" ]; then echo "PBR: blocked.list порожній"; exit 1; fi
+# створюємо nftables set для заблокованих IP (якщо ще немає)
+nft add set inet fw4 blocked_net '{ type ipv4_addr; flags interval; }' 2>/dev/null
+nft flush set inet fw4 blocked_net 2>/dev/null
+while IFS= read -r CIDR; do
+  [ -n "$CIDR" ] && nft add element inet fw4 blocked_net "{ $CIDR }" 2>/dev/null
+done < "$BFILE"
+# iptables/mark: пакети до заблокованих IP отримують mark 0x1
+iptables -t mangle -D PREROUTING -m set --match-set blocked_net dst -j MARK --set-mark 0x1 2>/dev/null
+iptables -t mangle -A PREROUTING -m set --match-set blocked_net dst -j MARK --set-mark 0x1 2>/dev/null
+# fallback: якщо iptables немає — прямий nft mark
+OLDH=$(nft -a list chain inet fw4 prerouting 2>/dev/null | grep 'blocked_net' | head -1 | sed -n 's/.*handle \([0-9]*\).*/\1/p')
+[ -n "$OLDH" ] && nft delete rule inet fw4 prerouting handle $OLDH 2>/dev/null
+nft insert rule inet fw4 prerouting ip daddr @blocked_net meta mark set 0x1 2>/dev/null
+# ip rule: mark 0x1 -> routing table 100 (warp)
+ip rule del fwmark 0x1 2>/dev/null
+ip rule add fwmark 0x1 lookup 100
+ip route replace default dev warp table 100 2>/dev/null
+echo "PBR: застосовано ($(wc -l < "$BFILE") записів)"
+PEOF
+}
+
+pbr_clear_script() {
+  cat <<'CEOF'
+nft flush set inet fw4 blocked_net 2>/dev/null
+nft delete set inet fw4 blocked_net 2>/dev/null
+OLDH=$(nft -a list chain inet fw4 prerouting 2>/dev/null | grep 'blocked_net' | head -1 | sed -n 's/.*handle \([0-9]*\).*/\1/p')
+[ -n "$OLDH" ] && nft delete rule inet fw4 prerouting handle $OLDH 2>/dev/null
+ip rule del fwmark 0x1 2>/dev/null
+echo "PBR: правила прибрано"
+CEOF
 }
 
 warp_reg_script() {
@@ -1624,7 +1787,7 @@ cmd_banned() {
   # $1=CMD -> 0=заборонена. Жорсткі бани поверх sanitize_cmd (деструктив/ескалація).
   # wget/curl З пайпом НЕ баняться (шаблон KB-феча сам так працює); досі заборонено |sh.
   # ІНЦИДЕНТ 24.08: nft flush table витер fw4 при буті -> інтернет зник. Такі команди — ЗАВЖДИ бан.
-  printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|nft +flush|iptables +[-]F([[:space:]]|$)'
+  printf '%s' "$1" | grep -qE '(^|[;&[:space:]])rm +-[a-zA-Z]*r[a-zA-Z]* *f?|mkfs|dd +if=|dd +of=/dev/|sysupgrade|firstboot|[|][[:space:]]*(ba|a)?sh([[:space:]]|$)|nft +flush|iptables +[-]F([[:space:]]|$)|nft +delete +set|nft +delete +rule|ip +rule +del'
 }
 
 ai_run() {
@@ -2406,6 +2569,14 @@ ${PINFO:+<code>$(esc "$PINFO")</code>}" "$PK_KB"
                     *) reply "$(t ssh_bad)" ;;
                   esac
                   i=$((i+1)); continue ;;
+                pbr_add)
+                  if ! parse_ip_cidr "$MA_V"; then
+                    mact_set "pbr_add"
+                    reply "$(t pbr_add_bad)"
+                  else
+                    echo "$MA_V" >> "$DIR/blocked.list"
+                    reply "$(printf "$(t pbr_add_ok)" "$MA_V")"
+                  fi ;;
                 *) : ;;
               esac
             fi
@@ -2859,6 +3030,144 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             warp_status_text
             edit_msg "$MSGID_CB" "$OUTW" "$VPN_MARKUP"
             ;;
+          wmtu)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
+            else
+              printf '%s' "📏 MTU test" > "$DIR/.lb_cmd"
+              echo "$MSGID_CB" > "$DIR/.lb_msg"; : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+              reply "$(t v_mtu_run)"
+              ( eval "$(warp_mtu_script)" ) >/dev/null 2>&1 &
+            fi
+            ;;
+          wmtua:*)
+            N="${CB#wmtua:}"
+            case "$N" in 1420|1400|1380|1280)
+              printf '%s' "uci set network.@wireguard_warp[0].mtu='$N' && uci commit network && ifup warp && sleep 3 && wg show warp latest-handshakes" > "$DIR/aipend"; date +%s > "$DIR/.apts"
+              send_mk "$(printf "$(t ai_confirm)" "uci set network.@wireguard_warp[0].mtu='$N'")" "$AI_CONF2_MARKUP"
+            ;; esac
+            ;;
+          wep)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
+            else
+              printf '%s' "📡 Endpoint ping" > "$DIR/.lb_cmd"
+              echo "$MSGID_CB" > "$DIR/.lb_msg"; : > "$DIR/.lb_out"; rm -f "$DIR/.lb_done"
+              reply "$(t v_ep_run)"
+              ( eval "$(warp_ep_script)" ) >/dev/null 2>&1 &
+            fi
+            ;;
+          wepa:*)
+            IPV="${CB#wepa:}"
+            case "$IPV" in
+              *[!0-9.]*|""|*..*) edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$VPN_MARKUP" ;;
+              *)
+                printf '%s' "uci set network.@wireguard_warp[0].endpoint_host='$IPV' && uci commit network && /etc/init.d/network reload && sleep 6 && wg show warp latest-handshakes" > "$DIR/aipend"; date +%s > "$DIR/.apts"
+                send_mk "$(printf "$(t ai_confirm)" "endpoint → $IPV")" "$AI_CONF2_MARKUP"
+            ;; esac
+            ;;
+          pbr_menu)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t pbr_no_warp)" "$VPN_MARKUP"
+            else
+              PCNT=$(wc -l < "$DIR/blocked.list" 2>/dev/null || echo 0)
+              edit_msg "$MSGID_CB" "$(printf "$(t pbr_title)" "$PCNT")" "$PBR_MARKUP"
+            fi
+            ;;
+          pbr_list)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t pbr_no_warp)" "$VPN_MARKUP"
+            else
+              PCNT=$(wc -l < "$DIR/blocked.list" 2>/dev/null || echo 0)
+              if [ "$PCNT" -eq 0 ]; then
+                edit_msg "$MSGID_CB" "$(t pbr_empty)" "$PBR_MARKUP"
+              else
+                PNUM=0; PLIST=""
+                while IFS= read -r L; do
+                  PNUM=$((PNUM+1)); PLIST="$PLIST
+$PNUM. $L"
+                done < "$DIR/blocked.list"
+                edit_msg "$MSGID_CB" "$(printf "$(t pbr_title)" "$PCNT")
+$PLIST" "$PBR_MARKUP"
+              fi
+            fi
+            ;;
+          pbr_add_ask)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t pbr_no_warp)" "$VPN_MARKUP"
+            else
+              mact_set "pbr_add"
+              reply "$(t pbr_add_ask)"
+            fi
+            ;;
+          pbr_del)
+            if [ ! -f "$DIR/blocked.list" ] || [ ! -s "$DIR/blocked.list" ]; then
+              edit_msg "$MSGID_CB" "$(t pbr_empty)" "$PBR_MARKUP"
+            else
+              PNUM=0; PLINES=""
+              while IFS= read -r L; do
+                PNUM=$((PNUM+1))
+                PLINES="$PLINES[{\"text\":\"$PNUM. $L\",\"callback_data\":\"pbr_del:$PNUM\"}],"
+              done < "$DIR/blocked.list"
+              PLINES="${PLINES%,}"
+              PDEL_MARKUP="{\"inline_keyboard\":[[$PLINES],[{\"text\":\"$(t mnback)\",\"callback_data\":\"pbr_menu\"}]]}"
+              edit_msg "$MSGID_CB" "🗑 Виберіть запис для видалення:" "$PDEL_MARKUP"
+            fi
+            ;;
+          pbr_del:*)
+            PNUM="${CB#pbr_del:}"
+            case "$PNUM" in ''|*[!0-9]*) ;; *)
+              LINE=$(sed -n "${PNUM}p" "$DIR/blocked.list" 2>/dev/null)
+              if [ -n "$LINE" ]; then
+                sed -i "${PNUM}d" "$DIR/blocked.list"
+                reply "$(printf "$(t pbr_del_ok)" "$LINE")"
+                PCNT=$(wc -l < "$DIR/blocked.list" 2>/dev/null || echo 0)
+                edit_msg "$MSGID_CB" "$(printf "$(t pbr_title)" "$PCNT")" "$PBR_MARKUP"
+              else
+                edit_msg "$MSGID_CB" "$(t pbr_empty)" "$PBR_MARKUP"
+              fi
+            ;; esac
+            ;;
+          pbr_apply)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t pbr_no_warp)" "$VPN_MARKUP"
+            elif [ ! -f "$DIR/blocked.list" ] || [ ! -s "$DIR/blocked.list" ]; then
+              edit_msg "$MSGID_CB" "$(t pbr_empty_err)" "$PBR_MARKUP"
+            else
+              if [ "$(cat "$DIR/.pbr_active" 2>/dev/null)" = "1" ]; then
+                eval "$(pbr_clear_script)"
+                : > "$DIR/.pbr_active"
+                edit_msg "$MSGID_CB" "$(t pbr_clear)" "$VPN_MARKUP"
+              else
+                uci set network.@wireguard_warp[0].route_allowed_ips='0'
+                uci commit network
+                /etc/init.d/network reload >/dev/null 2>&1
+                sleep 3
+                eval "$(pbr_apply_script)"
+                echo 1 > "$DIR/.pbr_active"
+                PCNT=$(wc -l < "$DIR/blocked.list" 2>/dev/null || echo 0)
+                edit_msg "$MSGID_CB" "$(printf "$(t pbr_apply)" "$PCNT")" "$VPN_MARKUP"
+              fi
+            fi
+            ;;
+          wonp)
+            if [ ! -f "$DIR/warp.reg" ] || ! uci -q get network.warp >/dev/null 2>&1; then
+              edit_msg "$MSGID_CB" "$(t pbr_no_warp)" "$VPN_MARKUP"
+            elif [ ! -f "$DIR/blocked.list" ] || [ ! -s "$DIR/blocked.list" ]; then
+              edit_msg "$MSGID_CB" "$(t pbr_empty_err)" "$PBR_MARKUP"
+            else
+              uci set network.@wireguard_warp[0].route_allowed_ips='0'
+              uci commit network
+              /etc/init.d/network reload >/dev/null 2>&1
+              sleep 3
+              eval "$(pbr_apply_script)"
+              echo 1 > "$DIR/.pbr_active"
+              PCNT=$(wc -l < "$DIR/blocked.list" 2>/dev/null || echo 0)
+              reply "$(printf "$(t pbr_apply)" "$PCNT")"
+              warp_status_text
+              edit_msg "$MSGID_CB" "$OUTW" "$VPN_MARKUP"
+            fi
+            ;;
           wup1)
             edit_msg "$MSGID_CB" "$(t v_reg_ask)" "$WARP_CONF_MARKUP"
             ;;
@@ -2879,7 +3188,9 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
                 [ "$FS" = "lan" ] && [ "$FD" = "warp" ] && FWD=1 && break; i=$((i+1)); done
               CMDL="uci set network.@wireguard_warp[0].route_allowed_ips='1'"
               [ -z "$FWD" ] && CMDL="$CMDL && uci add firewall forwarding && uci set firewall.@forwarding[-1].src='lan' && uci set firewall.@forwarding[-1].dest='warp' && uci commit firewall"
-              CMDL="$CMDL && uci commit network && /etc/init.d/firewall restart && sleep 3 && curl -s --max-time 8 --interface warp https://www.cloudflare.com/cdn-cgi/trace | head -4"
+              CMDL="$CMDL && uci commit network && /etc/init.d/firewall restart && sleep 3"
+              [ -f "$DIR/.pbr_active" ] && CMDL="$CMDL && $(printf '%s' "$(pbr_clear_script)" | tr '\n' ' ') && rm -f $DIR/.pbr_active"
+              CMDL="$CMDL && curl -s --max-time 8 --interface warp https://www.cloudflare.com/cdn-cgi/trace | head -4"
               printf '%s' "$CMDL" > "$DIR/aipend"; date +%s > "$DIR/.apts"
               send_mk "$(printf "$(t v_aon_warn)" "$(esc "${CMDL:0:200}…")")" "$AI_CONF2_MARKUP"
             fi
@@ -2888,7 +3199,8 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
             if ! uci -q get network.warp >/dev/null 2>&1; then
               edit_msg "$MSGID_CB" "$(t v_noconf)" "$VPN_MARKUP"
             else
-              printf '%s' "uci set network.@wireguard_warp[0].route_allowed_ips='0' && uci commit network && /etc/init.d/network reload" > "$DIR/aipend"; date +%s > "$DIR/.apts"
+              PBRCL=""; [ -f "$DIR/.pbr_active" ] && PBRCL=" && $(printf '%s' "$(pbr_clear_script)" | tr '\n' ' ') && rm -f $DIR/.pbr_active"
+              printf '%s' "uci set network.@wireguard_warp[0].route_allowed_ips='0' && uci commit network && /etc/init.d/network reload${PBRCL}" > "$DIR/aipend"; date +%s > "$DIR/.apts"
               send_mk "$(printf "$(t ai_confirm)" "$(esc "$(cat "$DIR/aipend")")")" "$AI_CONF2_MARKUP"
             fi
             ;;

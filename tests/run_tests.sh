@@ -20,7 +20,7 @@ xf() { # витяг функцію з SRC (стилі: name(){ та name() {); $
   ' "${2:-$SRC}"
 }
 MISS=""
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out semi_split; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out semi_split fmt_speed parse_ping_avg parse_ip_cidr; do
   xf "$F" > "$DIR/.xf" || true
   [ -s "$DIR/.xf" ] && cat "$DIR/.xf" >> "$DIR/fns" || MISS="$MISS $F"
 done
@@ -33,7 +33,7 @@ if [ -n "$SRCW" ] && [ -f "$SRCW" ]; then
   xf watch_match "$SRCW" > "$DIR/.xw" || true
   [ -s "$DIR/.xw" ] && . "$DIR/.xw" && rm -f "$DIR/.xw" || { echo "EXTRACT FAIL: watch_match"; exit 2; }
 fi
-for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out semi_split; do
+for F in esc alog html_prep balance_tags utf8fix jesc devices_kb mask_secrets uci_autocommit brk_file brk_ok brk_set is_mut skill_pick sanitize_cmd model_list unglue_cmd fast_intent kb_pick kb_fetch learn_note cmd_banned key_slot qmatch t mk_markups mact_set mact_get wf_safe ok_port ok_ip trim_out semi_split fmt_speed parse_ping_avg parse_ip_cidr; do
   type "$F" >/dev/null 2>&1 || { echo "LOAD FAIL: $F"; exit 2; }
 done
 
@@ -309,6 +309,31 @@ has "ssplit: частини цілі" "$(semi_split 'a1;b2;c3' | sed -n 2p)" 'b2
 eq "fint: хто качає більше всіх" "$(fast_intent 'Кто качает сейчас больше всех?')" "devices"
 eq "fint: яка прошивка" "$(fast_intent 'Какая прошивка?')" "sys_info"
 eq "fint: як встановити бота" "$(fast_intent 'Как такого бота установить?')" "help"
+
+# --- fmt_speed / parse_ping_avg (WARP-оптимізатор) ---
+eq "fspeed: 88080384 байт" "$(fmt_speed 88080384)" "84.0 МБ"
+eq "fspeed: 0" "$(fmt_speed 0)" "0.0 МБ"
+eq "ppavg: busybox rtt-рядок" "$(printf 'round-trip min/avg/max = 12.300/14.100/16.000 ms' | parse_ping_avg)" "14.100"
+if printf '100% packet loss' | parse_ping_avg | grep -q .; then bad "ppavg: втрати = пусто" "+"; else ok "ppavg: втрати = пусто"; fi
+
+# --- parse_ip_cidr (PBR) ---
+parse_ip_cidr() {
+  case "$1" in ''|*[!0-9./]*) return 1 ;; esac
+  echo "$1" | grep -qE '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(/([0-9]|[12][0-9]|3[012]))?$' || return 1
+  IPOCT="${1%%/*}"
+  A=$(echo "$IPOCT" | cut -d. -f1); B=$(echo "$IPOCT" | cut -d. -f2); C=$(echo "$IPOCT" | cut -d. -f3); D=$(echo "$IPOCT" | cut -d. -f4)
+  [ "$A" -le 255 ] && [ "$B" -le 255 ] && [ "$C" -le 255 ] && [ "$D" -le 255 ] || return 1
+  return 0
+}
+if parse_ip_cidr "93.184.216.34"; then ok "picidr: валідний IP"; else bad "picidr: валідний IP" "0"; fi
+if parse_ip_cidr "5.188.86.0/24"; then ok "picidr: валідний CIDR"; else bad "picidr: валідний CIDR" "0"; fi
+if parse_ip_cidr "192.168.1.1"; then ok "picidr: приватний IP"; else bad "picidr: приватний IP" "0"; fi
+if parse_ip_cidr "1.1.1.1/8"; then ok "picidr: /8"; else bad "picidr: /8" "0"; fi
+if parse_ip_cidr "256.1.1.1"; then bad "picidr: >255" "1"; else ok "picidr: >255"; fi
+if parse_ip_cidr "1.1.1/24"; then bad "picidr: 3 octets" "1"; else ok "picidr: 3 octets"; fi
+if parse_ip_cidr "abc"; then bad "picidr: літери" "1"; else ok "picidr: літери"; fi
+if parse_ip_cidr ""; then bad "picidr: пусто" "1"; else ok "picidr: пусто"; fi
+if parse_ip_cidr "1.2.3.4/33"; then bad "picidr: /33" "1"; else ok "picidr: /33"; fi
 
 printf -- '---\nPASS=%d FAIL=%d\n' "$PASS" "$FAIL"
 # --- qmatch (нуль-токеновий шар uci) ---
