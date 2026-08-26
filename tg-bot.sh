@@ -420,6 +420,7 @@ utf8fix() {
 
 send_rich() {
   # $1 = Rich HTML через sendRichMessage (таблиці, h1-h6, списки, details)
+  # ЛІМІТ: rich_message вміщує ~30000 символів (не 4096 як звичайний sendMessage!)
   printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$(utf8fix "$1")")" > "$DIR/.rq"
   R=$(_req sendRichMessage "$DIR/.rq")
   echo "$R" | grep -q '"ok":true' && return 0
@@ -2133,10 +2134,11 @@ $R"
     if [ "$S" -lt "$MIN" ]; then MIN=$S; BEST=$CAND; fi
   done
 
-  # Окремі таблиці 2.4 / 5 ГГц, найсильніші зверху; показуємо ВСІ мережі (rich до ~4000 симв.)
-  MKROW='e=substr($3,1,24); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}'
-  ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -30 | awk -F'|' "$MKROW")
-  ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -30 | awk -F'|' "$MKROW")
+  # Окремі таблиці 2.4 / 5 ГГц, найсильніші зверху; rich_message вміщує ~30000 симв —
+  # показуємо ВСІ мережі (cap 120 на діапазон від нереалістично великих ефірів)
+  MKROW='e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}'
+  ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' "$MKROW")
+  ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' "$MKROW")
   NALL=$(wc -l < "$T")
   MSG="<h3>$(t sc_hdr)</h3>
 
@@ -2149,10 +2151,10 @@ ${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>
 <p>$(printf "$(t sc_adv)" "$BEST")</p>
 
 <p>$(printf "$(t sc_total)" "$NALL")</p>"
-  # страховка від ліміту Telegram 4096: якщо все ж не влізло — топ-15 на діапазон
-  if [ ${#MSG} -gt 3900 ]; then
-    ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -15 | awk -F'|' "$MKROW")
-    ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -15 | awk -F'|' "$MKROW")
+  # страховка: rich_message ~30000 симв — ріжемо тільки якщо зовсім великий ефір
+  if [ ${#MSG} -gt 28000 ]; then
+    ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' "$MKROW")
+    ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' "$MKROW")
     MSG="<h3>$(t sc_hdr)</h3>
 
 <p>$(t sc_busy)</p>
