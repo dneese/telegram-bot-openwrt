@@ -1,0 +1,30 @@
+#!/bin/sh
+# 99-tgbot-setup: перші налаштування після прошивки (виконується ОДИН раз)
+# LAN = 192.168.1.1 (цей роутер — головний у своїй мережі)
+uci -q set network.lan.ipaddr='192.168.1.1'
+uci -q set network.lan.netmask='255.255.255.0'
+
+# WiFi УВІМКНЕНИЙ з тимчасовою відкритою мережею налаштування
+for R in radio0 radio1; do
+  uci -q set wireless.$R.disabled='0'
+done
+uci -q set wireless.default_radio0.ssid='tgbot-setup' 2>/dev/null || \
+  uci -q set wireless.@wifi-iface[0].ssid='tgbot-setup'
+uci -q set wireless.@wifi-iface[0].encryption='none'
+uci -q delete wireless.@wifi-iface[0].key 2>/dev/null
+if [ "$(uci -q get wireless.@wifi-iface[1].ssid 2>/dev/null)" != "" ]; then
+  uci -q set wireless.default_radio1.ssid='tgbot-5G' 2>/dev/null || \
+    uci -q set wireless.@wifi-iface[1].ssid='tgbot-5G'
+  uci -q set wireless.@wifi-iface[1].encryption='none'
+  uci -q delete wireless.@wifi-iface[1].key 2>/dev/null
+fi
+
+# WAN = DHCP (дефолт; майстер може змінити на PPPoE/Static)
+
+# uhttpd: переконатись що CGI префікс активний для /www/cgi-bin/setup.cgi
+uci -q set uhttpd.main.cgi_prefix='/cgi-bin'
+
+# сервіс бота: увімкнути (старт при буті)
+/etc/init.d/tg-bot enable 2>/dev/null
+
+exit 0
