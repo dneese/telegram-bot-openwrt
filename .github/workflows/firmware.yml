@@ -33,7 +33,7 @@ jobs:
           IB=$(ls -d lede-imagebuilder-17.01.7-ar71xx-generic.Linux-x86_64)
           cd "$IB"
           # 17.01: прибираємо PPPoE-стек (WAN=DHCP), IPv6-клієнт, UPnP; LuCI повний набір
-          PKGS="+curl +libustream-mbedtls +ca-bundle +ca-certificates \
+          PKGS="curl libustream-mbedtls ca-bundle ca-certificates \
             -odhcp6c -ip6tables -libip6tc \
             -ppp -ppp-mod-pppoe -kmod-ppp -kmod-pppoe -kmod-pppox -kmod-slhc -luci-proto-ppp \
             -miniupnpd -luci-app-upnp -luci-lib-nixio -uboot-envtools -iw \
