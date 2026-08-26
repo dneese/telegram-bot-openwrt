@@ -2133,20 +2133,38 @@ $R"
     if [ "$S" -lt "$MIN" ]; then MIN=$S; BEST=$CAND; fi
   done
 
-  TOPROWS=$(head -10 "$T" | awk -F'|' '{e=substr($3,1,24); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}')
+  # Окремі таблиці 2.4 / 5 ГГц, найсильніші зверху; показуємо ВСІ мережі (rich до ~4000 симв.)
+  MKROW='e=substr($3,1,24); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}'
+  ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -30 | awk -F'|' "$MKROW")
+  ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -30 | awk -F'|' "$MKROW")
   NALL=$(wc -l < "$T")
   MSG="<h3>$(t sc_hdr)</h3>
 
 <p>$(t sc_busy)</p>
 <code>$C24</code>
+${ROWS24:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS24</table>}
 ${C5:+<p>$(t sc_busy5)</p>
-<code>$C5</code>}
+<code>$C5</code>
+${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}}
 <p>$(printf "$(t sc_adv)" "$BEST")</p>
 
-<p>$(t sc_top)</p>
-<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$TOPROWS</table>
+<p>$(printf "$(t sc_total)" "$NALL")</p>"
+  # страховка від ліміту Telegram 4096: якщо все ж не влізло — топ-15 на діапазон
+  if [ ${#MSG} -gt 3900 ]; then
+    ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -15 | awk -F'|' "$MKROW")
+    ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -15 | awk -F'|' "$MKROW")
+    MSG="<h3>$(t sc_hdr)</h3>
+
+<p>$(t sc_busy)</p>
+<code>$C24</code>
+${ROWS24:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS24</table>}
+${C5:+<p>$(t sc_busy5)</p>
+<code>$C5</code>
+${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}}
+<p>$(printf "$(t sc_adv)" "$BEST")</p>
 
 <p>$(printf "$(t sc_total)" "$NALL")</p>"
+  fi
   send_rich "$MSG" || reply "$MSG"
   rm -f "$T"
 }
