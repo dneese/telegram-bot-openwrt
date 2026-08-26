@@ -2103,12 +2103,24 @@ cmd_scan() {
     }' | sort -t'|' -k1,1n -k2,2rn > "$T"
 
   C24=$(awk -F'|' '$1<=13 {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
+  # Рекомендація каналу: не кількість сусідів, а ЇХ СИЛА (сильний сусід псує канал більше,
+  # ніж 3 ледь видимих) + власні SSID не враховуємо. Вага: >=-60dBm:4, -61..-70:3, -71..-80:2, слабші:1
+  OWN=$(uci show wireless 2>/dev/null | grep "\.ssid=" | sed "s/.*ssid='//; s/'$//" | tr '\n' '|')
+  SCORES=$(awk -F'|' -v own="|$OWN" '
+    $3 != "" {
+      e="|" $3 "|"
+      if (index(own, e)) next
+      sig=$2+0; w=1
+      if (sig>=-60) w=4; else if (sig>=-70) w=3; else if (sig>=-80) w=2
+      c[$1]+=w
+    }
+    END { for (i in c) print i":"c[i] }' "$T")
   BEST=""
-  MIN=99999
+  MIN=999999
   for CAND in 1 6 11; do
-    N=$(printf '%s' "$C24" | tr ' ' '\n' | grep "^$CAND:" | cut -d: -f2)
-    N=${N:-0}
-    if [ "$N" -lt "$MIN" ]; then MIN=$N; BEST=$CAND; fi
+    S=$(printf '%s\n' "$SCORES" | grep "^$CAND:" | cut -d: -f2)
+    S=${S:-0}
+    if [ "$S" -lt "$MIN" ]; then MIN=$S; BEST=$CAND; fi
   done
 
   TOPROWS=$(head -10 "$T" | awk -F'|' '{e=substr($3,1,24); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}')
