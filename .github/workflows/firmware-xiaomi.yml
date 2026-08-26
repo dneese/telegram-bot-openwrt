@@ -1,0 +1,87 @@
+name: firmware-xiaomi
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zstd
+        run: sudo apt-get update && sudo apt-get install -y zstd
+
+      - name: Download OpenWrt 25.12.5 ImageBuilder ramips/mt7621
+        working-directory: ${{ github.workspace }}
+        run: |
+          wget -q https://downloads.openwrt.org/releases/25.12.5/targets/ramips/mt7621/openwrt-imagebuilder-25.12.5-ramips-mt7621.Linux-x86_64.tar.zst
+          tar --zstd xf openwrt-imagebuilder-25.12.5-ramips-mt7621.Linux-x86_64.tar.zst
+
+      - name: Prepare files overlay
+        run: |
+          IB=$(ls -d openwrt-imagebuilder-25.12.5-ramips-mt7621.Linux-x86_64)
+          # Bot core
+          mkdir -p "$IB/files/usr/bin" \
+                   "$IB/files/etc/config" \
+                   "$IB/files/etc/init.d" \
+                   "$IB/files/etc/uci-defaults" \
+                   "$IB/files/etc/rc.local.d" \
+                   "$IB/files/www/cgi-bin" \
+                   "$IB/files/etc/tg-bot/ai/skills" \
+                   "$IB/files/etc/tg-bot/ai/kb" \
+                   "$IB/files/etc/tg-bot/ai/learned"
+          cp tg-bot.sh "$IB/files/usr/bin/tg-bot.sh"
+          cp tg-bot.init "$IB/files/etc/init.d/tg-bot"
+          # Firmware overlay files
+          cp firmware/files/etc/config/tgbot "$IB/files/etc/config/tgbot"
+          cp firmware/files/etc/uci-defaults/99-tgbot-setup "$IB/files/etc/uci-defaults/"
+          cp firmware/files/www/cgi-bin/setup.cgi "$IB/files/www/cgi-bin/setup.cgi"
+          cp firmware/files/etc/rc.local.d/tgbot.sh "$IB/files/etc/rc.local.d/tgbot.sh"
+          cp firmware/files/usr/bin/tg-watchdog.sh "$IB/files/usr/bin/tg-watchdog.sh"
+          # AI prompts & skills
+          cp prompts/core.txt "$IB/files/etc/tg-bot/ai/core.txt"
+          cp prompts/intent.txt "$IB/files/etc/tg-bot/ai/intent.txt"
+          cp prompts/recipes.txt "$IB/files/etc/tg-bot/ai/recipes.txt"
+          cp prompts/facts.md "$IB/files/etc/tg-bot/ai/facts.md"
+          cp prompts/blocked.list "$IB/files/etc/tg-bot/blocked.list"
+          cp prompts/skills/*.md "$IB/files/etc/tg-bot/ai/skills/"
+          cp prompts/kb/*.md "$IB/files/etc/tg-bot/ai/kb/"
+          cp prompts/learned/*.md "$IB/files/etc/tg-bot/ai/learned/"
+          # Permissions
+          chmod +x "$IB/files/usr/bin/tg-bot.sh" \
+                   "$IB/files/usr/bin/tg-watchdog.sh" \
+                   "$IB/files/etc/init.d/tg-bot" \
+                   "$IB/files/etc/uci-defaults/99-tgbot-setup" \
+                   "$IB/files/www/cgi-bin/setup.cgi" \
+                   "$IB/files/etc/rc.local.d/tgbot.sh"
+
+      - name: Build firmware (Xiaomi Mi Router 4A Gigabit v1)
+        working-directory: ${{ github.workspace }}
+        run: |
+          IB=$(ls -d openwrt-imagebuilder-25.12.5-ramips-mt7621.Linux-x86_64)
+          cd "$IB"
+          # Exclude IPv6, PPPoE, UPnP, LuCI extras to save flash space
+          PKGS="luci curl libustream-mbedtls ca-bundle ca-certificates \
+            block-mount fstools \
+            -odhcp6c -ip6tables -libip6tc -kmod-ipt-nathelper \
+            -ppp -ppp-mod-pppoe -kmod-ppp -kmod-pppoe -kmod-pppox -kmod-slhc -luci-proto-ppp \
+            -miniupnpd -luci-app-upnp \
+            -luci-app-ksmbd -luci-app-samba4 \
+            -wpad-basic-mbedtls"
+          make image PROFILE=xiaomi_mi-router-4a-gigabit PACKAGES="$PKGS" FILES="files/" || {
+            echo "::error::Image build failed — see log above"
+            exit 1
+          }
+
+      - name: Collect artifacts
+        run: |
+          IB=$(ls -d openwrt-imagebuilder-25.12.5-ramips-mt7621.Linux-x86_64)
+          mkdir -p artifacts
+          find "$IB/bin/targets" -name '*.bin' -exec cp {} artifacts/ \;
+          find "$IB/bin/targets" -name '*.manifest' -exec cp {} artifacts/ \;
+          ls -la artifacts/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tgbot-firmware-xiaomi-mi-router-4a-gigabit
+          path: artifacts/

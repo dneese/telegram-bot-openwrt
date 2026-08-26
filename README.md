@@ -17,22 +17,25 @@
 
 ## Русский
 
-Лёгкий shell-бот (~14 КБ, busybox-only) для ImmortalWrt/OpenWrt 24.x+ (apk). Без Python/Node.
+Shell-бот (~207 КБ, busybox-only) для ImmortalWrt/OpenWrt 17.x+ (apk/opkg). Без Python/Node. Вбудований VPN/WARP, PBR, watchdog та web-майстер першого налаштування.
 
 ### Возможности
 
 - **🗂 Розширене меню — бот замість LuCI**: усі налаштування роутера кнопками прямо в Telegram (див. нижче)
-- **🤖 AI-агент**: «зроби гостьовий wifi», «хто найбільше качає», «встанови DNS Google» — агент сам виконує команди і звітує. Знання розкладено по **скілах** (`wifi.md`, `dns.md`, `firewall.md`, `vpn.md`, …)
+- **🤖 AI-агент**: «зроби гостьовий wifi», «хто найбільше качає», «встанови DNS Google» — агент сам виконує команди і звітує. Знання розкладено по **скілах** (13 файлів: `wireless.md`, `dns.md`, `firewall.md`, `warp.md`, `wireguard.md`, …)
 - **Швидкі дії без токенів**: типові питання (пристрої/скан/стан) йдуть через intent-класифікатор (~250 токенів замість ~3000)
 - **Rich-таблиці** (Bot API 10.x): пристрої, скан ефіру, статус — справжні таблиці Telegram
-- **Безпека**: підтвердження кнопкою на зміни, diff preview (`uci changes`), авто-дописування `commit`, маскування паролів у відповідях, блок rm -rf/mkfs/dd/sysupgrade
-- **Захист у глибину**: `sanitize_cmd()` відхиляє підстановки `$()`/`` ` ``/`${}`, `;`-ланцюжки, одиночний `&`, керуючі байти та zero-width/RTL-спуф у командах від моделі (ідея: [oasis security_guard](https://github.com/utakamo/oasis))
+- **🌐 VPN/WARP**: реєстрація Cloudflare WARP-тунелю кнопкою, підключення/відключення, весь трафік через WARP, MTU-тестер, endpoint-пінг. PBR: ручний список заблокованих IP (112 CIDR) → nftables set + fwmark → лише ці IP через WARP
+- **🔒 Страхівка (DMS)**: мережеві зміни можна виконати «зі страховкою» — 90 с на сигнал життя, інакше авто-відкат конфігів; або `/rollback` вручну
 - **⚙️ /model**: зміна основної AI-моделі прямо з чату кнопкою — застосовується одразу, без рестарту і SSH
 - **🌐 tg-watch** (live-push): нова DHCP-аренда чи падіння порту — миттєве повідомлення в чат (`logread -f`, дедуп 10 хв + rate-limit; тихий режим: `uci set tgbot.config.watch_quiet=1`)
-- **🔒 Страхівка (DMS)**: мережеві зміни можна виконати «зі страховкою» — 90 с на сигнал життя, інакше авто-відкат конфігів; або `/rollback` вручну
+- **🛡 Watchdog**: автоматичне відновлення WARP, PBR-правил та бота після падінь/ребутів (cron */2)
 - **Пульс щогодини**, 👀 слежка за людьми по MAC, 👁 моніторинг хостів
+- **Безпека**: підтвердження кнопкою на зміни, diff preview (`uci changes`), авто-дописування `commit`, маскування паролів у відповідях, блок rm -rf/mkfs/dd/sysupgrade
+- **Захист у глибину**: `sanitize_cmd()` відхиляє підстановки `$()`/`` ` ``/`${}`, `;`-ланцюжки, одиночний `&`, керуючі байти та zero-width/RTL-спуф у командах від моделі (ідея: [oasis security_guard](https://github.com/utakamo/oasis))
 - **Самонавчання**: ваші виправлення потрапляють у `corrections.md` і завжди враховуються; факти про роутер — у `facts.md`; топологія — `/topo`
 - 🧾 `/ailog` — повний журнал діалогів файлом
+- **🏭 Прошивка**: готовий образ для TP-Link TL-WR741ND v4 (4 МБ flash, LEDE 17.01.7) та Xiaomi Mi Router 4A Gigabit (16 МБ flash, OpenWrt 25.12.5) з вбудованим ботом та web-майстром першого налаштування
 
 ### 🗂 Розширене меню (заміна LuCI)
 
@@ -44,13 +47,34 @@
 | **🛡 Фаєрвол** | список портфорвордів WAN (**тап по правилу = видалити**), ➕ майстер додавання: протокол → зовнішній порт → внутрішня IP → внутрішній порт |
 | **🔧 Діагностика** | `ping` / `traceroute` / `nslookup` з роутера (важкі — у фоні, результат окремим повідомленням); системний лог і лог ядра файлом (останні 150 рядків) |
 | **⚙️ Система** | перепідключення WAN · бекап конфігів · перезавантаження · **↩️ Rollback** до знімка · 📦 пакети (пошук + `apk add/del`) · 🔑 SSH-ключі dropbear (список / додати / видалити) |
+| **🌐 VPN** | 📊 Статус WARP · ⚡️ Підключити (авто-реєстрація через Cloudflare API) · 🟢 Весь трафік / ⏸ Припинити · 🗑 Видалити WARP · 📋 PBR (список заблокованих IP, ➕/🗑/🔄) · 📏 MTU-тест · 📡 Пінг endpoint |
+| **👀 Моніторинг** | live-push подій (нова DHCP-аренда, падіння порту) |
+| **🏷 Імена** | aliases для MAC-адрес пристроїв |
 
 Кожна зміна проходить через підтвердження: **✅ Виконати · 🔒 Зі страховкою (DMS-автовідкат 90 с) · ❌**. Ввід текстом валідується (порти, IPv4, SSID без апострофів і керуючих байтів, формат SSH-ключа). Додаткові команди: `/wifi`, `/topo`, `/rollback`.
+
+### 🧠 AI-скіли (13 файлів)
+
+| Скіл | Опис |
+|------|------|
+| `wireless.md` | Wi-Fi мережі, паролі, канали, TX power |
+| `dns.md` | DNS-сервери, /etc/resolv.conf |
+| `firewall.md` | Портфорворди, правила файрвола |
+| `network.md` | Мережа, інтерфейси, маршрути |
+| `services.md` | Сервіси, init.d, procd |
+| `packages.md` | apk/opkg пакети |
+| `diagnostics.md` | ping, traceroute, nslookup, логи |
+| `security.md` | SSH-ключі, обмеження доступу |
+| `performance.md` | SQM, QoS, оптимізація |
+| `vpnother.md` | WireGuard, OpenVPN, інші VPN |
+| `warp.md` | Cloudflare WARP — реєстрація, тунель, режими |
+| `wireguard.md` | WireGuard — конфігурація, піри |
+| `zaborona.md` | Блокування/обхід обмежень |
 
 ### ✅ Тести
 
 ```sh
-sh tests/run_tests.sh tg-bot.sh        # локально або на роутері: 117 офлайн-перевірок
+sh tests/run_tests.sh tg-bot.sh        # локально або на роутері: 147 офлайн-перевірок
 ```
 
 Без API-запитів і мутацій: чисті функції витягуються awk'ом і гоняються з моками. CI запускає їх автоматично на кожен push (GitHub Actions).
@@ -116,7 +140,9 @@ echo '192.168.1.50 = NAS батьків' >> /etc/tg-bot/ai/topology.md
 
 ## Українська
 
-Легкий shell-бот для керування OpenWrt через Telegram: AI-агент (Groq/Gemini), rich-таблиці, гостьовий wifi, проброси, WireGuard, DNS/adblock/SQM — усе голосом, без LuCI.
+Легкий shell-бот (~207 КБ, busybox-only) для керування OpenWrt через Telegram: AI-агент (Groq/Gemini), rich-таблиці, Wi-Fi, файрвол, діагностика, VPN/WARP з PBR, watchdog, web-майстер першого налаштування — усе кнопками, без LuCI.
+
+13 AI-скілів, 147 тестів, procd-демон з автозапуском. Вбудована прошивка для TP-Link TL-WR741ND v4 (4 МБ) та Xiaomi Mi Router 4A Gigabit (16 МБ).
 
 Встановлення та всі команди — у російському розділі вище; для української: `--lang uk`.
 
@@ -124,7 +150,11 @@ echo '192.168.1.50 = NAS батьків' >> /etc/tg-bot/ai/topology.md
 
 ## English
 
-A lightweight shell Telegram bot that turns OpenWrt into an AI-managed router: a ReAct-style agent executes `uci/ubus/iwinfo/apk` with confirm-gates, rollback safety-net and per-domain skill files. Multi-provider LLM chain (Groq → fallbacks → OpenRouter), token-economy intent classifier, hourly health analyzer.
+A shell Telegram bot (~207 KB, busybox-only) that turns OpenWrt/ImmortalWrt into an AI-managed router. A ReAct-style agent executes `uci/ubus/iwinfo/apk` with confirm-gates, rollback safety-net and per-domain skill files.
+
+**Features:** Full menu system (Wi-Fi, firewall, diagnostics, system, VPN/WARP with PBR, monitoring), multi-provider LLM chain (Groq → fallbacks → OpenRouter), token-economy intent classifier, Cloudflare WARP auto-registration, policy-based routing (nftables + fwmark), watchdog with auto-recovery, hourly health analyzer, self-learning corrections.
+
+**Tech:** 107 shell functions, 147 tests, 13 AI skills, 3 languages (ru/uk/en), procd daemon, CI on GitHub Actions. Firmware builds for TP-Link TL-WR741ND v4 (4 MB flash, LEDE 17.01.7) and Xiaomi Mi Router 4A Gigabit (16 MB flash, OpenWrt 25.12.5) with web setup wizard.
 
 Install steps are in the Russian section above; use `--lang en`.
 
