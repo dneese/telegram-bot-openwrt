@@ -73,9 +73,14 @@ T_sc_doing_ru='📡 Сканирую (%s)...'; T_sc_doing_en='📡 Scanning (%s)
 T_sc_nosup_ru='❌ Сканирование не поддерживается'; T_sc_nosup_en='❌ Scanning not supported'; T_sc_nosup_uk='❌ Сканування не підтримується'
 T_sc_empty_ru='❌ Пустой результат скана'; T_sc_empty_en='❌ Empty scan result'; T_sc_empty_uk='❌ Порожній результат скану'
 T_sc_hdr_ru='📡 Сети вокруг'; T_sc_hdr_en='📡 Nearby networks'; T_sc_hdr_uk='📡 Мережі навколо'
-T_sc_busy_ru='📻 Занятость каналов 2.4:'; T_sc_busy_en='📻 2.4GHz channel usage:'; T_sc_busy_uk='📻 Зайнятість каналів 2.4:'
-T_sc_busy5_ru='📻 Каналы 5 ГГц:'; T_sc_busy5_en='📻 5GHz channels:'; T_sc_busy5_uk='📻 Канали 5 ГГц:'
-T_sc_adv_ru='💡 Совет: канал <b>%s</b> свободнее всех'; T_sc_adv_en='💡 Tip: channel <b>%s</b> is least busy'; T_sc_adv_uk='💡 Порада: канал <b>%s</b> найвільніший'
+T_sc_busy_ru='📻 Занятость каналов:'; T_sc_busy_en='📻 Channel usage:'; T_sc_busy_uk='📻 Зайнятість каналів:'
+T_sc_busy5_ru='📻 Занятость каналов:'; T_sc_busy5_en='📻 Channel usage:'; T_sc_busy5_uk='📻 Зайнятість каналів:'
+T_sc_b24_ru='📶 Диапазон 2.4 ГГц'; T_sc_b24_en='📶 2.4 GHz band'; T_sc_b24_uk='📶 Діапазон 2.4 ГГц'
+T_sc_b5_ru='📶 Диапазон 5 ГГц'; T_sc_b5_en='📶 5 GHz band'; T_sc_b5_uk='📶 Діапазон 5 ГГц'
+T_sc_adv_ru='💡 Совет: канал <b>%s</b> свободнее всех (с учётом силы соседей)'; T_sc_adv_en='💡 Tip: channel <b>%s</b> is least busy (neighbor strength counted)'; T_sc_adv_uk='💡 Порада: канал <b>%s</b> найвільніший (з урахуванням сили сусідів)'
+T_sc_adv5_ru='💡 Для 5 ГГц свободнее: канал <b>%s</b>'; T_sc_adv5_en='💡 For 5 GHz the freest channel is <b>%s</b>'; T_sc_adv5_uk='💡 Для 5 ГГц найвільніший: канал <b>%s</b>'
+T_sc_keep_ru='✅ Ваш канал <b>%s</b> вже найвільніший — переїзд не потрібен'; T_sc_keep_en='✅ Your channel <b>%s</b> is already the freest — no need to move'; T_sc_keep_uk='✅ Ваш канал <b>%s</b> уже найвільніший — переїзд не потрібен'
+T_sc_stay_ru='💡 Найчистіший зараз канал <b>%s</b>, але різниця з вашим мала — переїзд не обовʼязковий'; T_sc_stay_en='💡 Channel <b>%s</b> is cleanest now, but the difference is small — moving is optional'; T_sc_stay_uk='💡 Найчистіший зараз канал <b>%s</b>, але різниця з вашим мала — переїзд не обовʼязковий'
 T_sc_top_ru='📍 Топ по сигналу:'; T_sc_top_en='📍 Top by signal:'; T_sc_top_uk='📍 Топ за сигналом:'
 T_sc_total_ru='Всего сетей: <i>%s</i>'; T_sc_total_en='Total networks: <i>%s</i>'; T_sc_total_uk='Всього мереж: <i>%s</i>'
 T_al_fmt_ru='Формат: /alias 192.168.1.105 Ноутбук'; T_al_fmt_en='Format: /alias 192.168.1.105 Laptop'; T_al_fmt_uk='Формат: /alias 192.168.1.105 Ноутбук'
@@ -2114,18 +2119,25 @@ $R"
   C24=$(awk -F'|' '$1<=13 && $1!="" {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
   # 5 ГГц: окрема статистика зайнятості (канали >13)
   C5=$(awk -F'|' '$1>13 {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
-  # Рекомендація каналу: не кількість сусідів, а ЇХ СИЛА (сильний сусід псує канал більше,
-  # ніж 3 ледь видимих) + власні SSID не враховуємо. Вага: >=-60dBm:4, -61..-70:3, -71..-80:2, слабші:1
+  # Рекомендація каналу: сила сусідів + ПЕРЕКРИТТЯ ДІАПАЗОНІВ (сусідній канал теж заважає:
+  # 20МГц канал заливає ±2 сусіди повністю, ±4 — краями). Вага: >=-60:4, -61..-70:3, -71..-80:2, слабші:1
   OWN=$(uci show wireless 2>/dev/null | grep "\.ssid=" | sed "s/.*ssid='//; s/'$//" | tr '\n' '|')
-  SCORES=$(awk -F'|' -v own="|$OWN" '
+  SCORES=$(awk -F'|' -v own="|$OWN" -v cands="1 6 11 36 40 44 48" '
+    BEGIN { nc = split(cands, CA, " ") }
     $3 != "" {
       e="|" $3 "|"
       if (index(own, e)) next
       sig=$2+0; w=1
       if (sig>=-60) w=4; else if (sig>=-70) w=3; else if (sig>=-80) w=2
-      c[$1]+=w
+      chn=$1+0
+      for (k=1; k<=nc; k++) {
+        c=CA[k]; d=c-chn; if (d<0) d=-d
+        if (d==0) s[c]+=w
+        else if (d<=2) s[c]+=w*0.5
+        else if (d<=4 && c<=13) s[c]+=w*0.2
+      }
     }
-    END { for (i in c) print i":"c[i] }' "$T")
+    END { for (c in s) printf "%s:%d\n", c, s[c] }' "$T")
   BEST=""
   MIN=999999
   for CAND in 1 6 11; do
@@ -2133,38 +2145,74 @@ $R"
     S=${S:-0}
     if [ "$S" -lt "$MIN" ]; then MIN=$S; BEST=$CAND; fi
   done
+  # наші поточні канали: якщо кандидат = свій канал — порада «переїзд не потрібен»
+  OWNCH24=""; OWNCH5=""
+  i=0
+  while :; do
+    WD=$(uci -q get wireless.@wifi-iface[$i].device 2>/dev/null) || break
+    WCH=$(uci -q get wireless.$WD.channel 2>/dev/null)
+    case "$WCH" in ''|*[!0-9]*) i=$((i+1)); continue ;; esac
+    if [ "$WCH" -gt 13 ]; then OWNCH5="$WCH"; else OWNCH24="$WCH"; fi
+    i=$((i+1))
+  done
+  # бали нашого поточного каналу — для гістерезису (не пинг-понгити при малій різниці)
+  SC24_OWN=$(printf '%s\n' "$SCORES" | grep "^$OWNCH24:" | cut -d: -f2); SC24_OWN=${SC24_OWN:-0}
+  SC5_OWN=$(printf '%s\n' "$SCORES" | grep "^$OWNCH5:" | cut -d: -f2); SC5_OWN=${SC5_OWN:-0}
 
   # Окремі таблиці 2.4 / 5 ГГц, найсильніші зверху; rich_message вміщує ~30000 симв —
-  # показуємо ВСІ мережі (cap 120 на діапазон від нереалістично великих ефірів)
-  MKROW='e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e); printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e}'
-  ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' "$MKROW")
-  ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' "$MKROW")
+  # показуємо ВСІ мережі (cap 120 на діапазон). awk ІНЛАЙН: через змінну ламається екранування!
+  ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' '$3!="" {
+    e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e)
+    printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e
+  }')
+  ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -120 | awk -F'|' '$3!="" {
+    e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e)
+    printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e
+  }')
   NALL=$(wc -l < "$T")
+  # Порада і для 5 ГГц: найменш завантажений серед не-DFS каналів (ваги ті самі)
+  BEST5=""
+  MIN5=999999
+  for CAND in 36 40 44 48; do
+    S=$(printf '%s\n' "$SCORES" | grep "^$CAND:" | cut -d: -f2)
+    S=${S:-0}
+    if [ "$S" -lt "$MIN5" ]; then MIN5=$S; BEST5=$CAND; fi
+  done
   MSG="<h3>$(t sc_hdr)</h3>
 
+<h4>$(t sc_b24)</h4>
 <p>$(t sc_busy)</p>
 <code>$C24</code>
 ${ROWS24:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS24</table>}
-${C5:+<p>$(t sc_busy5)</p>
+<p>$(if [ "$BEST" = "$OWNCH24" ]; then printf "$(t sc_keep)" "$BEST"; elif [ -n "$OWNCH24" ] && [ "${SC24_OWN:-999}" -le "$MIN" ]; then printf "$(t sc_keep)" "$OWNCH24"; elif [ -n "$OWNCH24" ] && [ "${SC24_OWN:-999}" -le $((MIN+3)) ]; then printf "$(t sc_stay)" "$BEST"; else printf "$(t sc_adv)" "$BEST"; fi)</p>
+${C5:+<h4>$(t sc_b5)</h4>
+<p>$(t sc_busy5)</p>
 <code>$C5</code>
-${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}}
-<p>$(printf "$(t sc_adv)" "$BEST")</p>
-
+${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}
+<p>$(if [ "$BEST5" = "$OWNCH5" ]; then printf "$(t sc_keep)" "$BEST5"; elif [ -n "$OWNCH5" ] && [ "${SC5_OWN:-999}" -le "$MIN5" ]; then printf "$(t sc_keep)" "$OWNCH5"; elif [ -n "$OWNCH5" ] && [ "${SC5_OWN:-999}" -le $((MIN5+1)) ]; then printf "$(t sc_stay)" "$BEST5"; else printf "$(t sc_adv5)" "$BEST5"; fi)</p>}
 <p>$(printf "$(t sc_total)" "$NALL")</p>"
   # страховка: rich_message ~30000 симв — ріжемо тільки якщо зовсім великий ефір
   if [ ${#MSG} -gt 28000 ]; then
-    ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' "$MKROW")
-    ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' "$MKROW")
+    ROWS24=$(awk -F'|' '$1<=13 && $1!=""' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' '$3!="" {
+      e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e)
+      printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e
+    }')
+    ROWS5=$(awk -F'|' '$1>13' "$T" | sort -t'|' -k2,2rn | head -60 | awk -F'|' '$3!="" {
+      e=substr($3,1,28); gsub(/&/,"\\&amp;",e); gsub(/</,"\\&lt;",e); gsub(/>/,"\\&gt;",e)
+      printf "<tr><td>%s dBm</td><td align=\"center\">ch%s</td><td>%s</td></tr>", $2, $1, e
+    }')
     MSG="<h3>$(t sc_hdr)</h3>
 
+<h4>$(t sc_b24)</h4>
 <p>$(t sc_busy)</p>
 <code>$C24</code>
 ${ROWS24:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS24</table>}
-${C5:+<p>$(t sc_busy5)</p>
+<p>$(if [ "$BEST" = "$OWNCH24" ]; then printf "$(t sc_keep)" "$BEST"; elif [ -n "$OWNCH24" ] && [ "${SC24_OWN:-999}" -le "$MIN" ]; then printf "$(t sc_keep)" "$OWNCH24"; elif [ -n "$OWNCH24" ] && [ "${SC24_OWN:-999}" -le $((MIN+3)) ]; then printf "$(t sc_stay)" "$BEST"; else printf "$(t sc_adv)" "$BEST"; fi)</p>
+${C5:+<h4>$(t sc_b5)</h4>
+<p>$(t sc_busy5)</p>
 <code>$C5</code>
-${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}}
-<p>$(printf "$(t sc_adv)" "$BEST")</p>
-
+${ROWS5:+<table bordered striped><tr><th>$(t th_sig)</th><th>$(t th_ch)</th><th>$(t th_ssid)</th></tr>$ROWS5</table>}
+<p>$(if [ "$BEST5" = "$OWNCH5" ]; then printf "$(t sc_keep)" "$BEST5"; elif [ -n "$OWNCH5" ] && [ "${SC5_OWN:-999}" -le "$MIN5" ]; then printf "$(t sc_keep)" "$OWNCH5"; elif [ -n "$OWNCH5" ] && [ "${SC5_OWN:-999}" -le $((MIN5+1)) ]; then printf "$(t sc_stay)" "$BEST5"; else printf "$(t sc_adv5)" "$BEST5"; fi)</p>}
 <p>$(printf "$(t sc_total)" "$NALL")</p>"
   fi
   send_rich "$MSG" || reply "$MSG"
