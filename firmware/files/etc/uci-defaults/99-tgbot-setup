@@ -21,9 +21,6 @@ fi
 
 # WAN = DHCP (дефолт; майстер може змінити на PPPoE/Static)
 
-# uhttpd: переконатись що CGI префікс активний для /www/cgi-bin/setup.cgi
-uci -q set uhttpd.main.cgi_prefix='/cgi-bin'
-
 # сервіс бота: увімкнути (старт при буті)
 /etc/init.d/tg-bot enable 2>/dev/null
 
