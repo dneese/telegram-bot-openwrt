@@ -19,7 +19,8 @@ jobs:
           IB_SHA="e825abe3659d510320ca7e5daf3b9471ca214208fe7bb90c4c6e2ed0a708fa07"
           curl -L --retry 3 --retry-delay 5 -o "$IB_TAR" "$IB_URL/$IB_TAR"
           echo "$IB_SHA  $IB_TAR" | sha256sum -c -
-          tar --zstd xf "$IB_TAR"
+          zstd -d "$IB_TAR" -o "${IB_TAR%.zst}" --rm
+          tar xf "${IB_TAR%.zst}"
 
       - name: Prepare files overlay
         run: |
