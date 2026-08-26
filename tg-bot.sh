@@ -74,6 +74,7 @@ T_sc_nosup_ru='❌ Сканирование не поддерживается'; 
 T_sc_empty_ru='❌ Пустой результат скана'; T_sc_empty_en='❌ Empty scan result'; T_sc_empty_uk='❌ Порожній результат скану'
 T_sc_hdr_ru='📡 Сети вокруг'; T_sc_hdr_en='📡 Nearby networks'; T_sc_hdr_uk='📡 Мережі навколо'
 T_sc_busy_ru='📻 Занятость каналов 2.4:'; T_sc_busy_en='📻 2.4GHz channel usage:'; T_sc_busy_uk='📻 Зайнятість каналів 2.4:'
+T_sc_busy5_ru='📻 Каналы 5 ГГц:'; T_sc_busy5_en='📻 5GHz channels:'; T_sc_busy5_uk='📻 Канали 5 ГГц:'
 T_sc_adv_ru='💡 Совет: канал <b>%s</b> свободнее всех'; T_sc_adv_en='💡 Tip: channel <b>%s</b> is least busy'; T_sc_adv_uk='💡 Порада: канал <b>%s</b> найвільніший'
 T_sc_top_ru='📍 Топ по сигналу:'; T_sc_top_en='📍 Top by signal:'; T_sc_top_uk='📍 Топ за сигналом:'
 T_sc_total_ru='Всего сетей: <i>%s</i>'; T_sc_total_en='Total networks: <i>%s</i>'; T_sc_total_uk='Всього мереж: <i>%s</i>'
@@ -2075,10 +2076,17 @@ $(esc "$DIFF")"
 }
 
 cmd_scan() {
-  IFACE=$(iwinfo 2>/dev/null | head -1 | awk '{print $1}')
-  [ -z "$IFACE" ] && { reply "$(t sc_nosup)"; return; }
-  reply "$(printf "$(t sc_doing)" "$IFACE")"
-  RAW=$(iwinfo "$IFACE" scan 2>/dev/null)
+  # Скан УСІХ радіо (2.4 + 5 ГГц): iwinfo дає список інтерфейсів — обходимо кожне
+  IFACES=$(iwinfo 2>/dev/null | awk '{print $1}')
+  [ -z "$IFACES" ] && { reply "$(t sc_nosup)"; return; }
+  reply "$(printf "$(t sc_doing)" "$(printf '%s' "$IFACES" | tr '\n' '+')")"
+  RAW=""
+  for IF in $IFACES; do
+    R=$(iwinfo "$IF" scan 2>/dev/null)
+    [ -n "$R" ] && RAW="$RAW
+$R"
+  done
+  RAW=$(printf '%s' "$RAW" | sed '/^$/d')
   [ -z "$RAW" ] && { reply "$(t sc_empty)"; return; }
 
   T=/tmp/tg-scan.$$
@@ -2102,7 +2110,9 @@ cmd_scan() {
       if (essid != "") printf "%s|%s|%s\n", ch, sig, essid
     }' | sort -t'|' -k1,1n -k2,2rn > "$T"
 
-  C24=$(awk -F'|' '$1<=13 {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
+  C24=$(awk -F'|' '$1<=13 && $1!="" {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
+  # 5 ГГц: окрема статистика зайнятості (канали >13)
+  C5=$(awk -F'|' '$1>13 {c[$1]++} END{for(i in c) print i":"c[i]}' "$T" | sort -t: -k1,1n | tr '\n' ' ')
   # Рекомендація каналу: не кількість сусідів, а ЇХ СИЛА (сильний сусід псує канал більше,
   # ніж 3 ледь видимих) + власні SSID не враховуємо. Вага: >=-60dBm:4, -61..-70:3, -71..-80:2, слабші:1
   OWN=$(uci show wireless 2>/dev/null | grep "\.ssid=" | sed "s/.*ssid='//; s/'$//" | tr '\n' '|')
@@ -2129,6 +2139,8 @@ cmd_scan() {
 
 <p>$(t sc_busy)</p>
 <code>$C24</code>
+${C5:+<p>$(t sc_busy5)</p>
+<code>$C5</code>}
 <p>$(printf "$(t sc_adv)" "$BEST")</p>
 
 <p>$(t sc_top)</p>
