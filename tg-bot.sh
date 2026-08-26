@@ -301,10 +301,21 @@ T_pbr_clear_ru='✅ PBR-правила прибрано. Увесь трафік
 T_pbr_no_warp_ru='⚠️ Спочатку створіть WARP (кнопка ⚡️ Підключити)'; T_pbr_no_warp_en='⚠️ Create WARP first (button ⚡️ Connect)'; T_pbr_no_warp_uk='⚠️ Спочатку створіть WARP (кнопка ⚡️ Підключити)'
 T_pbr_empty_err_ru='⚠️ Список порожній — додайте хоча б один запис'; T_pbr_empty_err_en='⚠️ List empty — add at least one entry'; T_pbr_empty_err_uk='⚠️ Список порожній — додайте хоча б один запис'
 
+# --- Speedtest ---
+T_btn_spd_ru='⚡️ Швидкість'; T_btn_spd_en='⚡️ Speed'; T_btn_spd_uk='⚡️ Швидкість'
+T_spd_title_ru='⚡️ Speedtest'; T_spd_title_en='⚡️ Speedtest'; T_spd_title_uk='⚡️ Speedtest'
+T_spd_ask_ru='Оберіть тест:'; T_spd_ask_en='Choose test:'; T_spd_ask_uk='Оберіть тест:'
+T_spd_direct_ru='🌐 Напряму'; T_spd_direct_en='🌐 Direct'; T_spd_direct_uk='🌐 Напряму'
+T_spd_warp_ru='📡 Через WARP'; T_spd_warp_en='📡 Via WARP'; T_spd_warp_uk='📡 Через WARP'
+T_spd_both_ru='📊 Обидва тести'; T_spd_both_en='📊 Both tests'; T_spd_both_uk='📊 Обидва тести'
+T_spd_running_ru='⏳ Тестую %s…'; T_spd_running_en='⏳ Testing %s…'; T_spd_running_uk='⏳ Тестую %s…'
+T_spd_fail_ru='❌ Помилка завантаження. Перевірте зʼєднання.'; T_spd_fail_en='❌ Download error. Check connection.'; T_spd_fail_uk='❌ Помилка завантаження. Перевірте зʼєднання.'
+T_spd_compare_ru='⚡️ Порівняння швидкості'; T_spd_compare_en='⚡️ Speed comparison'; T_spd_compare_uk='⚡️ Порівняння швидкості'
+
 # send_rich визначено нижче (файловий payload)
 
 mk_markups() {
-MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_vpn)\",\"callback_data\":\"mnu:vpn\"},{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"}],[{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
+MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_vpn)\",\"callback_data\":\"mnu:vpn\"},{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"}],[{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_spd)\",\"callback_data\":\"speed\"},{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
 CONFIRM_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbyes)\",\"callback_data\":\"rbyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbno\"}]]}"
 AI_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_CONF2_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic2)\",\"callback_data\":\"aic2\"}],[{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
@@ -318,6 +329,7 @@ VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\"
 WARP_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_go)\",\"callback_data\":\"wgo\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
 WDEL_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"🗑 $(t v_delete)\",\"callback_data\":\"wdel2\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
 PBR_MARKUP="{\"inline_keyboard\":[[{\"text\":\"📄 $(t pbr_btn)\",\"callback_data\":\"pbr_list\"},{\"text\":\"➕ Додати\", \"callback_data\":\"pbr_add_ask\"}],[{\"text\":\"🗑 Видалити запис\",\"callback_data\":\"pbr_del\"},{\"text\":\"🔄 Застосувати\",\"callback_data\":\"pbr_apply\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:vpn\"}]]}"
+SPD_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t spd_direct)\",\"callback_data\":\"spd:d\"},{\"text\":\"$(t spd_warp)\",\"callback_data\":\"spd:w\"}],[{\"text\":\"$(t spd_both)\",\"callback_data\":\"spd:both\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 }
 
 # --- контекст вводу текстом (.mact): mact_set <дія> | mact_get -> "дія|ввід" ---
@@ -530,6 +542,14 @@ send_mk() {
   printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s"%s}' \
     "$CHAT" "$(jesc "$1")" "${2:+,\"reply_markup\":$2}" > "$DIR/.rq"
   _req sendMessage "$DIR/.rq" >/dev/null
+}
+
+send_mk_getid() {
+  # $1=текст $2=reply_markup JSON -> message_id на stdout
+  printf '{"chat_id":"%s","parse_mode":"HTML","text":"%s"%s}' \
+    "$CHAT" "$(jesc "$1")" "${2:+,\"reply_markup\":$2}" > "$DIR/.rq"
+  RESP=$(_req sendMessage "$DIR/.rq")
+  printf '%s' "$RESP" | grep -o '"message_id":[0-9]*' | head -1 | cut -d: -f2
 }
 
 edit_msg() {
@@ -1279,6 +1299,58 @@ OLDH=$(nft -a list chain inet fw4 prerouting 2>/dev/null | grep 'blocked_net' | 
 ip rule del fwmark 0x1 2>/dev/null
 echo "PBR: правила прибрано"
 CEOF
+}
+
+spd_make_bar() {
+  # $1=bytes $2=total -> "▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱"
+  awk -v cur="$1" -v total="$2" 'BEGIN{
+    pct=int(cur/total*100); if(pct>100) pct=100
+    filled=int(pct*20/100); empty=20-filled
+    for(i=0;i<filled;i++) printf "▰"
+    for(i=0;i<empty;i++) printf "▱"
+  }'
+}
+
+spd_run_one() {
+  # $1=mode(direct|warp) $2=token $3=chatid $4=msgid
+  # Завантажує10МБ, оновлює повідомлення кожні 2с; результ вивід в stdout
+  MODE="$1" TOKEN="$2" CHAT_ID="$3" MSG_ID="$4"
+  URL="https://speed.cloudflare.com/__down?bytes=10485760"
+  TOTAL=10485760
+  TMPF="/tmp/spd_$$.bin"
+  LABEL="🌐 Напряму"; [ "$MODE" = "warp" ] && LABEL="📡 Через WARP"
+
+  if [ "$MODE" = "warp" ]; then
+    curl -s -o "$TMPF" --max-time 30 --interface warp "$URL" &
+  else
+    curl -s -o "$TMPF" --max-time 30 "$URL" &
+  fi
+  CURL_PID=$!
+  START=$(date +%s)
+
+  while kill -0 $CURL_PID 2>/dev/null; do
+    sleep 2
+    NOW=$(date +%s); ELAPSED=$((NOW-START)); [ "$ELAPSED" -eq 0 ] && ELAPSED=1
+    BYTES=$(wc -c < "$TMPF" 2>/dev/null); BYTES=${BYTES:-0}
+    SPEED=$(awk "BEGIN{printf \"%.1f\",$BYTES/1048576/$ELAPSED}")
+    DONE_MB=$(awk "BEGIN{printf \"%.1f\",$BYTES/1048576}")
+    BAR=$(spd_make_bar "$BYTES" "$TOTAL")
+    TEXT=$(printf '%s\n%s\n⬇️ %s МБ / 10 МБ · %dс · %s МБ/с' "$LABEL" "$BAR" "$DONE_MB" "$ELAPSED" "$SPEED")
+    # editMessageText напряму через curl
+    printf '{"chat_id":"%s","message_id":%s,"text":"%s"}' "$CHAT_ID" "$MSG_ID" "$(printf '%s' "$TEXT" | sed 's/"/\\"/g')" > /tmp/spd_rq.json
+    curl -s --max-time 5 "$API/editMessageText" -H "Content-Type: application/json" --data-binary @/tmp/spd_rq.json >/dev/null 2>&1
+  done
+
+  wait $CURL_PID 2>/dev/null
+  FINAL_BYTES=$(wc -c < "$TMPF" 2>/dev/null); FINAL_BYTES=${FINAL_BYTES:-0}
+  FINAL_TIME=$(($(date +%s)-START)); [ "$FINAL_TIME" -eq 0 ] && FINAL_TIME=1
+  FINAL_SPEED=$(awk "BEGIN{printf \"%.1f\",$FINAL_BYTES/1048576/$FINAL_TIME}")
+  FINAL_MBIT=$(awk "BEGIN{printf \"%.1f\",$FINAL_SPEED*8}")
+  DONE_MB=$(awk "BEGIN{printf \"%.1f\",$FINAL_BYTES/1048576}")
+  BAR=$(spd_make_bar "$TOTAL" "$TOTAL")
+  RESULT=$(printf '%s\n%s\n⬇️ %s МБ · %dс · %s МБ/с (%s Мбіт)' "$LABEL" "$BAR" "$DONE_MB" "$FINAL_TIME" "$FINAL_SPEED" "$FINAL_MBIT")
+  rm -f "$TMPF" /tmp/spd_rq.json
+  printf '%s' "$RESULT"
 }
 
 warp_reg_script() {
@@ -2794,6 +2866,23 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
           aioff)
             rm -f "$DIR/aimode"
             edit_msg "$MSGID_CB" "$(t ai_exitmsg)" "$MENU_MARKUP"
+            ;;
+          speed)
+            edit_msg "$MSGID_CB" "$(t spd_title)
+
+$(t spd_ask)" "$SPD_MARKUP"
+            ;;
+          spd:d|spd:w|spd:both)
+            MODE="${CB#spd:}"
+            LABEL="🌐 Напряму"; [ "$MODE" = "warp" ] && LABEL="📡 Через WARP"
+            [ "$MODE" = "both" ] && LABEL="Обидва тести"
+            MSGID=$(send_mk_getid "$(printf "$(t spd_running)" "$LABEL")")
+            [ -z "$MSGID" ] && { reply "$(t spd_fail)"; break; }
+            if [ "$MODE" = "both" ]; then
+              ( spd_run_one direct "$TOKEN" "$CHAT" "$MSGID" > /tmp/spd_r1.txt; spd_run_one warp "$TOKEN" "$CHAT" "$MSGID" > /tmp/spd_r2.txt; R1=$(cat /tmp/spd_r1.txt); R2=$(cat /tmp/spd_r2.txt); FINAL="$(printf '%s\n\n%s' "$R1" "$R2")"; printf '{"chat_id":"%s","message_id":%s,"text":"%s"}' "$CHAT" "$MSGID" "$(printf '%s' "$FINAL" | sed 's/"/\\"/g')" > /tmp/spd_rq.json; curl -s --max-time 5 "$API/editMessageText" -H "Content-Type: application/json" --data-binary @/tmp/spd_rq.json >/dev/null 2>&1; rm -f /tmp/spd_r1.txt /tmp/spd_r2.txt /tmp/spd_rq.json ) &
+            else
+              ( RESULT=$(spd_run_one "$MODE" "$TOKEN" "$CHAT" "$MSGID"); printf '{"chat_id":"%s","message_id":%s,"text":"%s"}' "$CHAT" "$MSGID" "$(printf '%s' "$RESULT" | sed 's/"/\\"/g')" > /tmp/spd_rq.json; curl -s --max-time 5 "$API/editMessageText" -H "Content-Type: application/json" --data-binary @/tmp/spd_rq.json >/dev/null 2>&1; rm -f /tmp/spd_rq.json ) &
+            fi
             ;;
           aic1)
             C=$(cat "$DIR/aipend" 2>/dev/null)
