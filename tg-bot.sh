@@ -279,19 +279,20 @@ T_pbr_empty_err_ru='⚠️ Список порожній — додайте хо
 # send_rich визначено нижче (файловий payload)
 
 mk_markups() {
-MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_vpn)\",\"callback_data\":\"mnu:vpn\"},{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"}],[{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"},{\"text\":\"$(t btn_ai)\",\"callback_data\":\"aion\"}],[{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
+# 2 в ряд, редактирование одного сообщения, без дублей
+MENU_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_status)\",\"callback_data\":\"st\"},{\"text\":\"$(t btn_dev)\",\"callback_data\":\"dv\"}],[{\"text\":\"$(t btn_wifi)\",\"callback_data\":\"mnu:wifi\"},{\"text\":\"$(t btn_fw)\",\"callback_data\":\"mnu:fw\"}],[{\"text\":\"$(t btn_dg)\",\"callback_data\":\"mnu:dg\"},{\"text\":\"$(t btn_sys)\",\"callback_data\":\"mnu:sys\"}],[{\"text\":\"$(t btn_vpn)\",\"callback_data\":\"mnu:vpn\"},{\"text\":\"$(t btn_watch)\",\"callback_data\":\"wch\"}],[{\"text\":\"$(t btn_alias)\",\"callback_data\":\"al\"},{\"text\":\"$(t btn_help)\",\"callback_data\":\"hlp\"}]]}"
 CONFIRM_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbyes)\",\"callback_data\":\"rbyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbno\"}]]}"
 AI_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 AI_CONF2_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t aic1)\",\"callback_data\":\"aic1\"},{\"text\":\"$(t aic2)\",\"callback_data\":\"aic2\"}],[{\"text\":\"$(t aic0)\",\"callback_data\":\"aic0\"}]]}"
 WIFI_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t wf_b_nets)\",\"callback_data\":\"wfkb\"},{\"text\":\"$(t btn_qr)\",\"callback_data\":\"qr\"}],[{\"text\":\"$(t btn_scan)\",\"callback_data\":\"scn\"},{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 FW_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t fw_btn_pf)\",\"callback_data\":\"fwlist\"},{\"text\":\"$(t fw_addbtn)\",\"callback_data\":\"fwa\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
-DG_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t dg_btn_ping)\",\"callback_data\":\"dgt:ping\"},{\"text\":\"$(t dg_btn_trace)\",\"callback_data\":\"dgt:trace\"},{\"text\":\"$(t dg_btn_ns)\",\"callback_data\":\"dgt:ns\"}],[{\"text\":\"$(t dg_btn_lr)\",\"callback_data\":\"dgl:logread\"},{\"text\":\"$(t dg_btn_dm)\",\"callback_data\":\"dgl:dmesg\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+DG_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t dg_btn_ping)\",\"callback_data\":\"dgt:ping\"},{\"text\":\"$(t dg_btn_trace)\",\"callback_data\":\"dgt:trace\"}],[{\"text\":\"$(t dg_btn_ns)\",\"callback_data\":\"dgt:ns\"}],[{\"text\":\"$(t dg_btn_lr)\",\"callback_data\":\"dgl:logread\"},{\"text\":\"$(t dg_btn_dm)\",\"callback_data\":\"dgl:dmesg\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 SYS_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t btn_wan)\",\"callback_data\":\"wan\"},{\"text\":\"$(t btn_bk)\",\"callback_data\":\"bk\"}],[{\"text\":\"$(t btn_rb)\",\"callback_data\":\"rb1\"},{\"text\":\"↩️ Rollback\",\"callback_data\":\"rbk1\"}],[{\"text\":\"$(t s_btn_pkg)\",\"callback_data\":\"pkgl\"},{\"text\":\"$(t s_btn_ssh)\",\"callback_data\":\"sshkl\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 RBK_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t rbky)\",\"callback_data\":\"rbkyes\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"rbkno\"}]]}"
-VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\":\"wst\"},{\"text\":\"$(t v_connect)\",\"callback_data\":\"wup1\"}],[{\"text\":\"$(t v_aon)\",\"callback_data\":\"won\"},{\"text\":\"$(t v_aoff)\",\"callback_data\":\"woff\"}],[{\"text\":\"$(t pbr_btn)\",\"callback_data\":\"pbr_menu\"},{\"text\":\"$(t v_btn_mtu)\",\"callback_data\":\"wmtu\"},{\"text\":\"$(t v_btn_ep)\",\"callback_data\":\"wep\"}],[{\"text\":\"$(t v_delete)\",\"callback_data\":\"wdel1\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
+VPN_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_status)\",\"callback_data\":\"wst\"},{\"text\":\"$(t v_connect)\",\"callback_data\":\"wup1\"}],[{\"text\":\"$(t v_aon)\",\"callback_data\":\"won\"},{\"text\":\"$(t v_aoff)\",\"callback_data\":\"woff\"}],[{\"text\":\"$(t pbr_btn)\",\"callback_data\":\"pbr_menu\"},{\"text\":\"$(t v_btn_mtu)\",\"callback_data\":\"wmtu\"}],[{\"text\":\"$(t v_btn_ep)\",\"callback_data\":\"wep\"},{\"text\":\"$(t v_delete)\",\"callback_data\":\"wdel1\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]]}"
 WARP_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"$(t v_go)\",\"callback_data\":\"wgo\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
 WDEL_CONF_MARKUP="{\"inline_keyboard\":[[{\"text\":\"🗑 $(t v_delete)\",\"callback_data\":\"wdel2\"},{\"text\":\"$(t rbno)\",\"callback_data\":\"aic0\"}]]}"
-PBR_MARKUP="{\"inline_keyboard\":[[{\"text\":\"📄 $(t pbr_btn)\",\"callback_data\":\"pbr_list\"},{\"text\":\"➕ Додати\", \"callback_data\":\"pbr_add_ask\"}],[{\"text\":\"🗑 Видалити запис\",\"callback_data\":\"pbr_del\"},{\"text\":\"🔄 Застосувати\",\"callback_data\":\"pbr_apply\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:vpn\"}]]}"
+PBR_MARKUP="{\"inline_keyboard\":[[{\"text\":\"📄 $(t pbr_btn)\",\"callback_data\":\"pbr_list\"},{\"text\":\"➕ Додати\",\"callback_data\":\"pbr_add_ask\"}],[{\"text\":\"🗑 Видалити запис\",\"callback_data\":\"pbr_del\"},{\"text\":\"🔄 Застосувати\",\"callback_data\":\"pbr_apply\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"mnu:vpn\"}]]}"
 }
 
 # --- контекст вводу текстом (.mact): mact_set <дія> | mact_get -> "дія|ввід" ---
@@ -427,9 +428,12 @@ utf8fix() {
 }
 
 send_rich() {
-  # $1 = Rich HTML через sendRichMessage (таблиці, h1-h6, списки, details)
-  # ЛІМІТ: rich_message вміщує ~30000 символів (не 4096 як звичайний sendMessage!)
-  printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$(utf8fix "$1")")" > "$DIR/.rq"
+  # $1 = Rich HTML, $2 = reply_markup JSON (опц.) — один rich + кнопки, без дубля
+  if [ -n "$2" ]; then
+    printf '{"chat_id":"%s","rich_message":{"html":"%s"},"reply_markup":%s}' "$CHAT" "$(jesc "$(utf8fix "$1")")" "$2" > "$DIR/.rq"
+  else
+    printf '{"chat_id":"%s","rich_message":{"html":"%s"}}' "$CHAT" "$(jesc "$(utf8fix "$1")")" > "$DIR/.rq"
+  fi
   R=$(_req sendRichMessage "$DIR/.rq")
   echo "$R" | grep -q '"ok":true' && return 0
   echo "$R" | head -c 200 > "$DIR/lasterr"
@@ -515,9 +519,14 @@ edit_msg() {
 }
 
 edit_msg_rich() {
-  # $1=message_id $2=Rich HTML — редагування rich-повідомлення
-  printf '{"chat_id":"%s","message_id":%s,"rich_message":{"html":"%s"}}' \
-    "$CHAT" "$1" "$(jesc "$2")" > "$DIR/.rq"
+  # $1=message_id $2=Rich HTML $3=reply_markup (опц.)
+  if [ -n "$3" ]; then
+    printf '{"chat_id":"%s","message_id":%s,"rich_message":{"html":"%s"},"reply_markup":%s}' \
+      "$CHAT" "$1" "$(jesc "$2")" "$3" > "$DIR/.rq"
+  else
+    printf '{"chat_id":"%s","message_id":%s,"rich_message":{"html":"%s"}}' \
+      "$CHAT" "$1" "$(jesc "$2")" > "$DIR/.rq"
+  fi
   _req editMessageText "$DIR/.rq" >/dev/null
 }
 
@@ -895,7 +904,8 @@ wf_kb() {
   rm -f "$TMPF"
   KB=${KB%,}
   [ -z "$KB" ] && return 1
-  printf '{"inline_keyboard":[%s,[{"text":"%s","callback_data":"mn"}]]}' "$KB" "$(t mnback)"
+  KB="$KB,[{\"text\":\"$(t mnback)\",\"callback_data\":\"mn\"}]"
+  printf '{"inline_keyboard":[%s]}' "$KB"
 }
 
 wf_view() {
@@ -914,9 +924,13 @@ wf_view() {
 }
 
 wf_confirm() {
-  # $1=команда → черга підтвердження aic1/aic2(з DMS-страховкою)/aic0
+  # $1=команда → черга підтвердження aic1/aic2/aic0, редактирует одно сообщение
   printf '%s' "$1" > "$DIR/aipend"
-  send_mk "$(printf "$(t wf_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  if [ -n "${MSGID_CB:-}" ]; then
+    edit_msg "$MSGID_CB" "$(printf "$(t wf_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  else
+    send_mk "$(printf "$(t wf_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  fi
 }
 
 wf_apply() {
@@ -966,9 +980,13 @@ fw_kb() {
   printf '{"inline_keyboard":[%s]}' "$KB"
 }
 fw_confirm() {
-  # $1=команда → черга підтвердження aic1/aic2(з DMS)/aic0
+  # $1=команда → черга підтвердження, редактирует одно сообщение
   printf '%s' "$1" > "$DIR/aipend"
-  send_mk "$(printf "$(t fwd_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  if [ -n "${MSGID_CB:-}" ]; then
+    edit_msg "$MSGID_CB" "$(printf "$(t fwd_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  else
+    send_mk "$(printf "$(t fwd_conf)" "$(esc "$1")")" "$AI_CONF2_MARKUP"
+  fi
 }
 
 # --- токен-оптимізація: хелпери (фази A/C/D/F/G) ---
@@ -1682,8 +1700,12 @@ ${PINFO:+<code>$(esc "$PINFO")</code>}" "$PK_KB"
             ;;
           "/devices")
             OUTD="$(devices_text)"
-            send_rich "$OUTD" || reply "$OUTD"
-            KB=$(devices_kb) && send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"
+            KB=$(devices_kb)
+            if [ -n "$KB" ]; then
+              send_rich "$OUTD" "$KB" || { send_rich "$OUTD" || reply "$OUTD"; send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"; }
+            else
+              send_rich "$OUTD" || reply "$OUTD"
+            fi
             ;;
           "/wan")
             reply "$(t wan_run)"
@@ -1782,12 +1804,17 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
         case "$CB" in
           st)
             OUTS="$(status_text)"
-            send_rich "$OUTS" || reply "$OUTS"
+            # редактируем одно сообщение (rich), назад в меню
+            edit_msg_rich "$MSGID_CB" "$OUTS" "$MENU_MARKUP" 2>/dev/null || edit_msg "$MSGID_CB" "$OUTS" "$MENU_MARKUP" 2>/dev/null || send_rich "$OUTS" "$MENU_MARKUP" 2>/dev/null || send_rich "$OUTS" || reply "$OUTS"
             ;;
           dv)
             OUTD="$(devices_text)"
-            send_rich "$OUTD" || reply "$OUTD"
-            KB=$(devices_kb) && send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"
+            KB=$(devices_kb)
+            if [ -n "$KB" ]; then
+              edit_msg_rich "$MSGID_CB" "$OUTD" "$KB" 2>/dev/null || edit_msg "$MSGID_CB" "$OUTD" "$KB" 2>/dev/null || send_rich "$OUTD" "$KB" 2>/dev/null || { send_rich "$OUTD" || reply "$OUTD"; send_mk "🏷 Швидкі дії — тапні щоб зробити IP статичним:" "$KB"; }
+            else
+              edit_msg_rich "$MSGID_CB" "$OUTD" "$MENU_MARKUP" 2>/dev/null || edit_msg "$MSGID_CB" "$OUTD" "$MENU_MARKUP" 2>/dev/null || send_rich "$OUTD" || reply "$OUTD"
+            fi
             ;;
           st:*)
             D="${CB#st:}"; SMAC="${D%%|*}"; SIP="${D##*|}"
@@ -1834,7 +1861,20 @@ $TOPOC}${TOPOC:-порожня}. Додати: /topo 192.168.1.50 NAS"
               esac
               OUT=$(sh -c "$C" 2>&1 | head -c 3500); RC=$?
               alog OUT "CONF→ $(printf '%s' "$OUT" | tr '\n\t' '  ' | head -c 200)"
-              edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP"
+              # дружелюбный ответ для Wi-Fi
+              case "$C" in
+                *"wireless.@wifi-iface"*".key="*|*"wireless.@wifi-iface"*".key'"*)
+                  SS=$(echo "$C" | sed -n "s/.*wireless\.@wifi-iface\[\([0-9]*\)\].*/\1/p" | head -1)
+                  SN=$(uci -q get wireless.@wifi-iface[$SS].ssid 2>/dev/null || echo "?")
+                  edit_msg "$MSGID_CB" "✅ Пароль для сети '<b>$(esc "$SN")</b>' изменён.\n<code>$(esc "$C")</code>\n\nРезультат:\n<code>$(esc "${OUT:-(пусто)}")</code>" "$MENU_MARKUP"
+                  ;;
+                *"wireless.@wifi-iface"*".ssid="*|*"wireless.@wifi-iface"*".ssid'"*)
+                  SS=$(echo "$C" | sed -n "s/.*wireless\.@wifi-iface\[\([0-9]*\)\].*/\1/p" | head -1)
+                  SN=$(uci -q get wireless.@wifi-iface[$SS].ssid 2>/dev/null || echo "?")
+                  edit_msg "$MSGID_CB" "✅ SSID изменён на '<b>$(esc "$SN")</b>'.\n<code>$(esc "$C")</code>\n\nРезультат:\n<code>$(esc "${OUT:-(пусто)}")</code>" "$MENU_MARKUP"
+                  ;;
+                *) edit_msg "$MSGID_CB" "$(printf "$(t ai_done)" "$(esc "$C")" "$(esc "${OUT:-(пусто)}")")" "$MENU_MARKUP" ;;
+              esac
             else
               edit_msg "$MSGID_CB" "$(t ai_pendnone)" "$MENU_MARKUP"
             fi
@@ -2265,13 +2305,31 @@ $PLIST" "$PBR_MARKUP"
               reply "$(t wf_none)"
             fi
             ;;
-          wfk:*|wfs:*|wfc:*)
-            mact_set "$CB"
-            case "$CB" in
-              wfk:*) reply "$(t wf_ask_key)" ;;
-              wfs:*) reply "$(t wf_ask_ssid)" ;;
-              *) reply "$(t wf_ask_ch)" ;;
-            esac
+          wfk:*)
+            IDX="${CB#wfk:}"; mact_set "$CB"
+            edit_msg "$MSGID_CB" "$(t wf_ask_key)" "{\"inline_keyboard\":[[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}"
+            ;;
+          wfs:*)
+            IDX="${CB#wfs:}"; mact_set "$CB"
+            edit_msg "$MSGID_CB" "$(t wf_ask_ssid)" "{\"inline_keyboard\":[[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}"
+            ;;
+          wfc:*)
+            IDX="${CB#wfc:}"
+            D=$(uci -q get wireless.@wifi-iface[$IDX].device 2>/dev/null)
+            BAND=$(uci -q get wireless.$D.band 2>/dev/null); [ -z "$BAND" ] && BAND="2g"
+            if echo "$BAND" | grep -q "5g"; then
+              CH_KB="{\"inline_keyboard\":[[{\"text\":\"36\",\"callback_data\":\"wfc_set:$IDX:36\"},{\"text\":\"40\",\"callback_data\":\"wfc_set:$IDX:40\"}],[{\"text\":\"44\",\"callback_data\":\"wfc_set:$IDX:44\"},{\"text\":\"48\",\"callback_data\":\"wfc_set:$IDX:48\"}],[{\"text\":\"149\",\"callback_data\":\"wfc_set:$IDX:149\"},{\"text\":\"auto\",\"callback_data\":\"wfc_set:$IDX:auto\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}"
+            else
+              CH_KB="{\"inline_keyboard\":[[{\"text\":\"1\",\"callback_data\":\"wfc_set:$IDX:1\"},{\"text\":\"6\",\"callback_data\":\"wfc_set:$IDX:6\"}],[{\"text\":\"11\",\"callback_data\":\"wfc_set:$IDX:11\"},{\"text\":\"auto\",\"callback_data\":\"wfc_set:$IDX:auto\"}],[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}"
+            fi
+            edit_msg "$MSGID_CB" "$(t wf_ask_ch)" "$CH_KB"
+            ;;
+          wfc_set:*)
+            R="${CB#wfc_set:}"; IDX="${R%%:*}"; CH="${R##*:}"
+            D=$(uci -q get wireless.@wifi-iface[$IDX].device 2>/dev/null)
+            if [ -n "$D" ]; then
+              case "$CH" in auto|[0-9]*) wf_apply "uci set wireless.$D.channel='$CH'" ;; *) edit_msg "$MSGID_CB" "$(t wf_bad_ch)" "{\"inline_keyboard\":[[{\"text\":\"$(t mnback)\",\"callback_data\":\"wf:$IDX\"}]]}" ;; esac
+            fi
             ;;
           wfp:*)
             IDX="${CB#wfp:}"
@@ -2335,7 +2393,7 @@ $PLIST" "$PBR_MARKUP"
             fi
             ;;
           al)
-            reply "$(alias_help)"
+            edit_msg "$MSGID_CB" "$(alias_help)" "$MENU_MARKUP"
             ;;
           rbno)
             edit_msg "$MSGID_CB" "$(menu_text)" "$MENU_MARKUP"
