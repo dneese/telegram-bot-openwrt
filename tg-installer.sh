@@ -14,7 +14,7 @@
 # ============================================================
 
 REPO="dneese/telegram-bot-openwrt"
-BR="master"
+BR="light"
 RAW="https://raw.githubusercontent.com/$REPO/$BR"
 TMP="/tmp/tgrb.$$"
 
@@ -34,13 +34,9 @@ fetch() { # $1=relpath -> stdout; uclient-fetch (рідний OpenWrt, з TLS) -
 }
 
 FILES="tg-bot.sh tg-analyze.sh tg-watch.sh tg-doctor.sh tg-bot.init tg-watch.init tg-doctor.hotplug install.sh \
-tgbot.menu.json tgbot.acl.json tgbot.settings.js \
-prompts/core.txt prompts/recipes.txt prompts/facts.md prompts/intent.txt \
-prompts/learned/lessons.md \
-prompts/skills/wifi.md prompts/skills/vpn.md prompts/skills/dns.md prompts/skills/firewall.md \
-prompts/skills/services.md prompts/skills/network-dhcp.md prompts/skills/system-misc.md"
+tgbot.menu.json tgbot.acl.json tgbot.settings.js"
 
-mkdir -p "$TMP/prompts/skills" "$TMP/prompts/learned" || die "Немає доступу до /tmp"
+mkdir -p "$TMP" || die "Немає доступу до /tmp"
 
 say "⬇️  Завантажую tg-router-bot ($REPO@$BR)..."
 for F in $FILES; do

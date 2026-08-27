@@ -6,29 +6,29 @@
 #  Опції (або інтерактивно спита):
 #   --token  BOT_TOKEN      токен від @BotFather
 #   --chatid CHAT_ID        ваш Telegram ID
-#   --lang   ru|uk|en       мова повідомлень (def: ru)
-#   --model  MODEL          AI модель (def: qwen/qwen3.6-27b)
-#   --key    API_KEY        ключ AI провайдера (Groq/OpenRouter/Gemini)
-#   --url    URL            OpenAI-сумісний endpoint (def: Groq)
+#   --lang   ru|uk|en|all   мова повідомлень (def: ru, all=всі 3)
+#   --modules LIST           модулі через кому: wifi,warp,firewall,diag,system,watch,alias,mon (def: all)
+#   --minimal                пресет light: wifi,warp,status,qr,scan,backup (без firewall/diag/system)
 #   --uninstall              повне видалення
 # ============================================================
 SRC="$(cd "$(dirname "$0")" && pwd)"
 PREFIX=/usr/bin
 DIR=/etc/tg-bot
 
-TOKEN=""; CHATID=""; LANG_=""; MODEL=""; KEY=""; URL=""; UNINST=0
+TOKEN=""; CHATID=""; LANG_=""; MODS=""; UNINST=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --token) TOKEN="$2"; shift 2 ;;
     --chatid) CHATID="$2"; shift 2 ;;
     --lang) LANG_="$2"; shift 2 ;;
-    --model) MODEL="$2"; shift 2 ;;
-    --key) KEY="$2"; shift 2 ;;
-    --url) URL="$2"; shift 2 ;;
+    --modules) MODS="$2"; shift 2 ;;
+    --minimal) MODS="wifi,warp"; shift ;;
     --uninstall) UNINST=1; shift ;;
     *) echo "? невідома опція $1"; shift ;;
   esac
 done
+[ -z "$MODS" ] && MODS="all"
+# LANG_ залишаємо порожнім для інтерактивного запиту нижче; фільтр мови застосується після визначення
 
 if [ "$UNINST" = "1" ]; then
   echo "== Видалення tg-router-bot =="
@@ -75,19 +75,8 @@ cp "$SRC/tg-bot.sh" $PREFIX/tg-bot.sh && chmod +x $PREFIX/tg-bot.sh
 [ -f "$SRC/tgbot.settings.js" ] && { mkdir -p /www/luci-static/resources/view/tgbot; cp "$SRC/tgbot.settings.js" /www/luci-static/resources/view/tgbot/settings.js && chmod 644 /www/luci-static/resources/view/tgbot/settings.js; }
 chmod 644 /usr/share/luci/menu.d/luci-app-tgbot.json /usr/share/rpcd/acl.d/luci-app-tgbot.json 2>/dev/null
 
-# --- промпти і скіли ---
-mkdir -p $DIR/ai/skills
-for F in core.txt recipes.txt facts.md intent.txt topology.md corrections.md; do
-  SRCF="$SRC/prompts/$F"
-  # не перезаписувати накопичене (corrections/topology) якщо вже є
-  { [ "$F" = "corrections.md" ] || [ "$F" = "topology.md" ]; } && [ -s "$DIR/ai/$F" ] && continue
-  [ -f "$SRCF" ] && cp "$SRCF" "$DIR/ai/$F"
-done
-[ -f "$SRC/prompts/intent.txt" ] && cp "$SRC/prompts/intent.txt" "$DIR/ai/intent.txt"
-for S in "$SRC"/prompts/skills/*.md; do
-  [ -f "$S" ] && cp "$S" "$DIR/ai/skills/$(basename "$S")"
-done
-touch "$DIR/ai/corrections.md" "$DIR/ai/topology.md"
+# --- light: промпти AI не потрібні ---
+mkdir -p $DIR
 
 # --- конфігурація uci ---
 if ! uci -q get tgbot.config >/dev/null 2>&1; then
@@ -95,36 +84,38 @@ if ! uci -q get tgbot.config >/dev/null 2>&1; then
   [ -z "$TOKEN" ] && printf 'Токен від @BotFather: ' && read -r TOKEN
   [ -z "$CHATID" ] && printf 'Ваш Chat ID (число): ' && read -r CHATID
   [ -z "$LANG_" ] && { printf 'Мова [ru/uk/en, def ru]: '; read -r LANG_; }
-  [ -z "$KEY" ] && printf 'AI-ключ (gsk_/sk-or-v1/інший; Enter = пропустити, додасте пізніше в LuCI або /key у боті): ' && read -r KEY
   touch /etc/config/tgbot && chown root:root /etc/config/tgbot
   uci set tgbot.config=config 2>/dev/null || uci set tgbot.config='config'
 fi
 [ -n "$TOKEN" ] && uci set tgbot.config.token="$TOKEN"
 [ -n "$CHATID" ] && uci set tgbot.config.chatid="$CHATID"
 [ -n "$LANG_" ] && uci set tgbot.config.lang="$LANG_"
-# AI-ключ: авто-маршрут за префіксом (та сама логіка що й /key у боті)
-case "$KEY" in
-  gsk_*)
-    [ -z "$URL" ] && URL="https://api.groq.com/openai/v1/chat/completions"
-    [ -z "$MODEL" ] && MODEL="qwen/qwen3.6-27b"
-    uci set tgbot.config.ai_key="$KEY"; echo "ключ → ai_key (Groq)" ;;
-  sk-or-v1*)
-    uci set tgbot.config.ai_url2="https://openrouter.ai/api/v1/chat/completions"
-    uci set tgbot.config.ai_key2="$KEY"
-    [ -z "$(uci -q get tgbot.config.ai_model)" ] && uci set tgbot.config.ai_model="openai/gpt-oss-20b"
-    echo "ключ → ai_key2 (OpenRouter)" ;;
-  ??*)
-    uci set tgbot.config.ai_key3="$KEY"
-    uci set tgbot.config.ai_model3="gemini-3.6-flash"
-    echo "ключ → ai_key3 (Gemini)" ;;
-esac
-[ -n "$MODEL" ] && uci set tgbot.config.ai_model="$MODEL"
-[ -n "$KEY" ] && uci set tgbot.config.ai_key="$KEY"
-[ -n "$URL" ] && uci set tgbot.config.ai_url="$URL"
-uci set tgbot.config.ai_model_alt="${AI_ALT:-openai/gpt-oss-20b}"
-uci set tgbot.config.ai_url2="https://openrouter.ai/api/v1/chat/completions"
 uci commit tgbot
 chmod 600 /etc/config/tgbot 2>/dev/null
+# --- оптимізація розміру: фільтр мови та модулів (після визначення LANG) ---
+if [ -n "$LANG_" ] && [ "$LANG_" != "all" ]; then
+  echo "✂️  Фільтр мови: $LANG_ (було ru+uk+en)"
+  TMPF="$PREFIX/tg-bot.sh.tmp"
+  : > "$TMPF"
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      T_*)
+        # витягаємо кожне присвоєння T_...='...' (враховує ; всередині лапок)
+        keep=$(printf '%s\n' "$line" | grep -o "T_[^=]*='[^']*'" | grep "_${LANG_}=" | paste -sd "; " -)
+        [ -n "$keep" ] && printf '%s\n' "$keep" >> "$TMPF" || true
+        ;;
+      *) printf '%s\n' "$line" >> "$TMPF" ;;
+    esac
+  done < "$PREFIX/tg-bot.sh"
+  mv "$TMPF" "$PREFIX/tg-bot.sh"
+  echo "   $(wc -c < "$PREFIX/tg-bot.sh") bytes після фільтру мови"
+fi
+if [ "$MODS" != "all" ]; then
+  echo "✂️  Фільтр модулів: $MODS"
+  case ",$MODS," in *",firewall,"*) ;; *) sed -i '/^# --- Фаєрвол/,/^# --- Діагностика/c\# --- Фаєрвол: вимкнено (install --modules)\nfw_redirects(){ return 1; }\nfw_kb(){ return 1; }\nfw_confirm(){ return 1; }' "$PREFIX/tg-bot.sh" 2>/dev/null || true ;; esac
+  case ",$MODS," in *",diag,"*) ;; *) sed -i '/^# --- Діагностика/,/^# --- Система/c\# --- Діагностика: вимкнено\n' "$PREFIX/tg-bot.sh" 2>/dev/null || true ;; esac
+fi
+sh -n "$PREFIX/tg-bot.sh" 2>/dev/null || { echo "❌ tg-bot.sh синтаксис зламався після фільтру"; exit 1; }
 
 # --- cron для аналізатора ---
 if [ -x $PREFIX/tg-analyze.sh ]; then
@@ -153,8 +144,6 @@ TT=$(uci -q get tgbot.config.token)
 echo ""
 echo "Готово. Далі:"
 echo " • Напишіть боту /status"
-echo " • AI-ключі можна додати ПОЗНІШЕ будь-коли:"
-echo "     LuCI → Services → Telegram Bot, АБО просто надішліть боту: /key gsk_ваш_ключ"
-echo " • AI: /ai ваше питання   (без ключа AI-режим не запуститься)"
-echo " • Лог діалогів: /ailog   Відкат змін: /rollback"
-echo " • Мова: uci set tgbot.config.lang=uk|ru|en ; скіли: $DIR/ai/skills/"
+echo " • Меню: /start  Wi-Fi: /wifi  Статус: /status"
+echo " • Відкат змін: /rollback"
+echo " • Мова: uci set tgbot.config.lang=uk|ru|en"

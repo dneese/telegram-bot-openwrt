@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [master]
+    branches: [master, light]
   pull_request:
-    branches: [master]
+    branches: [master, light]
   workflow_dispatch:
 
 jobs:
@@ -19,5 +19,5 @@ jobs:
             sh -n "$f" && echo "ok: $f"
           done
 
-      - name: Offline test suite (117 checks)
-        run: sh tests/run_tests.sh tg-bot.sh
+      - name: Offline test suite (light)
+        run: sh tests/run_tests.sh tg-bot.sh tg-watch.sh

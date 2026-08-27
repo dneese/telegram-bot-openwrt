@@ -31,64 +31,11 @@ return view.extend({
 		o.default = 'uk';
 		o.optional = true;
 
-		o = s.option(form.Value, 'ai_url', _('AI endpoint URL'),
-			_('OpenAI-сумісний endpoint. Типово Groq. Інші: OpenRouter https://openrouter.ai/api/v1/chat/completions, Gemini https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'));
-		o.optional = true;
-		o.placeholder = 'https://api.groq.com/openai/v1/chat/completions';
-		o.value('https://api.groq.com/openai/v1/chat/completions', 'Groq');
-		o.value('https://openrouter.ai/api/v1/chat/completions', 'OpenRouter');
-		o.value('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', 'Google Gemini');
-
-		o = s.option(form.Value, 'ai_key', _('AI API Key'),
-			_('Ключ провайдера: Groq console.groq.com/keys (безкоштовно), OpenRouter openrouter.ai/keys або Gemini aistudio.google.com/apikey'));
-		o.password = true;
-		o.optional = true;
-		o.placeholder = 'gsk_... / sk-or-v1-...';
-
-		o = s.option(form.Value, 'ai_model', _('AI модель (основна)'),
-			_('Модель агента. Можна вибрати зі списку або вписати будь-яку іншу. Змінити можна також прямо в чаті командою /model'));
-		o.placeholder = 'qwen/qwen3.6-27b';
-		o.value('qwen/qwen3.6-27b', 'Qwen 3.6 27B (Groq)');
-		o.value('openai/gpt-oss-20b', 'GPT-OSS 20B (Groq)');
-		o.value('openai/gpt-oss-120b', 'GPT-OSS 120B (Groq)');
-		o.value('nvidia/nemotron-3-super-120b-a12b:free', 'NVIDIA Nemotron 120B (OpenRouter free)');
-		o.default = 'qwen/qwen3.6-27b';
-		o.optional = true;
-
-		o = s.option(form.Value, 'ai_model_alt', _('AI модель (резерв)'));
-		o.placeholder = 'openai/gpt-oss-20b';
-		o.value('openai/gpt-oss-20b', 'GPT-OSS 20B');
-		o.value('openai/gpt-oss-120b', 'GPT-OSS 120B');
-		o.value('nvidia/nemotron-3-super-120b-a12b:free', 'NVIDIA Nemotron 120B (free)');
-		o.optional = true;
-
-		o = s.option(form.Value, 'ai_key3', _('Gemini API Key'),
-			_('Третя ланка фолбеку (своя безкоштовна квота). Ключ: aistudio.google.com/apikey'));
-		o.password = true;
-		o.optional = true;
-		o.placeholder = 'AQ....';
-
-		o = s.option(form.Value, 'ai_model3', _('Gemini модель'));
-		o.placeholder = 'gemini-3.6-flash';
-		o.value('gemini-3.6-flash', 'Gemini 3.6 Flash');
-		o.value('gemini-2.5-flash', 'Gemini 2.5 Flash');
-		o.optional = true;
-
-		o = s.option(form.Value, 'ai_groq_chain', _('Фолбек-ланцюг моделей'),
-			_('Список моделей через пробіл: якщо основна впала/в ліміті — пробуються вони (у кожної свій денний ліміт)'));
-		o.placeholder = 'qwen/qwen3.6-27b openai/gpt-oss-120b';
-		o.optional = true;
 
 		o = s.option(form.Flag, 'watch_quiet', _('Тихий режим вотчера'),
 			_('Не надсилати миттєві сповіщення про DHCP-аренди та порти (події лишаються в логу)'));
 		o.default = o.disabled;
 		o.optional = true;
-
-		o = s.option(form.Value, 'gh_token', _('GitHub Token (самонавчання)'),
-			_('Необовʼязково: PAT з правами repo — бот сам комітитиме свої уроки/помилки у prompts/learned/. Створити: github.com/settings/tokens (classic, scope repo)'));
-		o.password = true;
-		o.optional = true;
-		o.placeholder = 'ghp_...';
 
 		o = s.option(form.Button, '_restart');
 		o.title = _('Перезапуск');
